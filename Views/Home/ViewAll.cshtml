@@ -1,0 +1,31 @@
+@model List<Post>
+<style = "text/css">
+li{
+    padding:0.25em
+}
+</style>
+
+<div class="dropdown show">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Dropdown button
+  </button>
+
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+      <ul>
+        <li><a class="dropdown-item" href="#">Title</a></li>
+        <li><a class="dropdown-item" href="#">Author</a></li>
+        <li><a class="dropdown-item" href="#">Date</a></li>
+      </ul>
+    
+  </div>
+</div>
+<ul id="accordion">
+    @foreach(Post post in Model)
+    {
+        <li>
+            <a class="" href="/Home/ViewSinglePost/?postid=@post.PostID">
+                @post.GetPostPreview()
+            </a>
+        </li>
+    }
+</ul>

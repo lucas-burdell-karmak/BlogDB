@@ -1,0 +1,8 @@
+@model List<Post>
+
+<ul>
+    @foreach (var post in Model)
+    {
+        <p>@post.ToString()</p>
+    }
+</ul>
