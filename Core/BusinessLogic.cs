@@ -5,24 +5,24 @@ namespace BlogDB.Core
 {
     public class BusinessLogic
     {
-        private readonly BlogDB blogDatabase;
+        private readonly BlogRepo blogRepo;
 
         public BusinessLogic()
         {
-            blogDatabase = new BlogDB();
+            blogRepo = new BlogRepo();
         }
 
-        public string AddPost()
+        public string AddPost(Post post)
         {
             return "TODO: BusinessLogic.AddPost() method";
         }
 
-        public string DeletePost()
+        public string DeletePost(Post post)
         {
             return "TODO: BusinessLogic.DeletePost() method";
         }
 
-        public string EditPost()
+        public string EditPost(Post post)
         {
             return "TODO: BusinessLogic.EditPost() method";
         }

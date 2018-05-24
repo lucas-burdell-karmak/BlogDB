@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace BlogDB.Core
 {
-    public class BlogDB
+    public class BlogRepo
     {
         private readonly FileDB database;
 
-        public BlogDB()
+        public BlogRepo()
         {
             database = new FileDB();
         }

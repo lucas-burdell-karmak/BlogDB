@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BlogDB.Core
 {
-    public interface IBlogDB
+    public interface IBlogRepo
     {
         void AddPost(Post post);
         void DeletePost(Guid id);
