@@ -1,4 +1,4 @@
-@model The_Intern_MVC.Models.Post
+@model BlogDB.Core.Post
 @using (Html.BeginForm("EditPostResult","Home",FormMethod.Post,new {postid=Model.PostID, @class= "form-inline"}))
 {
 
@@ -13,3 +13,6 @@
     </div>
 
 }
+
+<br></br>
+@await Html.PartialAsync("BackButton")
