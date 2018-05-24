@@ -14,5 +14,6 @@ namespace BlogDB.Core
         int GetPostCount();
         Post GetPostFromList(List<Post> listOfPosts, Guid id);
         List<Post> GetSortedListOfPosts(PostComponent sortType);
+        List<Post> GetAllPosts();
     }
 }

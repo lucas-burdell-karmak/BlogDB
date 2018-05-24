@@ -73,7 +73,7 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult ViewAll()
         {
-            var posts = logic.
+            var posts = logic.GetAllPosts();
             return View(posts);
         }
 
