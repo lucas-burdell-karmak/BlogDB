@@ -1,6 +1,6 @@
 namespace BlogDB.Core
 {
-    public enum PostProperty 
+    public enum PostComponent 
     {
         invalid = 0,
         title = 1,

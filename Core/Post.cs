@@ -20,8 +20,11 @@ namespace BlogDB.Core
             Timestamp = DateTime.Now;
         }
 
-        public Post(string title, string author, string body, DateTime timestamp, Guid postid) : this(title, author, body)
+        public Post(string title, string author, string body, DateTime timestamp, Guid postid)
         {
+            Title = title;
+            Author = author;
+            Body = body;
             Timestamp = timestamp;
             PostID = postid;
         }

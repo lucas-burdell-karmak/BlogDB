@@ -1,54 +1,122 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BlogDB.Core
 {
-    public class BusinessLogic
+    public class BusinessLogic : IBusinessLogic
     {
-        private readonly BlogRepo blogRepo;
+        private readonly PostRepo postRepo;
+        private readonly PostValidator postValidator;
 
         public BusinessLogic()
         {
-            blogRepo = new BlogRepo();
+            postRepo = new PostRepo();
+            postValidator = new PostValidator();
         }
 
         public string AddPost(Post post)
         {
-            return "TODO: BusinessLogic.AddPost() method";
+            if (postValidator.isValidPost(post))
+            {
+                postRepo.AddPost(post);
+                return "Post added!";
+            }
+            else
+            {
+                return "Post not valid!";
+            }
         }
 
         public string DeletePost(Post post)
         {
-            return "TODO: BusinessLogic.DeletePost() method";
+            postRepo.DeletePost(post.PostID);
+            return "Post deleted!";
+
         }
 
         public string EditPost(Post post)
         {
-            return "TODO: BusinessLogic.EditPost() method";
+            if (postValidator.isValidPost(post))
+            {
+                postRepo.EditPost(post);
+                return "Post edited!";
+            }
+            else
+            {
+                return "Post not valid!";
+            }
         }
 
         public List<string> GetListOfAuthors()
         {
-            string TODO = "TODO: BusinessLogic.GetListOfAuthors() method";
-            return new List<string>();
+            var posts = postRepo.GetAllPosts();
+            var authors = new List<string>();
+            posts.ForEach((Post post) =>
+            {
+                if (!authors.Contains(post.Author, StringComparer.OrdinalIgnoreCase))
+                {
+                    authors.Add(post.Author);
+                }
+            });
+            return authors;
         }
 
-        public List<Post> GetListOfPostsByAuthor()
+        public List<Post> GetListOfPostsByAuthor(string authorName)
         {
-            string TODO = "TODO: BusinessLogic.GetListOfPostsByAuthor() method";
-            return new List<Post>();
+            var postsByAuthor = new List<Post>();
+
+            foreach (var post in postRepo.GetAllPosts())
+            {
+                if (authorName.CompareTo(post.Author) == 0) postsByAuthor.Add(post);
+            }
+            return postsByAuthor;
         }
 
-        public Post GetPostByID()
+        public Post GetPostById(Guid id)
         {
-            string TODO = "TODO: BusinessLogic.GetPostByID() method";
-            return new Post();
+            var listOfPosts = postRepo.GetAllPosts();
+            foreach (var post in listOfPosts)
+            {
+                if (post.PostID == id)
+                    return post;
+            }
+            return null;
         }
 
-        public List<Post> GetAllPosts()
+        public int GetPostCount()
         {
-            string TODO = "TODO: BusinessLogic.GetAllPosts() method";
-            return new List<Post>();
+            var posts = postRepo.GetAllPosts();
+            return posts.Count;
+        }
+
+        public Post GetPostFromList(List<Post> listOfPosts, Guid id)
+        {
+            foreach (var post in listOfPosts)
+            {
+                if (post.PostID == id)
+                {
+                    return post;
+                }
+            }
+
+            return null;
+        }
+
+        public List<Post> GetSortedListOfPosts(PostComponent sortType)
+        {
+            var posts = postRepo.GetAllPosts();
+            switch (sortType)
+            {
+                case PostComponent.author:
+                    return posts.OrderBy(x => x.Author).ToList();
+                case PostComponent.title:
+                    return posts.OrderBy(x => x.Title).ToList();
+                case PostComponent.timestamp:
+                    return posts.OrderBy(x => x.Timestamp).ToList();
+                default:
+                    return posts;
+            }
         }
     }
 }
