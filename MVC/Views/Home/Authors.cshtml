@@ -1,0 +1,8 @@
+@model List<string>
+
+<ul>
+    @foreach (var name in Model)
+    {
+        <p>@name</p> <a class="btn btn-primary" href="/Home/ViewByAuthor/?author=@name">View @name&#39;s Posts</a>
+    }
+</ul>

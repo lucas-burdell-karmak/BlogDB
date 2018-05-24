@@ -1,0 +1,21 @@
+@model The_Intern_MVC.Models.Post
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>You are deleting this Post</h1>
+        <h2>@Model.Title</h2>
+        <h4>by @Model.Author <small>@Model.Timestamp.ToString("dddd, dd MMMM yyyy hh:mm tt")</small></h4>
+    </div>
+    <div class="col-md-12">
+        <h5>@Model.Body.ToString()</h5>
+    </div>
+
+        <div class="input-group">
+            @using (Html.BeginForm("DeletePostResult","Home",FormMethod.Post,new {postid=Model.PostID, @class= "form-inline"}))
+            {
+                @Html.HiddenFor(m => m.PostID)
+                <input type="submit" class="btn btn-danger box-shadow-4dp" value="Confirm deletion" />
+            }
+        </div>
+        
+</div>
