@@ -48,6 +48,9 @@ namespace BlogDB.Core
             }
         }
 
+        public List<Post> GetAllPosts() => postRepo.GetAllPosts();
+
+
         public List<string> GetListOfAuthors()
         {
             var posts = postRepo.GetAllPosts();
