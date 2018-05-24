@@ -27,8 +27,7 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult AddPostResult(Post post)
         {
-            logic.AddPost(post);
-            var finishedPost = logic.GetPostById(post.PostID);
+            var finishedPost = logic.AddPost(post);
             return View("ViewSinglePost", finishedPost);
         }
 
@@ -39,7 +38,7 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult EditPostResult(Post post)
         {
-            logic.EditPost(post);
+            post = logic.EditPost(post);
 
             return View("ViewSinglePost", post);
         }
