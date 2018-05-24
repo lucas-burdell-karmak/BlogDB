@@ -12,15 +12,17 @@ namespace BlogDB.Core
             database = new FileDB();
         }
 
-        public void AddPost(Post post)
+        public Post AddPost(Post post)
         {
             post.PostID = Guid.NewGuid();
+            post.Timestamp = DateTime.UtcNow;
             List<Post> posts = ReadDatabase();
             posts.Add(post);
             WriteDatabase(posts);
+            return post;
         }
 
-        public void DeletePost(Guid id)
+        public Post DeletePost(Guid id)
         {
             List<Post> posts = ReadDatabase();
             Post toRemove = null;
@@ -37,9 +39,10 @@ namespace BlogDB.Core
                 posts.Remove(toRemove);
             }
             WriteDatabase(posts);
+            return toRemove;
         }
 
-        public void EditPost(Post post)
+        public Post EditPost(Post post)
         {
             var listOfPosts = ReadDatabase();
 
@@ -52,6 +55,7 @@ namespace BlogDB.Core
                 }
             }
             WriteDatabase(listOfPosts);
+            return post;
         }
 
         public List<Post> GetAllPosts()

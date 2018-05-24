@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using BlogDB.Core;
 
 namespace The_Intern_MVC
 {
@@ -21,7 +22,7 @@ namespace The_Intern_MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<Models.IPostDB, Models.FileDB>();
+            services.AddSingleton<BlogDB.Core.IBusinessLogic, BlogDB.Core.BusinessLogic>();
             services.AddMvc();
         }
 

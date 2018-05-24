@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BlogDB.Core;
+using The_Intern_MVC.Models;
 
 namespace The_Intern_MVC.Controllers
 {
@@ -26,11 +27,8 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult AddPostResult(Post post)
         {
-            // add post to DB
-            // pull post from DB
-            // view new post object
-            Post finishedPost = post;
-
+            logic.AddPost(post);
+            var finishedPost = logic.GetPostById(post.PostID);
             return View("ViewSinglePost", finishedPost);
         }
 
@@ -54,7 +52,6 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult DeletePostResult(Post post)
         {
-            // delete post from DB
             logic.DeletePost(post);
             return View("Index");
         }
@@ -79,14 +76,14 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult ViewByAuthor(string author)
         {
-            var list = database.GetAllPostsByAuthor(author);
+            var list = logic.GetListOfPostsByAuthor(author);
             return View("ViewAll", list);
         }
 
         public IActionResult Authors()
         {
 
-            return View(database.GetAllAuthors());
+            return View(logic.GetListOfAuthors());
         }
 
         public IActionResult Error()

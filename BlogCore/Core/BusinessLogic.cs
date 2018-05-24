@@ -15,36 +15,32 @@ namespace BlogDB.Core
             postValidator = new PostValidator();
         }
 
-        public string AddPost(Post post)
+        public Post AddPost(Post post)
         {
             if (postValidator.isValidPost(post))
             {
-                postRepo.AddPost(post);
-                return "Post added!";
+                return postRepo.AddPost(post);
             }
             else
             {
-                return "Post not valid!";
+                return null;
             }
         }
 
-        public string DeletePost(Post post)
+        public Post DeletePost(Post post)
         {
-            postRepo.DeletePost(post.PostID);
-            return "Post deleted!";
-
+            return postRepo.DeletePost(post.PostID);
         }
 
-        public string EditPost(Post post)
+        public Post EditPost(Post post)
         {
             if (postValidator.isValidPost(post))
             {
-                postRepo.EditPost(post);
-                return "Post edited!";
+                return postRepo.EditPost(post);
             }
             else
             {
-                return "Post not valid!";
+                return null;
             }
         }
 

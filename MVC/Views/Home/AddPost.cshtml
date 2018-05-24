@@ -1,11 +1,10 @@
-@model The_Intern_MVC.Models.Post
+@model BlogDB.Core.Post
 <h1>Add new Post</h1>
-@using (Html.BeginForm("AddPostResult","Home",FormMethod.Post,new {postid=Model.PostID, @class= "form-inline"}))
+@using (Html.BeginForm("AddPostResult","Home",FormMethod.Post,new {@class= "form-inline"}))
 {
 
     <div class="row">
         <div class="col-md-12 input-group">
-            @Html.HiddenFor(m => m.PostID)
             @Html.TextBoxFor(m => m.Title, new {@class="form-control"})
             @Html.TextBoxFor(m => m.Author, new {@class="form-control"})
             @Html.TextAreaFor(m => m.Body, new {@class="form-control", rows="5"})
