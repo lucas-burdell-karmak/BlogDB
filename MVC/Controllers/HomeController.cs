@@ -24,6 +24,21 @@ namespace The_Intern_MVC.Controllers
             return View();
         }
 
+        public IActionResult AddPostResult(Post post)
+        {
+            // add post to DB
+            // pull post from DB
+            // view new post object
+            Post finishedPost = post;
+
+            return View("ViewSinglePost", finishedPost);
+        }
+
+        public IActionResult AddPost()
+        {
+            return View();
+        }
+
         public IActionResult EditPostResult(Post post)
         {
             database.EditPost(post.PostID, PostProperty.title, post.Title);
@@ -34,6 +49,18 @@ namespace The_Intern_MVC.Controllers
         }
 
         public IActionResult EditPost(String postid)
+        {
+            var post = database.GetPostById(Guid.Parse(postid));
+            return View(post);
+        }
+
+        public IActionResult DeletePostResult(Post post)
+        {
+            // delete post from DB
+            return View("Index");
+        }
+
+        public IActionResult DeletePost(String postid)
         {
             var post = database.GetPostById(Guid.Parse(postid));
             return View(post);
