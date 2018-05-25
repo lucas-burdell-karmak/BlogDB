@@ -9,12 +9,12 @@
         <h5>@Model.Body.ToString()</h5>
     </div>
 
-        <div class="input-group">
-            @using (Html.BeginForm("DeletePostResult","Home",FormMethod.Post,new {postid=Model.PostID, @class= "form-inline"}))
-            {
-                @Html.HiddenFor(m => m.PostID)
-                <input type="submit" class="btn btn-danger box-shadow-4dp" value="Confirm deletion" />
-            }
-        </div>
-        
+    <div class="input-group">
+        @using (Html.BeginForm("DeletePostResult","Home",FormMethod.Post,new {postid=Model.PostID, @class= "form-inline"}))
+        {
+            @Html.HiddenFor(m => m.PostID)
+            <input type="submit" class="btn btn-danger box-shadow-4dp" value="Confirm deletion" data-toggle="modal" data-target="#deleteConfirmation" />
+        }
+    </div>
 </div>
+
