@@ -9,25 +9,25 @@ using System.Linq;
 
 namespace BlogDB.Core
 {
-    public class FileDB
+    public class FileDB<T> : IPostDB<T>
     {
         public readonly string DatabasePath = Path.Combine(Directory.GetCurrentDirectory(), "blogDatabase.json");
 
-        public List<Post> ReadFromJsonFile()
+        public List<T> ReadAll()
         {
             using (var reader = new StreamReader(new FileStream(DatabasePath, FileMode.OpenOrCreate)))
             {
                 var fileContents = reader.ReadToEnd();
-                var posts = JsonConvert.DeserializeObject<List<Post>>(fileContents);
+                var posts = JsonConvert.DeserializeObject<List<T>>(fileContents);
                 if (posts == null)
                 {
-                    posts = new List<Post>();
+                    posts = new List<T>();
                 }
                 return posts;
             }
         }
 
-        public void WriteToJsonFile(List<Post> listOfPosts)
+        public void WriteAll(List<T> listOfPosts)
         {
             // false means overwrite
             using (var writer = new StreamWriter(DatabasePath, false))
