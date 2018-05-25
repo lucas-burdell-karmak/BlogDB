@@ -5,24 +5,29 @@ namespace BlogDB.Core
 {
     public class PostRepo
     {
-        private readonly FileDB database;
+        private readonly IPostDB<Post> database;
 
         public PostRepo()
         {
-            database = new FileDB();
+            database = new FileDB<Post>();
+        }
+
+        public PostRepo(IPostDB<Post> database)
+        {
+            this.database = database;
         }
 
         public Post AddPost(Post post)
         {
-            List<Post> posts = ReadDatabase();
+            List<Post> posts = database.ReadAll();
             posts.Add(post);
-            WriteDatabase(posts);
+            database.WriteAll(posts);
             return post;
         }
 
         public Post DeletePost(Guid id)
         {
-            List<Post> posts = ReadDatabase();
+            List<Post> posts = database.ReadAll();
             Post toRemove = null;
             foreach (var p in posts)
             {
@@ -36,13 +41,13 @@ namespace BlogDB.Core
             {
                 posts.Remove(toRemove);
             }
-            WriteDatabase(posts);
+            database.WriteAll(posts);
             return toRemove;
         }
 
         public Post EditPost(Post post)
         {
-            var listOfPosts = ReadDatabase();
+            var listOfPosts = database.ReadAll();
 
             for (int i = 0; i < listOfPosts.Count; i++)
             {
@@ -52,23 +57,13 @@ namespace BlogDB.Core
                     break;
                 }
             }
-            WriteDatabase(listOfPosts);
+            database.WriteAll(listOfPosts);
             return post;
         }
 
         public List<Post> GetAllPosts()
         {
-            return ReadDatabase();
-        }
-
-        private List<Post> ReadDatabase()
-        {
-            return database.ReadFromJsonFile();
-        }
-
-        private void WriteDatabase(List<Post> listOfPosts)
-        {
-            database.WriteToJsonFile(listOfPosts);
+            return database.ReadAll();
         }
     }
 }

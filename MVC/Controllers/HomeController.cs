@@ -14,9 +14,9 @@ namespace The_Intern_MVC.Controllers
 
 
 
-        private readonly IBusinessLogic logic;
+        private readonly BlogDB.Core.PostDataAccess logic;
 
-        public HomeController(IBusinessLogic logic)
+        public HomeController(BlogDB.Core.PostDataAccess logic)
         {
             this.logic = logic;
         }
@@ -27,8 +27,12 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult AddPostResult(Post post)
         {
-            var finishedPost = logic.AddPost(post);
-            return View("ViewSinglePost", finishedPost);
+            var postResult = logic.AddPost(post);
+            if (postResult == null)
+            {
+                return View("NullPost", "Failed to add post.");
+            }
+            return View("ViewSinglePost", postResult);
         }
 
         public IActionResult AddPost()
@@ -38,39 +42,68 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult EditPostResult(Post post)
         {
-            post = logic.EditPost(post);
+            var postResult = logic.EditPost(post);
+            if (postResult == null)
+            {
+                return View("NullPost", "Failed to edit post.");
+            }
 
-            return View("ViewSinglePost", post);
+            return View("ViewSinglePost", postResult);
         }
 
         public IActionResult EditPost(String postid)
         {
-            var post = logic.GetPostById(Guid.Parse(postid));
-            return View(post);
+            var postResult = logic.GetPostById(Guid.Parse(postid));
+            if (postResult == null)
+            {
+                return View("NullPost", "Post does not exist.");
+            }
+            return View(postResult);
         }
 
         public IActionResult DeletePostResult(Post post)
         {
-            logic.DeletePost(post);
+            var postResult = logic.DeletePost(post);
+            if (postResult == null)
+            {
+                return View("NullPost", "Failed to delete post.");
+            }
             return View("Index");
         }
 
         public IActionResult DeletePost(String postid)
         {
-            var post = logic.GetPostById(Guid.Parse(postid));
-            return View(post);
+            var postResult = logic.GetPostById(Guid.Parse(postid));
+            if (postResult == null)
+            {
+                return View("NullPost", "Post does not exist.");
+            }
+            return View(postResult);
+        }
+
+        public IActionResult NullPost(string message)
+        {
+            return View(message);
         }
 
         public IActionResult ViewSinglePost(String postid)
         {
-            var post = logic.GetPostById(Guid.Parse(postid));
-            return View(post);
+            var postResult = logic.GetPostById(Guid.Parse(postid));
+            if (postResult == null)
+            {
+                return View("NullPost", "Post does not exist.");
+            }
+            return View(postResult);
         }
 
         public IActionResult ViewAll()
         {
-            var posts = logic.GetAllPosts();
-            return View(posts);
+            var postResult = logic.GetAllPosts();
+            if (postResult == null)
+            {
+                return View("NullPost", "There are no posts.");
+            }
+            return View(postResult);
         }
 
         public IActionResult ViewByAuthor(string author)
