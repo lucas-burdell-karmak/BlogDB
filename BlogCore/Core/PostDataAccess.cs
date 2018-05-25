@@ -4,12 +4,12 @@ using System.Linq;
 
 namespace BlogDB.Core
 {
-    public class BusinessLogic : IBusinessLogic
+    public class PostDataAccess
     {
         private readonly PostRepo postRepo;
         private readonly PostValidator postValidator;
 
-        public BusinessLogic()
+        public PostDataAccess()
         {
             postRepo = new PostRepo();
             postValidator = new PostValidator();
@@ -41,6 +41,7 @@ namespace BlogDB.Core
         {
             if (postValidator.postExists(postRepo.GetAllPosts(), post) && postValidator.isValidPost(post))
             {
+                post.Timestamp = DateTime.UtcNow;
                 return postRepo.EditPost(post);
             }
             else
@@ -121,6 +122,18 @@ namespace BlogDB.Core
                 default:
                     return posts;
             }
+        }
+
+        public List<Post> SearchBy(Func<Post, bool> criteria)
+        {
+            var posts = postRepo.GetAllPosts();
+            var results = new List<Post>();
+            posts.ForEach((post) => {
+                if (criteria(post)) {
+                    results.Add(post);
+                }
+            });
+            return results;
         }
     }
 }

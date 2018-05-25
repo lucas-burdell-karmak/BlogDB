@@ -14,9 +14,9 @@ namespace The_Intern_MVC.Controllers
 
 
 
-        private readonly IBusinessLogic logic;
+        private readonly BlogDB.Core.PostDataAccess logic;
 
-        public HomeController(IBusinessLogic logic)
+        public HomeController(BlogDB.Core.PostDataAccess logic)
         {
             this.logic = logic;
         }
@@ -30,9 +30,10 @@ namespace The_Intern_MVC.Controllers
             var postResult = logic.AddPost(post);
             if (postResult == null)
             {
-                return View("NullPost", "Failed to add post.");
+                string[] errorMessage = {"Invalid Post.", "The post could not be validated. :("};
+                return View("NullPost", errorMessage);
             }
-            return View("ViewSinglePost", postResult);
+            return View("PostResult", postResult);
         }
 
         public IActionResult AddPost()
@@ -45,10 +46,11 @@ namespace The_Intern_MVC.Controllers
             var postResult = logic.EditPost(post);
             if (postResult == null)
             {
-                return View("NullPost", "Failed to edit post.");
+                string[] errorMessage = {"Invalid Post.", "The post contained some empty boxes. :("};
+                return View("NullPost", errorMessage);
             }
 
-            return View("ViewSinglePost", postResult);
+            return View("PostResult", postResult);
         }
 
         public IActionResult EditPost(String postid)
@@ -56,7 +58,8 @@ namespace The_Intern_MVC.Controllers
             var postResult = logic.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
-                return View("NullPost", "Post does not exist.");
+                string[] errorMessage = {"Invalid Post.", "We couldn't find the post. :("};
+                return View("NullPost", errorMessage);
             }
             return View(postResult);
         }
@@ -66,7 +69,8 @@ namespace The_Intern_MVC.Controllers
             var postResult = logic.DeletePost(post);
             if (postResult == null)
             {
-                return View("NullPost", "Failed to delete post.");
+                string[] errorMessage = {"Invalid Post.", "We couldn't find the post. :("};
+                return View("NullPost", errorMessage);
             }
             return View("Index");
         }
@@ -76,7 +80,8 @@ namespace The_Intern_MVC.Controllers
             var postResult = logic.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
-                return View("NullPost", "Post does not exist.");
+                string[] errorMessage = {"Invalid Post.", "We couldn't find the post. :("};
+                return View("NullPost", errorMessage);
             }
             return View(postResult);
         }

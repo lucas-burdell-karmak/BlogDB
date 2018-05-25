@@ -1,0 +1,16 @@
+@model BlogDB.Core.Post
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>@Model.Title</h2>
+        <h4>by @Model.Author <small>@Model.Timestamp.ToString("dddd, dd MMMM yyyy hh:mm tt UTC")</small></h4>
+    </div>
+    <div class="col-md-12">
+        <h5>@Model.Body.ToString()</h5>
+    </div>
+    <div class="col-md-12">
+        <a class="btn btn-primary" href="/Home/EditPost?postid=@Model.PostID"><span class="glyphicon glyphicon-pencil"></span> Edit Post</a>
+        <a class="btn btn-danger" href="/Home/DeletePost?postid=@Model.PostID"><span class="glyphicon glyphicon-remove"></span> Delete Post</a>
+        <a class="btn btn-success" href="/Home"><span class="glyphicon glyphicon-ok"></span> Done</a>
+    </div>
+</div>
