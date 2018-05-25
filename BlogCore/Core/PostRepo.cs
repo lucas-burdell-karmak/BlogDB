@@ -14,8 +14,6 @@ namespace BlogDB.Core
 
         public Post AddPost(Post post)
         {
-            post.PostID = Guid.NewGuid();
-            post.Timestamp = DateTime.UtcNow;
             List<Post> posts = ReadDatabase();
             posts.Add(post);
             WriteDatabase(posts);

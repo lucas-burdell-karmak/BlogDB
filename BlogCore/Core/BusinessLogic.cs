@@ -19,6 +19,8 @@ namespace BlogDB.Core
         {
             if (postValidator.isValidPost(post))
             {
+                post.PostID = Guid.NewGuid();
+                post.Timestamp = DateTime.UtcNow;
                 return postRepo.AddPost(post);
             }
             else
@@ -29,12 +31,15 @@ namespace BlogDB.Core
 
         public Post DeletePost(Post post)
         {
-            return postRepo.DeletePost(post.PostID);
+            if(postValidator.postExists(postRepo.GetAllPosts(), post)) {
+                return postRepo.DeletePost(post.PostID);
+            }
+            return null;
         }
 
         public Post EditPost(Post post)
         {
-            if (postValidator.isValidPost(post))
+            if (postValidator.postExists(postRepo.GetAllPosts(), post) && postValidator.isValidPost(post))
             {
                 return postRepo.EditPost(post);
             }

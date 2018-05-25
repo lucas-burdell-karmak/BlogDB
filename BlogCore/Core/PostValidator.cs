@@ -1,9 +1,22 @@
 using System;
+using System.Collections.Generic;
 
 namespace BlogDB.Core
 {
     public class PostValidator
     {
+
+        public bool postExists(List<Post> listOfPosts, Post post)
+        {
+            foreach (Post p in listOfPosts)
+            {
+                if (p.PostID == post.PostID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public bool isValidAuthor(string author) => isValidString(author);
 
@@ -16,7 +29,8 @@ namespace BlogDB.Core
             return !(string.IsNullOrEmpty(str) || string.IsNullOrWhiteSpace(str));
         }
 
-        public bool isValidPost(Post post) {
+        public bool isValidPost(Post post)
+        {
             return isValidAuthor(post.Author) && isValidBody(post.Body) && isValidTitle(post.Title);
         }
     }
