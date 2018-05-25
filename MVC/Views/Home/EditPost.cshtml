@@ -1,18 +1,29 @@
 @model BlogDB.Core.Post
-@using (Html.BeginForm("EditPostResult","Home",FormMethod.Post,new {postid=Model.PostID, @class= "form-inline"}))
+@using (Html.BeginForm("EditPostResult","Home",FormMethod.Post,new {postid=Model.PostID, @class="form-horizontal"}))
 {
-
     <div class="row">
-        <div class="col-md-12 input-group">
+        <div class="input-group; col-md-12">
             @Html.HiddenFor(m => m.PostID)
-            @Html.TextBoxFor(m => m.Title, new {@class="form-control"})
-            @Html.TextBoxFor(m => m.Author, new {@class="form-control"})
-            @Html.TextAreaFor(m => m.Body, new {@class="form-control", rows="5"})
-            <input type="submit" class="btn btn-default box-shadow--4dp" value="Submit" />
+            
+            <div class="form-group">
+                <label for="titletext" class="control-label">Test:</label>
+                @Html.TextBoxFor(m => m.Title, new {@class="form-control", id="titletext"})
+            </div>
+
+            <div class="form-group">
+                <label for="authortext" class="control-label">Author:</label>
+                @Html.TextBoxFor(m => m.Author, new {@class="form-control", id="authortext"})
+            </div>
+            
+            <div class="form-group">
+                <label for="bodytext" class="control-label">Body:</label>
+                @Html.TextAreaFor(m => m.Body, new {@class="form-control", id="bodytext", rows="5"})
+            </div>
+            
+
+            <input type="submit" class="btn btn-success box-shadow--4dp" value="Save" />
+
+            @await Html.PartialAsync("BackButton")
         </div>
     </div>
-
 }
-
-<br></br>
-@await Html.PartialAsync("BackButton")

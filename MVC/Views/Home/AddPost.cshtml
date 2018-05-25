@@ -1,5 +1,5 @@
 @model BlogDB.Core.Post
-<h1>Add new Post</h1>
+<h1>Add New Post</h1>
 @using (Html.BeginForm("AddPostResult","Home",FormMethod.Post,new {@class= "form-inline"}))
 {
 
@@ -8,10 +8,10 @@
             @Html.TextBoxFor(m => m.Title, new {@class="form-control"})
             @Html.TextBoxFor(m => m.Author, new {@class="form-control"})
             @Html.TextAreaFor(m => m.Body, new {@class="form-control", rows="5"})
-            <input type="submit" class="btn btn-default box-shadow-4dp" value="Add Post" />
+            <input type="submit" class="btn btn-success box-shadow-4dp" value="Add Post" />
+            @await Html.PartialAsync("BackButton")
         </div>
     </div>
 
 }
 
-@await Html.PartialAsync("BackButton")
