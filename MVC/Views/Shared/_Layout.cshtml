@@ -54,5 +54,12 @@
     </environment>
 
     @RenderSection("Scripts", required: false)
+    <script src="http://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="http://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+<script>
+    $(document).ready( function () {
+        $('#viewallposts').DataTable();
+} );
+</script>
 </body>
 </html>
