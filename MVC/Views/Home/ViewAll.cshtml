@@ -5,15 +5,26 @@ li{
 }
 </style>
 
-<ul>
-    @foreach(var post in Model)
-    {
-        <li>
-            <a class="" href="/Home/ViewSinglePost/?postid=@post.PostID">
-                @post.GetPostPreview()
-            </a>
-        </li>
-    }
-</ul>
+<table id="viewallposts" style="width:100%">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Timestamp</th>
+            <th>Body</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var post in Model)
+        {
+            <tr>
+                <td><a class="" href="/Home/ViewSinglePost/?postid=@post.PostID"> @post.Title</a></td>
+                <td><a class="" href="/Home/ViewByAuthor/?author=@post.Author"> @post.Author</a></td>
+                <td><a class="" href="/Home/ViewSinglePost/?postid=@post.PostID"> @post.Timestamp</a></td>
+                <td><a class="" href="/Home/ViewSinglePost/?postid=@post.PostID"> @post.Body</a></td>
+            </tr>
+        }
+    </tbody>
+</table>>
 
 @await Html.PartialAsync("BackButton")
