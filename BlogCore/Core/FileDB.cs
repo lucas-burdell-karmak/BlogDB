@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace BlogDB.Core
 {
-    public class FileDB<T> : IPostDB<T>
+    public class FileDB<T> : IBlogDB<T>
     {
         public readonly string DatabasePath = Path.Combine(Directory.GetCurrentDirectory(), "blogDatabase.json");
 
