@@ -123,6 +123,17 @@ namespace The_Intern_MVC.Controllers
             return View(logic.GetListOfAuthors());
         }
 
+        public IActionResult SearchResult(String searchCriteria)
+        {
+            var results = logic.SearchBy((post) => {
+                return post.Title.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1 || 
+                        post.Author.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1 ||
+                        post.Body.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1;
+            });
+
+            return View("ViewAll", results);
+        }
+
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
