@@ -8,7 +8,7 @@ namespace BlogCore.Tests
     public class MockIBlogDB : BlogDB.Core.IBlogDB<Post>
     {
 
-        private readonly List<Post> _testPosts;
+        private List<Post> _testPosts;
 
         public MockIBlogDB(List<Post> testData)
         {
@@ -21,7 +21,7 @@ namespace BlogCore.Tests
 
         public void WriteAll(List<Post> posts)
         {
-
+            _testPosts = posts;
         }
     }
 }

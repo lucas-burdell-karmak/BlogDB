@@ -3,12 +3,12 @@ using Xunit;
 using BlogDB.Core;
 using System.Collections.Generic;
 
-namespace BlogCore.Tests 
+namespace BlogCore.Tests
 {
     public class PostDataAccessTests : IDisposable
     {
 
-        
+
         private readonly PostRepo _repo;
         private readonly IPostValidator _validator;
         private readonly IPostDataAccess _postDataAccess;
@@ -18,16 +18,16 @@ namespace BlogCore.Tests
         {
             _testData = BuildTestData();
             _repo = new PostRepo(new MockIBlogDB(_testData));
-            _validator = new MockIPostValidator();
+            _validator = new PostValidator();
             _postDataAccess = new PostDataAccess(_repo, _validator);
         }
 
         private List<Post> BuildTestData()
         {
             var testData = new List<Post>();
-            testData.Add(new Post("Title","Author1","Body"));
-            testData.Add(new Post("Title","Author2","Body"));
-            testData.Add(new Post("Title","Author3","Body"));
+            testData.Add(new Post("Title", "Author1", "Body"));
+            testData.Add(new Post("Title", "Author2", "Body"));
+            testData.Add(new Post("Title", "Author3", "Body"));
             return testData;
         }
 
@@ -50,7 +50,18 @@ namespace BlogCore.Tests
         }
 
         [Fact]
-        public void DeletePost_
+        public void DeletePost_Null_Failure()
+        {
+            Assert.Throws<ArgumentException>(() => _postDataAccess.DeletePost(null));
+        }
+
+        [Fact]
+        public void DeletePost_InexistantPost_Failure()
+        {
+            Assert.Throws<ArgumentException>(() => _postDataAccess.DeletePost(new Post()));
+        }
+
+        
 
         [Fact]
         public void DeletePost_Success()
@@ -65,14 +76,37 @@ namespace BlogCore.Tests
             Assert.Equal(post.Body, resultPost.Body);
         }
 
+        [Fact]
+        public void EditPost_Success()
+        {
+            var testPost = _testData[0];
+
+            var resultPost = _postDataAccess.EditPost(testPost);
+
+            Assert.Equal(testPost.Title, resultPost.Title);
+            Assert.Equal(testPost.Author, resultPost.Author);
+            Assert.Equal(testPost.Body, resultPost.Body);
+        }
+
+        [Fact]
+        public void EditPost_Null_Failure()
+        {
+            Assert.Throws<ArgumentException>(() => _postDataAccess.EditPost(null));
+        }
+
+        [Fact]
+        public void EditPost_Empty_Failure()
+        {
+            Assert.Throws<ArgumentException>(() => _postDataAccess.EditPost(new Post()));
+        }
 
         [Fact]
         public void AddPost_Success()
         {
             var post = new Post("Title", "Body", "Author");
 
-            var postResult =_postDataAccess.AddPost(post);
-            
+            var postResult = _postDataAccess.AddPost(post);
+
             Assert.NotNull(postResult);
             Assert.Equal(post.Title, postResult.Title);
             Assert.Equal(post.Author, postResult.Author);
