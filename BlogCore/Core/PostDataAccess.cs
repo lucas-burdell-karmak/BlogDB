@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BlogDB.Core
 {
-    public class PostDataAccess
+    public class PostDataAccess : IPostDataAccess
     {
         private readonly IPostRepo _postRepo;
         private readonly IPostValidator _postValidator;

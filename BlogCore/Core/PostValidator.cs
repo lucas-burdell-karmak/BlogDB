@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BlogDB.Core
 {
-    public class PostValidator
+    public class PostValidator : IPostValidator
     {
 
         public bool postExists(List<Post> listOfPosts, Post post)
