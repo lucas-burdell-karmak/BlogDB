@@ -118,12 +118,12 @@ namespace BlogDB.Core
             }
         }
 
-        public List<Post> SearchBy(Func<Post, bool> criteria)
+        public List<Post> SearchBy(Func<Post, bool> fnSearcher)
         {
             var posts = _postRepo.GetAllPosts();
             var results = new List<Post>();
             posts.ForEach((post) => {
-                if (criteria(post)) {
+                if (fnSearcher(post)) {
                     results.Add(post);
                 }
             });
