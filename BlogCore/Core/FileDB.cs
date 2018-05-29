@@ -12,10 +12,16 @@ namespace BlogDB.Core
 {
     public class FileDB<T> : IBlogDB<T>
     {
-        private readonly string DatabaseFilePath;// = Path.Combine(Directory.GetCurrentDirectory(), "blogDatabase.json");
+        private readonly string DatabaseFilePath;
 
-        public FileDB(IConfiguration config){
+        public FileDB(IConfiguration config)
+        {
             DatabaseFilePath = config["DatabaseFilePath"];
+        }
+
+        public FileDB(string pathToDB)
+        {
+            DatabaseFilePath = pathToDB;
         }
 
         public List<T> ReadAll()

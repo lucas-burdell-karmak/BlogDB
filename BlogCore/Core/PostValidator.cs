@@ -31,6 +31,10 @@ namespace BlogDB.Core
 
         public bool IsValidPost(Post post)
         {
+            if (post == null)
+            {
+                return false;
+            }
             return IsValidAuthor(post.Author) && IsValidBody(post.Body) && IsValidTitle(post.Title);
         }
     }
