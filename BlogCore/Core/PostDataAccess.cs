@@ -6,22 +6,22 @@ namespace BlogDB.Core
 {
     public class PostDataAccess
     {
-        private readonly PostRepo postRepo;
-        private readonly PostValidator postValidator;
+        private readonly IPostRepo _postRepo;
+        private readonly IPostValidator _postValidator;
 
-        public PostDataAccess()
+        public PostDataAccess(IPostRepo postRepo, IPostValidator postValidator)
         {
-            postRepo = new PostRepo();
-            postValidator = new PostValidator();
+            _postRepo = postRepo;
+            _postValidator = postValidator;
         }
 
         public Post AddPost(Post post)
         {
-            if (postValidator.isValidPost(post))
+            if (_postValidator.isValidPost(post))
             {
                 post.PostID = Guid.NewGuid();
                 post.Timestamp = DateTime.UtcNow;
-                return postRepo.AddPost(post);
+                return _postRepo.AddPost(post);
             }
             else
             {
@@ -31,18 +31,18 @@ namespace BlogDB.Core
 
         public Post DeletePost(Post post)
         {
-            if(postValidator.postExists(postRepo.GetAllPosts(), post)) {
-                return postRepo.DeletePost(post.PostID);
+            if(_postValidator.postExists(_postRepo.GetAllPosts(), post)) {
+                return _postRepo.DeletePost(post.PostID);
             }
             return null;
         }
 
         public Post EditPost(Post post)
         {
-            if (postValidator.postExists(postRepo.GetAllPosts(), post) && postValidator.isValidPost(post))
+            if (_postValidator.postExists(_postRepo.GetAllPosts(), post) && _postValidator.isValidPost(post))
             {
                 post.Timestamp = DateTime.UtcNow;
-                return postRepo.EditPost(post);
+                return _postRepo.EditPost(post);
             }
             else
             {
@@ -50,12 +50,12 @@ namespace BlogDB.Core
             }
         }
 
-        public List<Post> GetAllPosts() => postRepo.GetAllPosts();
+        public List<Post> GetAllPosts() => _postRepo.GetAllPosts();
 
 
         public List<string> GetListOfAuthors()
         {
-            var posts = postRepo.GetAllPosts();
+            var posts = _postRepo.GetAllPosts();
             var authors = new List<string>();
             posts.ForEach((Post post) =>
             {
@@ -71,7 +71,7 @@ namespace BlogDB.Core
         {
             var postsByAuthor = new List<Post>();
 
-            foreach (var post in postRepo.GetAllPosts())
+            foreach (var post in _postRepo.GetAllPosts())
             {
                 if (authorName.CompareTo(post.Author) == 0) postsByAuthor.Add(post);
             }
@@ -80,7 +80,7 @@ namespace BlogDB.Core
 
         public Post GetPostById(Guid id)
         {
-            var listOfPosts = postRepo.GetAllPosts();
+            var listOfPosts = _postRepo.GetAllPosts();
             foreach (var post in listOfPosts)
             {
                 if (post.PostID == id)
@@ -91,7 +91,7 @@ namespace BlogDB.Core
 
         public int GetPostCount()
         {
-            var posts = postRepo.GetAllPosts();
+            var posts = _postRepo.GetAllPosts();
             return posts.Count;
         }
 
@@ -110,7 +110,7 @@ namespace BlogDB.Core
 
         public List<Post> GetSortedListOfPosts(PostComponent sortType)
         {
-            var posts = postRepo.GetAllPosts();
+            var posts = _postRepo.GetAllPosts();
             switch (sortType)
             {
                 case PostComponent.author:
@@ -126,7 +126,7 @@ namespace BlogDB.Core
 
         public List<Post> SearchBy(Func<Post, bool> criteria)
         {
-            var posts = postRepo.GetAllPosts();
+            var posts = _postRepo.GetAllPosts();
             var results = new List<Post>();
             posts.ForEach((post) => {
                 if (criteria(post)) {

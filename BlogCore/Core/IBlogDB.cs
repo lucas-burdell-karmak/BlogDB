@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BlogDB.Core
 {
-    public interface IPostDB<T>
+    public interface IBlogDB<T>
     {
 
         List<T> ReadAll();
