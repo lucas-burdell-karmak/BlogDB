@@ -6,16 +6,21 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Newtonsoft.Json;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace BlogDB.Core
 {
     public class FileDB<T> : IBlogDB<T>
     {
-        public readonly string DatabasePath = Path.Combine(Directory.GetCurrentDirectory(), "blogDatabase.json");
+        private readonly string DatabaseFilePath;// = Path.Combine(Directory.GetCurrentDirectory(), "blogDatabase.json");
+
+        public FileDB(IConfiguration config){
+            DatabaseFilePath = config["DatabaseFilePath"];
+        }
 
         public List<T> ReadAll()
         {
-            using (var reader = new StreamReader(new FileStream(DatabasePath, FileMode.OpenOrCreate)))
+            using (var reader = new StreamReader(new FileStream(DatabaseFilePath, FileMode.OpenOrCreate)))
             {
                 var fileContents = reader.ReadToEnd();
                 var posts = JsonConvert.DeserializeObject<List<T>>(fileContents);
@@ -30,7 +35,7 @@ namespace BlogDB.Core
         public void WriteAll(List<T> listOfPosts)
         {
             // false means overwrite
-            using (var writer = new StreamWriter(DatabasePath, false))
+            using (var writer = new StreamWriter(DatabaseFilePath, false))
             {
                 var contentsToWrite = JsonConvert.SerializeObject(listOfPosts);
                 writer.Write(contentsToWrite);
