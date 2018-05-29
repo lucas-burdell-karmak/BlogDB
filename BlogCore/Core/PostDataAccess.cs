@@ -17,7 +17,7 @@ namespace BlogDB.Core
 
         public Post AddPost(Post post)
         {
-            if (_postValidator.isValidPost(post))
+            if (_postValidator.IsValidPost(post))
             {
                 post.PostID = Guid.NewGuid();
                 post.Timestamp = DateTime.UtcNow;
@@ -31,7 +31,8 @@ namespace BlogDB.Core
 
         public Post DeletePost(Post post)
         {
-            if(_postValidator.postExists(_postRepo.GetAllPosts(), post)) {
+            if (_postValidator.PostExists(_postRepo.GetAllPosts(), post))
+            {
                 return _postRepo.DeletePost(post.PostID);
             }
             return null;
@@ -39,7 +40,7 @@ namespace BlogDB.Core
 
         public Post EditPost(Post post)
         {
-            if (_postValidator.postExists(_postRepo.GetAllPosts(), post) && _postValidator.isValidPost(post))
+            if (_postValidator.PostExists(_postRepo.GetAllPosts(), post) && _postValidator.IsValidPost(post))
             {
                 post.Timestamp = DateTime.UtcNow;
                 return _postRepo.EditPost(post);
@@ -122,8 +123,10 @@ namespace BlogDB.Core
         {
             var posts = _postRepo.GetAllPosts();
             var results = new List<Post>();
-            posts.ForEach((post) => {
-                if (criteria(post)) {
+            posts.ForEach((post) =>
+            {
+                if (criteria(post))
+                {
                     results.Add(post);
                 }
             });

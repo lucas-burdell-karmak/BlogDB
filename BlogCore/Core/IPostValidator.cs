@@ -7,16 +7,16 @@ namespace BlogDB.Core
     {
 
 
-        bool postExists(List<Post> listOfPosts, Post post);
+        bool PostExists(List<Post> listOfPosts, Post post);
 
-        bool isValidAuthor(string author);
+        bool IsValidAuthor(string author);
 
-        bool isValidBody(string body);
+        bool IsValidBody(string body);
 
-        bool isValidTitle(string title);
+        bool IsValidTitle(string title);
 
-        bool isValidString(string str);
+        bool IsValidString(string str);
 
-        bool isValidPost(Post post);
+        bool IsValidPost(Post post);
     }
 }
