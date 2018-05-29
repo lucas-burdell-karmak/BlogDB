@@ -25,7 +25,7 @@ namespace BlogDB.Core
             }
             else
             {
-                return null;
+                throw new ArgumentException("This post has invaild properties.");
             }
         }
 
@@ -35,7 +35,7 @@ namespace BlogDB.Core
             {
                 return _postRepo.DeletePost(post.PostID);
             }
-            return null;
+            throw new ArgumentException("The post does not exist.");
         }
 
         public Post EditPost(Post post)
@@ -47,7 +47,7 @@ namespace BlogDB.Core
             }
             else
             {
-                return null;
+                throw new ArgumentException("This post does not exist or has invaild properties.");
             }
         }
 

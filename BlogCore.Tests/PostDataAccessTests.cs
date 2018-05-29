@@ -16,13 +16,19 @@ namespace BlogCore.Tests
 
         public PostDataAccessTests()
         {
-            _testData = new List<Post>();
-            _testData.Add(new Post("Title","Author1","Body"));
-            _testData.Add(new Post("Title","Author2","Body"));
-            _testData.Add(new Post("Title","Author3","Body"));
+            _testData = BuildTestData();
             _repo = new PostRepo(new MockIBlogDB(_testData));
             _validator = new MockIPostValidator();
             _postDataAccess = new PostDataAccess(_repo, _validator);
+        }
+
+        private List<Post> BuildTestData()
+        {
+            var testData = new List<Post>();
+            testData.Add(new Post("Title","Author1","Body"));
+            testData.Add(new Post("Title","Author2","Body"));
+            testData.Add(new Post("Title","Author3","Body"));
+            return testData;
         }
 
         public void Dispose()
@@ -30,8 +36,51 @@ namespace BlogCore.Tests
 
         }
 
+
         [Fact]
-        public void GetAllAuthors_Succeed()
+        public void AddPost_Null_Failure()
+        {
+            Assert.Throws<ArgumentException>(() => _postDataAccess.AddPost(null));
+        }
+
+        [Fact]
+        public void AddPost_Empty_Failure()
+        {
+            Assert.Throws<ArgumentException>(() => _postDataAccess.AddPost(new Post()));
+        }
+
+        [Fact]
+        public void DeletePost_
+
+        [Fact]
+        public void DeletePost_Success()
+        {
+            var post = new Post("Title", "Body", "Author");
+
+            _postDataAccess.AddPost(post);
+            var resultPost = _postDataAccess.DeletePost(post);
+
+            Assert.Equal(post.Title, resultPost.Title);
+            Assert.Equal(post.Author, resultPost.Author);
+            Assert.Equal(post.Body, resultPost.Body);
+        }
+
+
+        [Fact]
+        public void AddPost_Success()
+        {
+            var post = new Post("Title", "Body", "Author");
+
+            var postResult =_postDataAccess.AddPost(post);
+            
+            Assert.NotNull(postResult);
+            Assert.Equal(post.Title, postResult.Title);
+            Assert.Equal(post.Author, postResult.Author);
+            Assert.Equal(post.Body, postResult.Body);
+        }
+
+        [Fact]
+        public void GetAllAuthors_Success()
         {
             var validList = _postDataAccess.GetListOfPostsByAuthor("Author1");
 
