@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BlogDB.Core
 {
-    public interface IPostDataAccess<T>
+    public interface IPostDataAccess
     {
         Post AddPost(Post post);
 

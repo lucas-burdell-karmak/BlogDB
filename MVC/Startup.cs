@@ -22,7 +22,10 @@ namespace The_Intern_MVC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<BlogDB.Core.PostDataAccess>();
+            services.AddSingleton<BlogDB.Core.IBlogDB<BlogDB.Core.Post>, BlogDB.Core.FileDB<BlogDB.Core.Post>>();
+            services.AddTransient<BlogDB.Core.IPostValidator, BlogDB.Core.PostValidator>();
+            services.AddTransient<BlogDB.Core.IPostRepo, BlogDB.Core.PostRepo>();
+            services.AddTransient<BlogDB.Core.IPostDataAccess, BlogDB.Core.PostDataAccess>();
             services.AddMvc();
         }
 
