@@ -69,13 +69,7 @@ namespace BlogDB.Core
 
         public List<Post> GetListOfPostsByAuthor(string authorName)
         {
-            var postsByAuthor = new List<Post>();
-
-            foreach (var post in _postRepo.GetAllPosts())
-            {
-                if (authorName.CompareTo(post.Author) == 0) postsByAuthor.Add(post);
-            }
-            return postsByAuthor;
+            return _postRepo.GetAllPosts().Where((post) => authorName.CompareTo(post.Author) == 0).ToList();
         }
 
         public Post GetPostById(Guid id)

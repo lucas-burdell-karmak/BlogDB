@@ -14,9 +14,9 @@ namespace The_Intern_MVC.Controllers
 
 
 
-        private readonly BlogDB.Core.IPostDataAccess logic;
+        private readonly IPostDataAccess logic;
 
-        public HomeController(BlogDB.Core.IPostDataAccess logic)
+        public HomeController(IPostDataAccess logic)
         {
             this.logic = logic;
         }

@@ -4,7 +4,7 @@ using BlogDB.Core;
 
 namespace BlogCore.Tests
 {
-    public class Post
+    public class PostTests
     {
         [Fact]
         public void TestAuthor()
