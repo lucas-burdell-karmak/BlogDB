@@ -11,7 +11,7 @@ namespace BlogCore.Tests
 
         public FileDBTests()
         {
-            _blogDB = new FileDB<Post>("TestDBvalidposts.json")
+            _blogDB = new FileDB<Post>("TestDBvalidposts.json");
         }
 
         [Fact]
