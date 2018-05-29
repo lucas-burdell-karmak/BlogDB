@@ -15,154 +15,297 @@ namespace BlogCore.Tests
         }
 
         [Fact]
-        public void PostExists_Success()
+        public void PostExists_True_Success()
         {
-            // Assign
             var listOfPosts = new List<Post>();
             var postInList = new Post("I Like To Code", "Codes Alot", "This is my body, this is my soul.");
-            var postNotInList = new Post("I Love To Code", "Codes Alotmore", "This is my body, seriously... I'm trapped here.");
-
-            // Act
             listOfPosts.Add(postInList);
-
-            // Asserts
             Assert.Equal(true, _postValidator.PostExists(listOfPosts, postInList));
+        }
+
+        [Fact]
+        public void PostExists_False_Success()
+        {
+            var listOfPosts = new List<Post>();
+            var postNotInList = new Post("I Love To Code", "Codes Alotmore", "This is my body, seriously... I'm trapped here.");
             Assert.Equal(false, _postValidator.PostExists(listOfPosts, postNotInList));
         }
 
         [Fact]
-        public void IsValidAuthor_Success()
+        public void IsValidAuthor_Empty_Success()
         {
-            // Assign
             var emptyStr = "";
-            string nullStr = null;
-            var whitespaceStr = " ";
-            var notEmptyNullOrWhitespace = "Codes Alot";
-
-            // Act
-
-            // Asserts
             Assert.Equal(false, _postValidator.IsValidAuthor(emptyStr));
+        }
+
+        [Fact]
+        public void IsValidAuthor_Null_Success()
+        {
+            string nullStr = null;
             Assert.Equal(false, _postValidator.IsValidAuthor(nullStr));
+        }
+
+        [Fact]
+        public void IsValidAuthor_Whitespace_Success()
+        {
+            var whitespaceStr = " ";
             Assert.Equal(false, _postValidator.IsValidAuthor(whitespaceStr));
+        }
+
+        [Fact]
+        public void IsValidAuthor_Valid_Success()
+        {
+            var notEmptyNullOrWhitespace = "Codes Alot";
             Assert.Equal(true, _postValidator.IsValidAuthor(notEmptyNullOrWhitespace));
         }
 
         [Fact]
-        public void IsValidBody_Success()
+        public void IsValidBody_Empty_Success()
         {
-            // Assign
             var emptyStr = "";
-            string nullStr = null;
-            var whitespaceStr = " ";
-            var notEmptyNullOrWhitespace = "This is my body, this is my soul.";
-
-            // Act
-
-            // Asserts
             Assert.Equal(false, _postValidator.IsValidBody(emptyStr));
+        }
+
+        [Fact]
+        public void IsValidBody_Null_Success()
+        {
+            string nullStr = null;
             Assert.Equal(false, _postValidator.IsValidBody(nullStr));
+        }
+
+        [Fact]
+        public void IsValidBody_Whitespace_Success()
+        {
+            var whitespaceStr = " ";
             Assert.Equal(false, _postValidator.IsValidBody(whitespaceStr));
+        }
+
+        [Fact]
+        public void IsValidBody_Valid_Success()
+        {
+            var notEmptyNullOrWhitespace = "This is my body, this is my soul.";
             Assert.Equal(true, _postValidator.IsValidBody(notEmptyNullOrWhitespace));
         }
 
         [Fact]
-        public void IsValidTitle_Success()
+        public void IsValidTitle_Empty_Success()
         {
-            // Assign
             var emptyStr = "";
-            string nullStr = null;
-            var whitespaceStr = " ";
-            var notEmptyNullOrWhitespace = "I Like To Code Stuff";
-
-            // Act
-
-            // Asserts
             Assert.Equal(false, _postValidator.IsValidTitle(emptyStr));
+        }
+
+        [Fact]
+        public void IsValidTitle_Null_Success()
+        {
+            string nullStr = null;
             Assert.Equal(false, _postValidator.IsValidTitle(nullStr));
+        }
+
+        [Fact]
+        public void IsValidTitle_Whitespace_Success()
+        {
+            var whitespaceStr = " ";
             Assert.Equal(false, _postValidator.IsValidTitle(whitespaceStr));
+        }
+
+        [Fact]
+        public void IsValidTitle_Valid_Success()
+        {
+            var notEmptyNullOrWhitespace = "I Like To Code Stuff";
             Assert.Equal(true, _postValidator.IsValidTitle(notEmptyNullOrWhitespace));
         }
 
         [Fact]
-        public void IsValidString_Success()
+        public void IsValidString_Empty_Success()
         {
-            // Assign
             var emptyStr = "";
-            string nullStr = null;
-            var whitespaceStr = " ";
-            var notEmptyNullOrWhitespace = "I'm a string";
-
-            // Act
-
-            // Asserts
             Assert.Equal(false, _postValidator.IsValidString(emptyStr));
-            Assert.Equal(false, _postValidator.IsValidString(nullStr));
-            Assert.Equal(false, _postValidator.IsValidString(whitespaceStr));
-            Assert.Equal(true, _postValidator.IsValidString(notEmptyNullOrWhitespace));
         }
 
         [Fact]
-        public void IsValidPost_Success()
+        public void IsValidString_Null_Success()
         {
-            // Assign
-            // remember Post constructor takes params in order Title, Author, and Body
+            string nullStr = null;
+            Assert.Equal(false, _postValidator.IsValidString(nullStr));
+        }
+
+        [Fact]
+        public void IsValidString_Whitespace_Success()
+        {
+            var whitespaceStr = " ";
+            Assert.Equal(false, _postValidator.IsValidString(whitespaceStr));
+        }
+
+        [Fact]
+        public void IsValidString_Valid_Success()
+        {
+            var notEmptyNullOrWhitespace = "I'm a string";
+            Assert.Equal(true, _postValidator.IsValidString(notEmptyNullOrWhitespace));
+        }
+
+
+
+        [Fact]
+        public void IsValidPost_EmptyPostValues_Success()
+        {
             var emptyPostValues = new Post("", "", "");
-            var emptyAuthorPostValues = new Post("I Like To Code", "", "This is my body, this is my soul.");
-            var emptyBodyPostValues = new Post("I Like To Code", "Codes Alot", "");
-            var emptyTitlePostValues = new Post("", "Codes Alot", "This is my body, this is my soul.");
-            var emptyAuthorBodyPostValues = new Post("I Like To Code", "", "");
-            var emptyAuthorTitlePostValues = new Post("", "", "This is my body, this is my soul.");
-            var emptyBodyTitlePostValues = new Post("", "Codes Alot", "");
-
-            var nullPostValues = new Post(null, null, null);
-            var nullAuthorPostValues = new Post("I Like To Code", null, "This is my body, this is my soul.");
-            var nullBodyPostValues = new Post("I Like To Code", "Codes Alot", null);
-            var nullTitlePostValues = new Post(null, "Codes Alot", "This is my body, this is my soul.");
-            var nullAuthorBodyPostValues = new Post("I Like To Code", null, null);
-            var nullAuthorTitlePostValues = new Post(null, null, "This is my body, this is my soul.");
-            var nullBodyTitlePostValues = new Post(null, "Codes Alot", null);
-
-            Post nullPost = null;
-
-            var whitespacePostValues = new Post(" ", " ", " ");
-            var whitespaceAuthorPostValues = new Post("I Like To Code", " ", "This is my body, this is my soul.");
-            var whitespaceBodyPostValues = new Post("I Like To Code", "Codes Alot", " ");
-            var whitespaceTitlePostValues = new Post(" ", "Codes Alot", "This is my body, this is my soul.");
-            var whitespaceAuthorBodyPostValues = new Post("I Like To Code", " ", " ");
-            var whitespaceAuthorTitlePostValues = new Post(" ", " ", "This is my body, this is my soul.");
-            var whitespaceBodyTitlePostValues = new Post(" ", "Codes Alot", " ");
-
-            var validPostValues = new Post("I Like To Code", "Codes Alot", "This is my body, this is my soul.");
-
-            // Act
-
-            // Asserts
             Assert.Equal(false, _postValidator.IsValidPost(emptyPostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(emptyAuthorPostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(emptyBodyPostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(emptyTitlePostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(emptyAuthorBodyPostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(emptyAuthorTitlePostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(emptyBodyTitlePostValues));
+        }
 
-            Assert.Equal(false, _postValidator.IsValidPost(nullPostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(nullAuthorPostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(nullBodyPostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(nullTitlePostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(nullAuthorBodyPostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(nullAuthorTitlePostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(nullBodyTitlePostValues));
+        [Fact]
+        public void IsValidPost_EmptyAuthor_Success()
+        {
+            var emptyAuthorPost = new Post("I Like To Code", "", "This is my body, this is my soul.");
+            Assert.Equal(false, _postValidator.IsValidPost(emptyAuthorPost));
+        }
+
+        [Fact]
+        public void IsValidPost_EmptyBody_Success()
+        {
+            var emptyBodyPost = new Post("I Like To Code", "Codes Alot", "");
+            Assert.Equal(false, _postValidator.IsValidPost(emptyBodyPost));
+        }
+
+        [Fact]
+        public void IsValidPost_EmptyTitle_Success()
+        {
+            var emptyTitlePost = new Post("", "Codes Alot", "This is my body, this is my soul.");
+            Assert.Equal(false, _postValidator.IsValidPost(emptyTitlePost));
+        }
+
+        [Fact]
+        public void IsValidPost_EmptyAuthorAndBody_Success()
+        {
+            var emptyAuthorBodyPost = new Post("I Like To Code", "", "");
+            Assert.Equal(false, _postValidator.IsValidPost(emptyAuthorBodyPost));
+        }
+
+        [Fact]
+        public void IsValidPost_EmptyAuthorAndTitle_Success()
+        {
+            var emptyAuthorTitlePost = new Post("", "", "This is my body, this is my soul.");
+            Assert.Equal(false, _postValidator.IsValidPost(emptyAuthorTitlePost));
+        }
+
+
+        [Fact]
+        public void IsValidPost_EmptyBodyAndTitle_Success()
+        {
+            var emptyBodyTitlePost = new Post("", "Codes Alot", "");
+            Assert.Equal(false, _postValidator.IsValidPost(emptyBodyTitlePost));
+        }
+
+        [Fact]
+        public void IsValidPost_NullPost_Success()
+        {
+            Post nullPost = null;
             Assert.Equal(false, _postValidator.IsValidPost(nullPost));
+        }
 
+        [Fact]
+        public void IsValidPost_NullPostValues_Success()
+        {
+            var nullPostValues = new Post(null, null, null);
+            Assert.Equal(false, _postValidator.IsValidPost(nullPostValues));
+        }
+        [Fact]
+        public void IsValidPost_NullAuthor_Success()
+        {
+            var nullAuthorPost = new Post("I Like To Code", null, "This is my body, this is my soul.");
+            Assert.Equal(false, _postValidator.IsValidPost(nullAuthorPost));
+        }
+
+        [Fact]
+        public void IsValidPost_NullBody_Success()
+        {
+            var nullBodyPost = new Post("I Like To Code", "Codes Alot", null);
+            Assert.Equal(false, _postValidator.IsValidPost(nullBodyPost));
+        }
+
+        [Fact]
+        public void IsValidPost_NullTitle_Success()
+        {
+            var nullTitlePost = new Post(null, "Codes Alot", "This is my body, this is my soul.");
+            Assert.Equal(false, _postValidator.IsValidPost(nullTitlePost));
+        }
+
+        [Fact]
+        public void IsValidPost_NullAuthorAndBody_Success()
+        {
+            var nullAuthorBodyPost = new Post("I Like To Code", null, null);
+            Assert.Equal(false, _postValidator.IsValidPost(nullAuthorBodyPost));
+        }
+
+        [Fact]
+        public void IsValidPost_NullAuthorAndTitle_Success()
+        {
+            var nullAuthorTitlePost = new Post(null, null, "This is my body, this is my soul.");
+            Assert.Equal(false, _postValidator.IsValidPost(nullAuthorTitlePost));
+        }
+
+        [Fact]
+        public void IsValidPost_NullBodyAndTitle_Success()
+        {
+            var nullBodyTitlePost = new Post(null, "Codes Alot", null);
+            Assert.Equal(false, _postValidator.IsValidPost(nullBodyTitlePost));
+        }
+
+        [Fact]
+        public void IsValidPost_WhitespacePostValues_Success()
+        {
+            var whitespacePostValues = new Post(" ", " ", " ");
             Assert.Equal(false, _postValidator.IsValidPost(whitespacePostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(whitespaceAuthorPostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(whitespaceBodyPostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(whitespaceTitlePostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(whitespaceAuthorBodyPostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(whitespaceAuthorTitlePostValues));
-            Assert.Equal(false, _postValidator.IsValidPost(whitespaceBodyTitlePostValues));
+        }
 
+        [Fact]
+        public void IsValidPost_WhitespaceAuthor_Success()
+        {
+            var whitespaceAuthorPost = new Post("I Like To Code", " ", "This is my body, this is my soul.");
+            Assert.Equal(false, _postValidator.IsValidPost(whitespaceAuthorPost));
+        }
+
+
+        [Fact]
+        public void IsValidPost_WhitespaceBody_Success()
+        {
+            var whitespaceBodyPost = new Post("I Like To Code", "Codes Alot", " ");
+            Assert.Equal(false, _postValidator.IsValidPost(whitespaceBodyPost));
+
+        }
+
+        [Fact]
+        public void IsValidPost_WhitespaceTitle_Success()
+        {
+            var whitespaceTitlePost = new Post(" ", "Codes Alot", "This is my body, this is my soul.");
+            Assert.Equal(false, _postValidator.IsValidPost(whitespaceTitlePost));
+        }
+
+        [Fact]
+        public void IsValidPost_WhitespaceAuthorAndBody_Success()
+        {
+            var whitespaceAuthorBodyPost = new Post("I Like To Code", " ", " ");
+            Assert.Equal(false, _postValidator.IsValidPost(whitespaceAuthorBodyPost));
+        }
+
+        [Fact]
+        public void IsValidPost_WhitespaceAuthorAndTitle_Success()
+        {
+            var whitespaceAuthorTitlePost = new Post(" ", " ", "This is my body, this is my soul.");
+            Assert.Equal(false, _postValidator.IsValidPost(whitespaceAuthorTitlePost));
+        }
+
+        [Fact]
+        public void IsValidPost_WhitespaceBodyAndTitle_Success()
+        {
+            var whitespaceBodyTitlePost = new Post(" ", "Codes Alot", " ");
+            Assert.Equal(false, _postValidator.IsValidPost(whitespaceBodyTitlePost));
+        }
+
+
+        [Fact]
+        public void IsValidPost_Valid_Success()
+        {
+            var validPostValues = new Post("I Like To Code", "Codes Alot", "This is my body, this is my soul.");
             Assert.Equal(true, _postValidator.IsValidPost(validPostValues));
         }
     }

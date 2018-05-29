@@ -6,7 +6,7 @@ namespace BlogDB.Core
     public class PostValidator : IPostValidator
     {
 
-        public bool postExists(List<Post> listOfPosts, Post post)
+        public bool PostExists(List<Post> listOfPosts, Post post)
         {
             foreach (Post p in listOfPosts)
             {
@@ -18,20 +18,24 @@ namespace BlogDB.Core
             return false;
         }
 
-        public bool isValidAuthor(string author) => isValidString(author);
+        public bool IsValidAuthor(string author) => IsValidString(author);
 
-        public bool isValidBody(string body) => isValidString(body);
+        public bool IsValidBody(string body) => IsValidString(body);
 
-        public bool isValidTitle(string title) => isValidString(title);
+        public bool IsValidTitle(string title) => IsValidString(title);
 
-        public bool isValidString(string str)
+        public bool IsValidString(string str)
         {
             return !(string.IsNullOrEmpty(str) || string.IsNullOrWhiteSpace(str));
         }
 
-        public bool isValidPost(Post post)
+        public bool IsValidPost(Post post)
         {
-            return isValidAuthor(post.Author) && isValidBody(post.Body) && isValidTitle(post.Title);
+            if (post == null)
+            {
+                return false;
+            }
+            return IsValidAuthor(post.Author) && IsValidBody(post.Body) && IsValidTitle(post.Title);
         }
     }
 }
