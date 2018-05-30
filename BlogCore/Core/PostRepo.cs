@@ -66,6 +66,7 @@ namespace BlogDB.Core
 
         public Post EditPost(Post post)
         {
+            var isInDatabase = false;
             var listOfPosts = _database.ReadAll();
 
             for (int i = 0; i < listOfPosts.Count; i++)
@@ -73,11 +74,31 @@ namespace BlogDB.Core
                 if (listOfPosts[i].PostID == post.PostID)
                 {
                     listOfPosts[i] = post;
+                    isInDatabase = true;
                     break;
                 }
             }
-            _database.WriteAll(listOfPosts);
-            return post;
+
+            if(isInDatabase)
+            {
+                _database.WriteAll(listOfPosts);
+                return post;
+            }
+            return null;
+        }
+
+        public bool TryEditPost(Post post, out Post result)
+        {
+            if (post == null || post.Title == null || post.Author == null || post.Body == null)
+            {
+                result = null;
+                return false;
+            }
+            else
+            {
+                result = EditPost(post);
+                return (result == null) ? false : true;
+            }
         }
 
         public List<Post> GetAllPosts()
