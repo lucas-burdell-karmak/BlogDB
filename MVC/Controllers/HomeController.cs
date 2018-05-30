@@ -12,31 +12,31 @@ namespace The_Intern_MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IPostDataAccess logic;
+        private readonly IPostDataAccess _postDataAccess;
 
         public HomeController(IPostDataAccess logic)
         {
-            this.logic = logic;
+            this._postDataAccess = logic;
         }
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult AddPostResult(Post post)
+        public IActionResult AddPostResult(PostModel post)
         {
             try
             {
-                var postResult = logic.AddPost(post);
+                PostModel postResult = _postDataAccess.AddPost(post);
                 ViewBag.History = "/Home";
 
                 return View("ViewSinglePost", postResult);
             }
-            catch (ArgumentException ae)
+            catch (ArgumentException e)
             {
                 // TODO exception logging
 
-                string[] errorMessage = { "Cannot add post.", "We couldn't add the post. :(" };
+                string[] errorMessage = { "Cannot add post.", "The post had empty properties. :(" };
                 return View("NullPost", errorMessage);
             }
         }
@@ -47,12 +47,12 @@ namespace The_Intern_MVC.Controllers
             return View();
         }
 
-        public IActionResult EditPostResult(Post post)
+        public IActionResult EditPostResult(PostModel post)
         {
             try
             {
                 ViewBag.History = "/Home/ViewAll";
-                var postResult = logic.EditPost(post);
+                PostModel postResult = _postDataAccess.EditPost(post);
                 return View("PostResult", postResult);
             }
             catch (ArgumentException ae)
@@ -64,7 +64,7 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult EditPost(String postid)
         {
-            var postResult = logic.GetPostById(Guid.Parse(postid));
+            PostModel postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
                 string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
@@ -75,13 +75,13 @@ namespace The_Intern_MVC.Controllers
             return View(postResult);
         }
 
-        public IActionResult DeletePostResult(Post post)
+        public IActionResult DeletePostResult(PostModel post)
         {
             try
             {
-                var postResult = logic.DeletePost(post);
+                PostModel postResult = _postDataAccess.DeletePost(post);
                 ViewBag.History = "/Home";
-                return ViewAll();
+                return RedirectToAction("ViewAll");
             }
             catch (ArgumentException ae)
             {
@@ -93,7 +93,7 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult DeletePost(String postid)
         {
-            var postResult = logic.GetPostById(Guid.Parse(postid));
+            PostModel postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
                 string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
@@ -112,7 +112,7 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult ViewSinglePost(String postid)
         {
-            var postResult = logic.GetPostById(Guid.Parse(postid));
+            PostModel postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
                 ViewBag.History = "/Home/";
@@ -126,7 +126,7 @@ namespace The_Intern_MVC.Controllers
         {
 
             ViewBag.History = "/Home";
-            var postResult = logic.GetAllPosts();
+            List<PostModel> postResult = _postDataAccess.GetAllPosts().ConvertAll<PostModel>((p) => (PostModel) p);
             if (postResult == null)
             {
                 return View("NullPost", "There are no posts.");
@@ -137,30 +137,30 @@ namespace The_Intern_MVC.Controllers
         public IActionResult ViewByAuthor(string author)
         {
             ViewBag.History = "/Home/Authors";
-            var list = logic.GetListOfPostsByAuthor(author);
+            List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) => (PostModel) p);
             return View("ViewAll", list);
         }
 
         public IActionResult Authors()
         {
             ViewBag.History = "/Home/";
-            return View(logic.GetListOfAuthors());
+            return View(_postDataAccess.GetListOfAuthors());
         }
 
-        public IActionResult SearchResult(String searchCriteria)
+        public IActionResult SearchResult(SearchCriteria searchCriteria)
         {
             ViewBag.History = "/Home/";
-            if (String.IsNullOrEmpty(searchCriteria))
+            if (String.IsNullOrEmpty(searchCriteria.SearchString))
             {
-                return ViewAll();
+                return RedirectToAction("ViewAll");
             }
-            var results = logic.SearchBy((post) =>
+            List<PostModel> results = _postDataAccess.SearchBy((post) =>
                     {
-                        return post.Title.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1 ||
-                                post.Author.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1 ||
-                                post.Body.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1;
+                        return post.Title.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
+                                post.Author.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
+                                post.Body.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1;
                     }
-            );
+            ).ConvertAll<PostModel>((p) => (PostModel) p);
 
             return View("ViewAll", results);
         }

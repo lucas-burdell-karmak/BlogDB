@@ -33,15 +33,16 @@
     </environment>
     <link rel="stylesheet" href="http://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
     <script src="http://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    @Html.Partial("_ValidationScriptsPartial")
     @RenderSection("Scripts", required: false)
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header row">
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Home</a>
-                @Html.Partial("SearchBar")
-            </div>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Home</a>
+        </div>
+        <div class="col-sm-3 col-md-3 navbar-right">
+            @Html.Partial("SearchBar", new SearchCriteria())
         </div>
     </nav>
     <div class="container body-content">

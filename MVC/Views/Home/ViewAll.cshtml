@@ -1,4 +1,4 @@
-@model List<BlogDB.Core.Post>
+@model List<PostModel>
 
 
 <style = "text/css">
@@ -30,7 +30,7 @@ li{
 </table>
 <script type="text/javascript">
     $(document).ready( function () {
-        $('#viewallposts').DataTable({searching: true, paging: true});
+        $('#viewallposts').DataTable({searching: false, paging: true});
     });
 </script>
 
