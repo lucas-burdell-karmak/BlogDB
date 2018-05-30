@@ -3,14 +3,14 @@ using Xunit;
 using BlogDB.Core;
 using System.Collections.Generic;
 
-namespace BlogCore.Tests
+namespace BlogCore.Tests.Mocks
 {
-    public class MockIBlogDB : BlogDB.Core.IBlogDB<Post>
+    public class MockFileDB : BlogDB.Core.IBlogDB<Post>
     {
 
         private List<Post> _testPosts;
 
-        public MockIBlogDB(List<Post> testData)
+        public MockFileDB(List<Post> testData)
         {
             _testPosts = testData;
         }

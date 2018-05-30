@@ -2,6 +2,7 @@ using System;
 using Xunit;
 using BlogDB.Core;
 using System.Collections.Generic;
+using BlogCore.Tests.Mocks;
 
 namespace BlogCore.Tests
 {
@@ -10,15 +11,15 @@ namespace BlogCore.Tests
 
 
         private readonly PostRepo _repo;
-        private readonly IPostValidator _validator;
+        private readonly MockPostValidator _validator;
         private readonly IPostDataAccess _postDataAccess;
         private readonly List<Post> _testData;
 
         public PostDataAccessTests()
         {
             _testData = BuildTestData();
-            _repo = new PostRepo(new MockIBlogDB(_testData));
-            _validator = new PostValidator();
+            _repo = new PostRepo(new MockFileDB(_testData));
+            _validator = new MockPostValidator();
             _postDataAccess = new PostDataAccess(_repo, _validator);
         }
 
@@ -38,19 +39,15 @@ namespace BlogCore.Tests
 
 
         [Fact]
-        public void AddPost_Null_Failure()
+        public void AddPost_InvalidPost_Failure()
         {
+            _validator.SetStubValidPost(false);
+
             Assert.Throws<ArgumentException>(() => _postDataAccess.AddPost(null));
         }
 
         [Fact]
-        public void AddPost_Empty_Failure()
-        {
-            Assert.Throws<ArgumentException>(() => _postDataAccess.AddPost(new Post()));
-        }
-
-        [Fact]
-        public void DeletePost_Null_Failure()
+        public void DeletePost_InvalidPost_Failure()
         {
             Assert.Throws<ArgumentException>(() => _postDataAccess.DeletePost(null));
         }
@@ -58,6 +55,7 @@ namespace BlogCore.Tests
         [Fact]
         public void DeletePost_InexistantPost_Failure()
         {
+            _validator.SetStubValidPost(true).SetStubPostExists(false);
             Assert.Throws<ArgumentException>(() => _postDataAccess.DeletePost(new Post()));
         }
 
