@@ -21,6 +21,13 @@ namespace BlogCore.Tests.Mocks
         private bool StubedValidPost;
         private bool StubedPostExists;
 
+        public void AssertIsValidAuthorCalled() => Assert.True(CalledIsValidAuthor);
+        public void AssertIsValidBodyCalled() => Assert.True(CalledIsValidBody);
+        public void AssertIsValidPostCalled() => Assert.True(CalledIsValidPost);
+        public void AssertIsValidStringCalled() => Assert.True(CalledIsValidString);
+        public void AssertIsValidTitleCalled() => Assert.True(CalledIsValidTitle);
+        public void AssertPostExitsCalled() => Assert.True(CalledPostExits);
+
         public bool IsValidAuthor(string author)
         {
             CalledIsValidAuthor = true;

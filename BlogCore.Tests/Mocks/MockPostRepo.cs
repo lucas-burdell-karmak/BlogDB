@@ -17,6 +17,11 @@ namespace BlogCore.Tests.Mocks
         private Post StubedEditPost;
         private List<Post> StubedGetAllPosts;
 
+        public void AssertAddPostCalled() => Assert.True(CalledAddPost);
+        public void AssertDeletePostCalled() => Assert.True(CalledDeletePost);
+        public void AssertEditPostCalled() => Assert.True(CalledEditPost);
+        public void AssertGetAllPostCalled() => Assert.True(CalledGetAllPosts);
+
         public Post AddPost(Post post)
         {
             CalledAddPost = true;

@@ -17,6 +17,10 @@ namespace BlogCore.Tests.Mocks
         {
             StubedListOfPosts = stubedData;
         }
+
+        public void AssertRealAllCalled() => Assert.True(CalledReadAll);
+        public void AssertWriteAllCalled() => Assert.True(CalledWriteAll);
+
         public List<Post> ReadAll()
         {
             CalledReadAll = true;
