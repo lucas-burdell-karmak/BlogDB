@@ -28,5 +28,10 @@ li{
         }
     </tbody>
 </table>
+<script type="text/javascript">
+    $(document).ready( function () {
+        $('#viewallposts').DataTable({searching: true, paging: true});
+    });
+</script>
 
 @await Html.PartialAsync("BackButton")

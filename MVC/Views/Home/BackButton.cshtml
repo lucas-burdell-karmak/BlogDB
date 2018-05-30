@@ -1,1 +1,4 @@
-<button class="btn" type="button" onclick="window.history.back();">Go Back</button>
+@{
+    string backHref = ViewBag.History == null ? "/Home" : ViewBag.History;
+}
+<a class="btn btn-primary" href="@backHref">Go Back</a>

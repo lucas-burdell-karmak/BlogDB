@@ -8,9 +8,14 @@
     <div class="col-md-12">
         <h5>@Model.Body.ToString()</h5>
     </div>
-    <div class="col-md-12">
-        <a class="btn btn-primary" href="/Home/EditPost?postid=@Model.PostID">Edit Post</a>
-        <a class="btn btn-danger" href="/Home/DeletePost?postid=@Model.PostID">Delete Post</a>
+    <div class="btn-group">    
+        @using (Html.BeginForm("DeletePostResult","Home",FormMethod.Post,new {postid=Model.PostID, @class="div"}))
+        {
+            @Html.HiddenFor(m => m.PostID)
+            <!-- <input type="submit" class="btn btn-danger box-shadow-4dp" value="Confirm deletion" data-toggle="modal" data-target="#deleteConfirmation" /> -->
+            <a class="btn btn-primary" href="/Home/EditPost?postid=@Model.PostID">Edit Post</a>
+            @await Html.PartialAsync("DeleteButton", Model)
+        }
         @await Html.PartialAsync("BackButton")
     </div>
 </div>

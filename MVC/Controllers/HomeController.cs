@@ -5,15 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BlogDB.Core;
+using System.Web;
 using The_Intern_MVC.Models;
 
 namespace The_Intern_MVC.Controllers
 {
     public class HomeController : Controller
     {
-
-
-
         private readonly IPostDataAccess logic;
 
         public HomeController(IPostDataAccess logic)
@@ -27,30 +25,41 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult AddPostResult(Post post)
         {
-            var postResult = logic.AddPost(post);
-            if (postResult == null)
+            try
             {
-                string[] errorMessage = {"Cannot add post.", "We couldn't add the post. :("};
+                var postResult = logic.AddPost(post);
+                ViewBag.History = "/Home";
+
+                return View("ViewSinglePost", postResult);
+            }
+            catch (ArgumentException ae)
+            {
+                // TODO exception logging
+
+                string[] errorMessage = { "Cannot add post.", "We couldn't add the post. :(" };
                 return View("NullPost", errorMessage);
             }
-            return View("PostResult", postResult);
         }
 
         public IActionResult AddPost()
         {
+            ViewBag.History = "/Home";
             return View();
         }
 
         public IActionResult EditPostResult(Post post)
         {
-            var postResult = logic.EditPost(post);
-            if (postResult == null)
+            try
             {
-                string[] errorMessage = {"Invalid Post.", "The post contained some empty boxes. :("};
+                ViewBag.History = "/Home/ViewAll";
+                var postResult = logic.EditPost(post);
+                return View("PostResult", postResult);
+            }
+            catch (ArgumentException ae)
+            {
+                string[] errorMessage = { "Invalid Post.", "The post contained some empty boxes. :(" };
                 return View("NullPost", errorMessage);
             }
-
-            return View("PostResult", postResult);
         }
 
         public IActionResult EditPost(String postid)
@@ -58,21 +67,28 @@ namespace The_Intern_MVC.Controllers
             var postResult = logic.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
-                string[] errorMessage = {"Invalid Post.", "We couldn't find the post. :("};
+                string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
+                ViewBag.History = "/Home/ViewAll";
                 return View("NullPost", errorMessage);
             }
+            ViewBag.History = "/Home/ViewSinglePost?postid=" + postid;
             return View(postResult);
         }
 
         public IActionResult DeletePostResult(Post post)
         {
-            var postResult = logic.DeletePost(post);
-            if (postResult == null)
+            try
             {
-                string[] errorMessage = {"Invalid Post.", "We couldn't find the post. :("};
+                var postResult = logic.DeletePost(post);
+                ViewBag.History = "/Home";
+                return ViewAll();
+            }
+            catch (ArgumentException ae)
+            {
+                string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
+                ViewBag.History = "/Home/ViewAll";
                 return View("NullPost", errorMessage);
             }
-            return View("Index");
         }
 
         public IActionResult DeletePost(String postid)
@@ -80,14 +96,17 @@ namespace The_Intern_MVC.Controllers
             var postResult = logic.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
-                string[] errorMessage = {"Invalid Post.", "We couldn't find the post. :("};
+                string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
+                ViewBag.History = "/Home/ViewAll";
                 return View("NullPost", errorMessage);
             }
+            ViewBag.History = "/Home/ViewAll";
             return View(postResult);
         }
 
         public IActionResult NullPost(string message)
         {
+            ViewBag.History = "/Home";
             return View(message);
         }
 
@@ -96,13 +115,17 @@ namespace The_Intern_MVC.Controllers
             var postResult = logic.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
+                ViewBag.History = "/Home/";
                 return View("NullPost", "Post does not exist.");
             }
+            ViewBag.History = Request.Headers["Referer"].ToString();
             return View(postResult);
         }
 
         public IActionResult ViewAll()
         {
+
+            ViewBag.History = "/Home";
             var postResult = logic.GetAllPosts();
             if (postResult == null)
             {
@@ -113,23 +136,31 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult ViewByAuthor(string author)
         {
+            ViewBag.History = "/Home/Authors";
             var list = logic.GetListOfPostsByAuthor(author);
             return View("ViewAll", list);
         }
 
         public IActionResult Authors()
         {
-
+            ViewBag.History = "/Home/";
             return View(logic.GetListOfAuthors());
         }
 
         public IActionResult SearchResult(String searchCriteria)
         {
-            var results = logic.SearchBy((post) => {
-                return post.Title.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1 || 
-                        post.Author.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1 ||
-                        post.Body.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1;
-            });
+            ViewBag.History = "/Home/";
+            if (String.IsNullOrEmpty(searchCriteria))
+            {
+                return ViewAll();
+            }
+            var results = logic.SearchBy((post) =>
+                    {
+                        return post.Title.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1 ||
+                                post.Author.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1 ||
+                                post.Body.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1;
+                    }
+            );
 
             return View("ViewAll", results);
         }
