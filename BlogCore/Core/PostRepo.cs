@@ -20,6 +20,20 @@ namespace BlogDB.Core
             return post;
         }
 
+        public bool TryAddPost(Post post, out Post result)
+        {
+            if (post == null || post.Title == null || post.Author == null || post.Body == null)
+            {
+                result = null;
+                return false;
+            }
+            else
+            {
+                result = AddPost(post);
+                return true;
+            }
+        }
+
         public Post DeletePost(Guid id)
         {
             List<Post> posts = _database.ReadAll();
@@ -38,6 +52,16 @@ namespace BlogDB.Core
             }
             _database.WriteAll(posts);
             return toRemove;
+        }
+
+        public bool TryDeletePost(Guid id, out Post result)
+        {
+            result = DeletePost(id);
+            if (result == null)
+            {
+                return false;
+            }
+            return true;
         }
 
         public Post EditPost(Post post)
