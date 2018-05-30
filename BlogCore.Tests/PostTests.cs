@@ -4,7 +4,7 @@ using BlogDB.Core;
 
 namespace BlogCore.Tests
 {
-    public class PostTests
+    public class PostTests : IDisposable
     {
         [Fact]
         public void TestAuthor()
@@ -42,5 +42,7 @@ namespace BlogCore.Tests
             var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", DateTime.UtcNow, guid);
             Assert.Equal(guid, post.PostID);
         }
+
+        public void Dispose() { }
     }
 }
