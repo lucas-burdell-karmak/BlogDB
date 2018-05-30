@@ -12,7 +12,7 @@ namespace BlogDB.Core
             _database = database;
         }
 
-        public Post AddPost(Post post)
+        private Post AddPost(Post post)
         {
             List<Post> posts = _database.ReadAll();
             posts.Add(post);
@@ -34,7 +34,7 @@ namespace BlogDB.Core
             }
         }
 
-        public Post DeletePost(Guid id)
+        private Post DeletePost(Guid id)
         {
             List<Post> posts = _database.ReadAll();
             Post toRemove = null;
@@ -64,7 +64,7 @@ namespace BlogDB.Core
             return true;
         }
 
-        public Post EditPost(Post post)
+        private Post EditPost(Post post)
         {
             var isInDatabase = false;
             var listOfPosts = _database.ReadAll();

@@ -6,7 +6,7 @@ using BlogCore.Tests.Mocks;
 
 namespace BlogCore.Tests
 {
-    public class PostRepoTests
+    public class PostRepoTests : IDisposable
     {
         private readonly List<Post> _testData;
         public PostRepoTests()
@@ -137,7 +137,7 @@ namespace BlogCore.Tests
         }
 
         [Fact]
-        public void TestGetAllPosts_ValidData_Success()
+        public void TestGetAllPosts()
         {
             var mockBlogDB = new MockFileDB(_testData);
             var postRepo = new PostRepo(mockBlogDB);
@@ -147,5 +147,7 @@ namespace BlogCore.Tests
             Assert.NotEmpty(list);
             Assert.Equal(_testData.Count, list.Count);
         }
+
+        public void Dispose() { }
     }
 }

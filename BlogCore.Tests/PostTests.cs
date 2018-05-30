@@ -4,7 +4,7 @@ using BlogDB.Core;
 
 namespace BlogCore.Tests
 {
-    public class PostTests
+    public class PostTests : IDisposable
     {
         [Fact]
         public void TestAuthor()
@@ -34,7 +34,7 @@ namespace BlogCore.Tests
         public void TestDateTime()
         {
             var date = DateTime.UtcNow;
-            
+
             var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", date, Guid.NewGuid());
 
             Assert.Equal(date, post.Timestamp);
@@ -49,5 +49,7 @@ namespace BlogCore.Tests
 
             Assert.Equal(guid, post.PostID);
         }
+
+        public void Dispose() { }
     }
 }

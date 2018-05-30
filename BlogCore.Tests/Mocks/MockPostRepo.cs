@@ -7,37 +7,46 @@ namespace BlogCore.Tests.Mocks
 {
     public class MockPostRepo : IPostRepo
     {
-        private bool CalledAddPost = false;
-        private bool CalledDeletePost = false;
-        private bool CalledEditPost = false;
         private bool CalledGetAllPosts = false;
+        private bool CalledTryAddPost = false;
+        private bool CalledTryDeletePost = false;
+        private bool CalledTryEditPost = false;
 
-        private Post StubedAddPost;
-        private Post StubedDeletePost;
-        private Post StubedEditPost;
         private List<Post> StubedGetAllPosts;
+        private bool StubedTryAddPostBool;
+        private bool StubedTryDeletePostBool;
+        private bool StubedTryEditPostBool;
+        private Post StubedTryAddPostResult;
+        private Post StubedTryDeletePostResult;
+        private Post StubedTryEditPostResult;
 
-        public void AssertAddPostCalled() => Assert.True(CalledAddPost);
-        public void AssertDeletePostCalled() => Assert.True(CalledDeletePost);
-        public void AssertEditPostCalled() => Assert.True(CalledEditPost);
+        public void AssertAddPostCalled() => Assert.True(CalledTryAddPost);
+        public void AssertDeletePostCalled() => Assert.True(CalledTryDeletePost);
+        public void AssertEditPostCalled() => Assert.True(CalledTryEditPost);
         public void AssertGetAllPostCalled() => Assert.True(CalledGetAllPosts);
 
-        public Post AddPost(Post post)
+
+        public bool TryAddPost(Post post, out Post result)
         {
-            CalledAddPost = true;
-            return StubedAddPost;
+            CalledTryAddPost = true;
+            result = StubedTryAddPostResult;
+            return StubedTryAddPostBool;
         }
 
-        public Post DeletePost(Guid id)
+
+        public bool TryDeletePost(Guid id, out Post result)
         {
-            CalledDeletePost = true;
-            return StubedDeletePost;
+            CalledTryDeletePost = true;
+            result = StubedTryDeletePostResult;
+            return StubedTryDeletePostBool;
         }
 
-        public Post EditPost(Post post)
+
+        public bool TryEditPost(Post post, out Post result)
         {
-            CalledEditPost = true;
-            return StubedEditPost;
+            CalledTryEditPost = true;
+            result = StubedTryEditPostResult;
+            return StubedTryEditPostBool;
         }
 
         public List<Post> GetAllPosts()
@@ -48,19 +57,19 @@ namespace BlogCore.Tests.Mocks
 
         public MockPostRepo SetCalledAddPostToFalse()
         {
-            CalledAddPost = false;
+            CalledTryAddPost = false;
             return this;
         }
 
         public MockPostRepo SetCalledDeletePostToFalse()
         {
-            CalledDeletePost = false;
+            CalledTryDeletePost = false;
             return this;
         }
 
         public MockPostRepo SetCalledEditPostToFalse()
         {
-            CalledEditPost = false;
+            CalledTryEditPost = false;
             return this;
         }
 
@@ -70,21 +79,39 @@ namespace BlogCore.Tests.Mocks
             return this;
         }
 
-        public MockPostRepo StubAddPost(Post post)
+        public MockPostRepo StubTryAddPostResult(Post post)
         {
-            StubedAddPost = post;
+            StubedTryAddPostResult = post;
             return this;
         }
 
-        public MockPostRepo StubDeletePost(Post post)
+        public MockPostRepo StubTryDeletePostResult(Post post)
         {
-            StubedDeletePost = post;
+            StubedTryDeletePostResult = post;
             return this;
         }
 
-        public MockPostRepo StubEditPost(Post post)
+        public MockPostRepo StubTryEditPostResult(Post post)
         {
-            StubedEditPost = post;
+            StubedTryEditPostResult = post;
+            return this;
+        }
+
+        public MockPostRepo StubTryAddPostBool(bool b)
+        {
+            StubedTryAddPostBool = b;
+            return this;
+        }
+
+        public MockPostRepo StubTryDeletePostBool(bool b)
+        {
+            StubedTryDeletePostBool = b;
+            return this;
+        }
+
+        public MockPostRepo StubTryEditPostBool(bool b)
+        {
+            StubedTryEditPostBool = b;
             return this;
         }
 

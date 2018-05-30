@@ -5,12 +5,9 @@ namespace BlogDB.Core
 {
     public interface IPostRepo
     {
-        Post AddPost(Post post);
-
-        Post DeletePost(Guid id);
-
-        Post EditPost(Post post);
-
+        bool TryAddPost(Post post, out Post result);
+        bool TryDeletePost(Guid id, out Post result);
+        bool TryEditPost(Post post, out Post result);
         List<Post> GetAllPosts();
     }
 }

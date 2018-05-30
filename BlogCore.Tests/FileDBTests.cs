@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace BlogCore.Tests
 {
-    public class FileDBTests
+    public class FileDBTests : IDisposable
     {
         private readonly string _path;
         public FileDBTests()
@@ -35,7 +35,7 @@ namespace BlogCore.Tests
                     listFromDB = new List<Post>();
                 }
             }
-            
+
             Assert.NotEmpty(listFromDB);
             Assert.Equal(list.Count, listFromDB.Count);
             Assert.Equal(list[0].PostID, listFromDB[0].PostID);
@@ -68,5 +68,7 @@ namespace BlogCore.Tests
             Assert.Equal(list[0].Body, listFromDB[0].Body);
             Assert.Equal(list[0].Timestamp, listFromDB[0].Timestamp);
         }
+
+        public void Dispose() { }
     }
 }

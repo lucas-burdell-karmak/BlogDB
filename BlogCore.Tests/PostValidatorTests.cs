@@ -5,7 +5,7 @@ using BlogDB.Core;
 
 namespace BlogCore.Tests
 {
-    public class PostValidatorTests
+    public class PostValidatorTests : IDisposable
     {
         private readonly IPostValidator _postValidator;
 
@@ -136,5 +136,7 @@ namespace BlogCore.Tests
             var validPostValues = new Post("I Like To Code", "Codes Alot", "This is my body, this is my soul.");
             Assert.True(_postValidator.IsValidPost(validPostValues));
         }
+
+        public void Dispose() { }
     }
 }
