@@ -1,27 +1,44 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 using BlogDB.Core;
-using System.Collections.Generic;
 
 namespace BlogCore.Tests.Mocks
 {
     public class MockFileDB : BlogDB.Core.IBlogDB<Post>
     {
 
-        private List<Post> _testPosts;
+        private List<Post> StubedListOfPosts;
 
-        public MockFileDB(List<Post> testData)
+        private bool CalledReadAll = false;
+        private bool CalledWriteAll = false;
+
+        public MockFileDB(List<Post> stubedData)
         {
-            _testPosts = testData;
+            StubedListOfPosts = stubedData;
         }
         public List<Post> ReadAll()
         {
-            return this._testPosts;
+            CalledReadAll = true;
+            return this.StubedListOfPosts;
         }
 
-        public void WriteAll(List<Post> posts)
+        public void WriteAll(List<Post> listOfPosts)
         {
-            _testPosts = posts;
+            CalledWriteAll = true;
+            StubedListOfPosts = listOfPosts;
+        }
+
+        public MockFileDB SetCalledReadAllToFalse()
+        {
+            CalledReadAll = false;
+            return this;
+        }
+
+        public MockFileDB SetCalledWriteAllToFalse()
+        {
+            CalledWriteAll = false;
+            return this;
         }
     }
 }

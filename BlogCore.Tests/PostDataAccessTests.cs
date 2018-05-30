@@ -1,26 +1,20 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 using BlogDB.Core;
-using System.Collections.Generic;
 using BlogCore.Tests.Mocks;
 
 namespace BlogCore.Tests
 {
     public class PostDataAccessTests : IDisposable
     {
-
-
-        private readonly PostRepo _repo;
-        private readonly MockPostValidator _validator;
         private readonly IPostDataAccess _postDataAccess;
         private readonly List<Post> _testData;
 
         public PostDataAccessTests()
         {
             _testData = BuildTestData();
-            _repo = new PostRepo(new MockFileDB(_testData));
-            _validator = new MockPostValidator();
-            _postDataAccess = new PostDataAccess(_repo, _validator);
+            _postDataAccess = new MockPostDataAccess();
         }
 
         private List<Post> BuildTestData()
@@ -39,9 +33,17 @@ namespace BlogCore.Tests
 
 
         [Fact]
+        public void 
+
+
+
+
+
+
+        [Fact]
         public void AddPost_InvalidPost_Failure()
         {
-            _validator.SetStubValidPost(false);
+            _validator(false);
 
             Assert.Throws<ArgumentException>(() => _postDataAccess.AddPost(null));
         }
@@ -59,7 +61,7 @@ namespace BlogCore.Tests
             Assert.Throws<ArgumentException>(() => _postDataAccess.DeletePost(new Post()));
         }
 
-        
+
 
         [Fact]
         public void DeletePost_Success()

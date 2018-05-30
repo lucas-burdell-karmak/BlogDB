@@ -1,30 +1,92 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 using BlogDB.Core;
-using System.Collections.Generic;
 
 namespace BlogCore.Tests.Mocks
 {
     public class MockPostRepo : IPostRepo
     {
+        private bool CalledAddPost = false;
+        private bool CalledDeletePost = false;
+        private bool CalledEditPost = false;
+        private bool CalledGetAllPosts = false;
+
+        private Post StubedAddPost;
+        private Post StubedDeletePost;
+        private Post StubedEditPost;
+        private List<Post> StubedGetAllPosts;
+
         public Post AddPost(Post post)
         {
-            throw new NotImplementedException();
+            CalledAddPost = true;
+            return StubedAddPost;
         }
 
         public Post DeletePost(Guid id)
         {
-            throw new NotImplementedException();
+            CalledDeletePost = true;
+            return StubedDeletePost;
         }
 
         public Post EditPost(Post post)
         {
-            throw new NotImplementedException();
+            CalledEditPost = true;
+            return StubedEditPost;
         }
 
         public List<Post> GetAllPosts()
         {
-            throw new NotImplementedException();
+            CalledGetAllPosts = true;
+            return StubedGetAllPosts;
+        }
+
+        public MockPostRepo SetCalledAddPostToFalse()
+        {
+            CalledAddPost = false;
+            return this;
+        }
+
+        public MockPostRepo SetCalledDeletePostToFalse()
+        {
+            CalledDeletePost = false;
+            return this;
+        }
+
+        public MockPostRepo SetCalledEditPostToFalse()
+        {
+            CalledEditPost = false;
+            return this;
+        }
+
+        public MockPostRepo SetCalledGetAllPostsToFalse()
+        {
+            CalledGetAllPosts = false;
+            return this;
+        }
+
+        public MockPostRepo StubAddPost(Post post)
+        {
+            StubedAddPost = post;
+            return this;
+        }
+
+        public MockPostRepo StubDeletePost(Post post)
+        {
+            StubedDeletePost = post;
+            return this;
+        }
+
+        public MockPostRepo StubEditPost(Post post)
+        {
+            StubedEditPost = post;
+            return this;
+        }
+
+        public MockPostRepo StubGetAllPosts(List<Post> list)
+        {
+            StubedGetAllPosts = list;
+            return this;
         }
     }
 }

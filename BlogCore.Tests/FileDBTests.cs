@@ -1,16 +1,16 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 using BlogDB.Core;
-using System.Collections.Generic;
 
-namespace BlogCore.Tests 
+namespace BlogCore.Tests
 {
-    public class FileDBTests 
+    public class FileDBTests
     {
         [Fact]
         public void TestWriteToFile()
         {
-            
+
         }
     }
 }

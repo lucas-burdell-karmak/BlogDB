@@ -1,85 +1,132 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 using BlogDB.Core;
-using System.Collections.Generic;
 
 namespace BlogCore.Tests.Mocks
 {
     public class MockPostValidator : IPostValidator
     {
+        private bool CalledIsValidAuthor = false;
+        private bool CalledIsValidBody = false;
+        private bool CalledIsValidPost = false;
+        private bool CalledIsValidString = false;
+        private bool CalledIsValidTitle = false;
+        private bool CalledPostExits = false;
 
-        private bool StubValidAuthor = true;
-        private bool StubValidTitle = true;
-        private bool StubValidBody = true;
-        private bool StubValidString = true;
-        private bool StubValidPost = true;
-        private bool StubPostExists = true;
-
-
-        public MockPostValidator SetStubValidAuthor(bool validAuthor)
-        {
-            StubValidAuthor = validAuthor;
-            return this;
-        }
-
-        public MockPostValidator SetStubValidTitle(bool validTitle)
-        {
-            StubValidTitle = validTitle;
-            return this;
-        }
-
-        public MockPostValidator SetStubValidBody(bool validBody)
-        {
-            StubValidBody = validBody;
-            return this;
-        }
-
-        public MockPostValidator SetStubValidString(bool validString)
-        {
-            StubValidString = validString;
-            return this;
-        }
-
-        public MockPostValidator SetStubPostExists(bool postExists)
-        {
-            StubPostExists = postExists;
-            return this;
-        }
-
-        public MockPostValidator SetStubValidPost(bool validPost)
-        {
-            StubValidPost = validPost;
-            return this;
-        }
+        private bool StubedValidAuthor;
+        private bool StubedValidTitle;
+        private bool StubedValidBody;
+        private bool StubedValidString;
+        private bool StubedValidPost;
+        private bool StubedPostExists;
 
         public bool IsValidAuthor(string author)
         {
-            return StubValidAuthor;
+            CalledIsValidAuthor = true;
+            return StubedValidAuthor;
         }
 
         public bool IsValidBody(string body)
         {
-            return StubValidBody;
+            CalledIsValidBody = true;
+            return StubedValidBody;
         }
 
         public bool IsValidPost(Post post)
         {
-            return StubValidPost;
+            CalledIsValidPost = true;
+            return StubedValidPost;
         }
 
         public bool IsValidString(string str)
         {
-            return StubValidString;
+            CalledIsValidString = true;
+            return StubedValidString;
         }
 
         public bool IsValidTitle(string title)
         {
-            return StubValidTitle;
+            CalledIsValidTitle = true;
+            return StubedValidTitle;
         }
 
         public bool PostExists(List<Post> listOfPosts, Post post)
         {
-            return StubPostExists;
+            CalledPostExits = true;
+            return StubedPostExists;
         }
+
+        public MockPostValidator SetCalledIsValidAuthorToFalse()
+        {
+            CalledIsValidAuthor = false;
+            return this;
+        }
+        public MockPostValidator SetCalledIsValidBodyToFalse()
+        {
+            CalledIsValidBody = false;
+            return this;
+        }
+
+        public MockPostValidator SetCalledIsValidPostToFalse()
+        {
+            CalledIsValidPost = false;
+            return this;
+        }
+
+        public MockPostValidator SetCalledIsValidStringToFalse()
+        {
+            CalledIsValidString = false;
+            return this;
+        }
+
+        public MockPostValidator SetCalledIsValidTitleToFalse()
+        {
+            CalledIsValidTitle = false;
+            return this;
+        }
+
+        public MockPostValidator SetCalledPostExitsToFalse()
+        {
+            CalledPostExits = false;
+            return this;
+        }
+
+        public MockPostValidator StubValidAuthor(bool validAuthor)
+        {
+            StubedValidAuthor = validAuthor;
+            return this;
+        }
+
+        public MockPostValidator StubValidTitle(bool validTitle)
+        {
+            StubedValidTitle = validTitle;
+            return this;
+        }
+
+        public MockPostValidator StubValidBody(bool validBody)
+        {
+            StubedValidBody = validBody;
+            return this;
+        }
+
+        public MockPostValidator StubValidString(bool validString)
+        {
+            StubedValidString = validString;
+            return this;
+        }
+
+        public MockPostValidator StubPostExists(bool postExists)
+        {
+            StubedPostExists = postExists;
+            return this;
+        }
+
+        public MockPostValidator StubValidPost(bool validPost)
+        {
+            StubedValidPost = validPost;
+            return this;
+        }
+
     }
 }
