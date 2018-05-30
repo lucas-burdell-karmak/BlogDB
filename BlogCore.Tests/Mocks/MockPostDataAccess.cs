@@ -98,6 +98,18 @@ namespace BlogCore.Tests.Mocks
             return StubedSearchBy;
         }
 
+        public void AssertAddPostCalled() => Assert.True(CalledAddPost);
+        public void AssertDeletePostCalled() => Assert.True(CalledDeletePost);
+        public void AssertEditPostCalled() => Assert.True(CalledEditPost);
+        public void AssertGetAllPostsCalled() => Assert.True(CalledGetAllPosts);
+        public void AssertGetListOfAuthorsCalled() => Assert.True(CalledGetListOfAuthors);
+        public void AssertGetListOfPostsByAuthorCalled() => Assert.True(CalledGetListOfPostsByAuthor);
+        public void AssertGetPostByIdCalled() => Assert.True(CalledGetPostById);
+        public void AssertGetPostCountCalled() => Assert.True(CalledGetPostCount);
+        public void AssertGetPostFromListCalled() => Assert.True(CalledGetPostFromList);
+        public void AssertGetSortedListOfPostsCalled() => Assert.True(CalledGetSortedListOfPosts);
+        public void AssertSearchByCalled() => Assert.True(CalledSearchBy);
+
         public MockPostDataAccess StubAddPost(Post post)
         {
             StubedAddPost = post;
