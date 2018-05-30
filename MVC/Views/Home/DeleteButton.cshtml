@@ -1,20 +1,21 @@
+@model BlogDB.Core.Post;
 <input type="button" class="btn btn-danger box-shadow-4dp" value="Confirm deletion" data-toggle="modal" data-target="#deleteConfirmation" />
 
 <div class="modal fade" id="deleteConfirmation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Are you sure you want to delete?</h5>
+        <h5 class="modal-title" id="exampleModalLongTitle">Are you sure you want to delete "@Model.Title" by @Model.Author?</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        ...
+        @Model.Body
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="submit" class="btn btn-danger">Confirm Deletion</button>
       </div>
     </div>
   </div>

@@ -14,7 +14,7 @@
         {
             @Html.HiddenFor(m => m.PostID)
             <!-- <input type="submit" class="btn btn-danger box-shadow-4dp" value="Confirm deletion" data-toggle="modal" data-target="#deleteConfirmation" /> -->
-            @await Html.PartialAsync("DeleteButton")
+            @await Html.PartialAsync("DeleteButton", Model)
         }
     </div>
 </div>
