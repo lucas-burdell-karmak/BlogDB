@@ -31,7 +31,7 @@ namespace BlogCore.Tests
         }
 
         [Fact]
-        public void testDateTime()
+        public void TestDateTime()
         {
             var date = DateTime.UtcNow;
             
@@ -41,7 +41,7 @@ namespace BlogCore.Tests
         }
 
         [Fact]
-        public void testPostID()
+        public void TestPostID()
         {
             var guid = Guid.NewGuid();
 

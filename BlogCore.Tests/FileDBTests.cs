@@ -10,7 +10,7 @@ namespace BlogCore.Tests
         [Fact]
         public void TestWriteToFile()
         {
-
+            
         }
     }
 }
