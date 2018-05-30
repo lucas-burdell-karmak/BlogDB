@@ -14,8 +14,14 @@ namespace BlogDB.Core
     {
         private readonly string DatabaseFilePath;// = Path.Combine(Directory.GetCurrentDirectory(), "blogDatabase.json");
 
-        public FileDB(IConfiguration config){
+        public FileDB(IConfiguration config)
+        {
             DatabaseFilePath = config["DatabaseFilePath"];
+        }
+
+        public FileDB(string path)
+        {
+            DatabaseFilePath = path;
         }
 
         public List<T> ReadAll()
