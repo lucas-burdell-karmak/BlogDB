@@ -30,7 +30,7 @@ namespace The_Intern_MVC.Controllers
             var postResult = logic.AddPost(post);
             if (postResult == null)
             {
-                string[] errorMessage = {"Invalid Post.", "The post could not be validated. :("};
+                string[] errorMessage = {"Cannot add post.", "We couldn't add the post. :("};
                 return View("NullPost", errorMessage);
             }
             return View("PostResult", postResult);
