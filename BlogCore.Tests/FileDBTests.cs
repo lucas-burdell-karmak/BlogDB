@@ -14,10 +14,11 @@ namespace BlogCore.Tests
         {
             // init database with test value
             _path = Path.Combine(Directory.GetCurrentDirectory(), "testBlogDatabase.json");
+
         }
 
         [Fact]
-        public void TestWriteToFile()
+        public void ReadAll_TestDBvalidposts_Success()
         {
             var fileDB = new FileDB<Post>(_path);
             var post = new Post("Title", "Author", "Body");
@@ -68,7 +69,6 @@ namespace BlogCore.Tests
             Assert.Equal(list[0].Body, listFromDB[0].Body);
             Assert.Equal(list[0].Timestamp, listFromDB[0].Timestamp);
         }
-
         public void Dispose() { }
     }
 }
