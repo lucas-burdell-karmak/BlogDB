@@ -27,7 +27,7 @@ namespace BlogCore.Tests
         [InlineData("T", "A", "B")]
         [InlineData("", "", "")]
         [InlineData(" ", "   ", "       ")]
-        public void TestAddPost_ValidData_Success(string title, string author, string body)
+        public void TestTryAddPost_ValidData_Success(string title, string author, string body)
         {
             var mockBlogDB = new MockFileDB(_testData);
             var postRepo = new PostRepo(mockBlogDB);
@@ -50,7 +50,7 @@ namespace BlogCore.Tests
         [InlineData(null, "", null)]
         [InlineData(null, null, "")]
         [InlineData(null, null, null)]
-        public void TestAddPost_InvalidData_Failure(string title, string author, string body)
+        public void TestTryAddPost_InvalidData_Failure(string title, string author, string body)
         {
             var mockBlogDB = new MockFileDB(_testData);
             var postRepo = new PostRepo(mockBlogDB);
@@ -66,7 +66,7 @@ namespace BlogCore.Tests
         [InlineData("Title", "Author1", "Body", "2018-05-30T14:16:44.1562063Z", "7ad7f688-9c68-4f59-b241-2a20d9dfd216")]
         [InlineData("Title", "Author2", "Body", "2018-05-30T14:16:44.1562063Z", "7ad7f688-9d68-4f59-b241-2a27d9dfd216")]
         [InlineData("Title", "Author3", "Body", "2018-05-30T14:16:44.1562063Z", "7ad7f688-9e68-4f59-b241-2a20d9ddd216")]
-        public void TestDeletePost_ValidData_Success(string title, string author, string body, string datetime, string guid)
+        public void TestTryDeletePost_ValidData_Success(string title, string author, string body, string datetime, string guid)
         {
             var mockBlogDB = new MockFileDB(_testData);
             var postRepo = new PostRepo(mockBlogDB);
@@ -86,7 +86,7 @@ namespace BlogCore.Tests
         [InlineData("Title", "Author2", "Body", "2018-05-30T14:16:44.1562063Z", "7ad7f688-9d68-4f59-b241-2a27d9dfd126")]
         [InlineData("Title", "Author3", "Body", "2018-05-30T14:16:44.1562063Z", "7ad7f699-9e68-4f59-b241-2a20d9ddd216")]
         [InlineData(null, null, null, "1/1/0001 12:00:00 AM", "00000000-0000-0000-0000-000000000000")]
-        public void TestDeletePost_InvalidData_Failure(string title, string author, string body, string datetime, string guid)
+        public void TestTryDeletePost_InvalidData_Failure(string title, string author, string body, string datetime, string guid)
         {
             var mockBlogDB = new MockFileDB(_testData);
             var postRepo = new PostRepo(mockBlogDB);
@@ -102,7 +102,7 @@ namespace BlogCore.Tests
         [InlineData("T", "A", "B", "1/1/2001 12:00:00 AM", "7ad7f688-9c68-4f59-b241-2a20d9dfd216")]
         [InlineData(" ", " ", " ", "1/1/2001 12:00:00 AM", "7ad7f688-9d68-4f59-b241-2a27d9dfd216")]
         [InlineData(" ", "  ", "", "1/1/2001 12:00:00 AM", "7ad7f688-9e68-4f59-b241-2a20d9ddd216")]
-        public void TestEditPost_ValidData_Success(string title, string author, string body, string datetime, string guid)
+        public void TestTryEditPost_ValidData_Success(string title, string author, string body, string datetime, string guid)
         {
             var mockBlogDB = new MockFileDB(_testData);
             var postRepo = new PostRepo(mockBlogDB);
@@ -124,7 +124,7 @@ namespace BlogCore.Tests
         [InlineData(null, "Author1", "Body", "2018-05-30T14:16:44.1562063Z", "7ad7f688-9c68-4f59-b241-2a20d9dfd216")]
         [InlineData("Title", null, "Body", "2018-05-30T14:16:44.1562063Z", "7ad7f688-9d68-4f59-b241-2a27d9dfd216")]
         [InlineData("Title", "Author3", null, "2018-05-30T14:16:44.1562063Z", "7ad7f688-9e68-4f59-b241-2a20d9ddd216")]
-        public void TestEditPost_InvalidData_Failure(string title, string author, string body, string datetime, string guid)
+        public void TestTryEditPost_InvalidData_Failure(string title, string author, string body, string datetime, string guid)
         {
             var mockBlogDB = new MockFileDB(_testData);
             var postRepo = new PostRepo(mockBlogDB);

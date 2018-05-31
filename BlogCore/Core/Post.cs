@@ -18,6 +18,7 @@ namespace BlogDB.Core
             Author = author;
             Body = body;
             Timestamp = DateTime.Now;
+            PostID = Guid.NewGuid();
         }
 
         public Post(string title, string author, string body, DateTime timestamp, Guid postid)
