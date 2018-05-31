@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlogDB.Core
 {
-    public class SqlDB : IBlogDB
+    public class SqlDB
     {
         public static string connString = "Persist Security Info=False;Integrated Security=true;Initial Catalog=Internship_Lucas_Burdell;server=devsql";
         public List<Post> ReadAll()
