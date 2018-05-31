@@ -1,6 +1,6 @@
 @model PostModel
 <h2>Add New Post</h2>
-@using (Html.BeginForm("AddPostResult","Home",FormMethod.Post,new {@class= "form-horizontal"}))
+@using (Html.BeginForm("AddPostResult","Home",FormMethod.Post,new {@class= "form-horizontal", id="addPostForm"}))
 {
     <div class="row">
         <div class="input-group col-md-12">
@@ -20,10 +20,33 @@
                 @Html.ValidationMessageFor(m => m.Body, "", new { @class = "text-danger" })
             </div>
             <div>
-                <input type="submit" class="btn btn-success box-shadow-4dp" value="Add Post"></input>
+                <input type="button" id="addButton" class="btn btn-success box-shadow-4dp" value="Add Post"></input>
                 @await Html.PartialAsync("BackButton")
             </div>
         </div>
     </div>
 }
+@await Html.PartialAsync("AddConfirmation")
+    <script type="text/javascript">
+        $(document).ready( function () {
+            $("#addButton").click(function() {
+                if (!$("#addPostForm").valid()) { // Not Valid
+                    return false;
+                } else {
+                    $("#modalTitle").text("Are you sure you want to add " + $("#titletext").val() + " by " + $("#authortext").val())
+                    $("#modalBody").text($("#bodytext").val())
+                    $("#addConfirmation").modal("show");
+                    return true;
+                }
+            });
 
+            $("#confirmAddButton").click(function() {
+                if (!$("#addPostForm").valid()) { // Not Valid
+                    return false;
+                } else {
+                    $("#addPostForm").submit();
+                    return true;
+                }
+            });
+        });
+    </script>

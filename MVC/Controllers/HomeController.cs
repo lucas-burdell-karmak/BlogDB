@@ -23,6 +23,11 @@ namespace The_Intern_MVC.Controllers
             return View();
         }
 
+        public PartialViewResult AddPostConfirmation(PostModel post)
+        {
+            return PartialView("AddButton", post);
+        }
+
         public IActionResult AddPostResult(PostModel post)
         {
             try
@@ -44,7 +49,7 @@ namespace The_Intern_MVC.Controllers
         public IActionResult AddPost()
         {
             ViewBag.History = "/Home";
-            return View();
+            return View(PostModel.Empty);
         }
 
         public IActionResult EditPostResult(PostModel post)

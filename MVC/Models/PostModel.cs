@@ -43,6 +43,8 @@ namespace The_Intern_MVC.Models
             post.PostID = postModel.PostID;
             return post;
         }
+
+        public static PostModel Empty {get => new PostModel();}
         
     }
 }

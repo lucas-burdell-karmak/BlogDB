@@ -31,8 +31,10 @@
         </script>
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
-    <link rel="stylesheet" href="http://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
-    <script src="http://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.16/datatables.min.css"/>
+ 
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.16/datatables.min.js"></script>
+
     @Html.Partial("_ValidationScriptsPartial")
     @RenderSection("Scripts", required: false)
 </head>
