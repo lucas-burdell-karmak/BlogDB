@@ -1,9 +1,22 @@
 @model List<string>
-
-<ul>
-    @foreach (var name in Model)
-    {
-        <p>@name</p> <a class="btn btn-primary" href="/Home/ViewByAuthor/?author=@name">View @name&#39;s Posts</a>
-    }
-</ul>
+<table id="viewauthors" style="width:100%">
+    <thead>
+        <tr>
+            <th>Author</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var name in Model)
+        {
+            <tr>
+                <td><a class="text-capitalize" href="/Home/ViewByAuthor/?author=@name">@name</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    $(document).ready( function () {
+        $('#viewauthors').DataTable({searching: false, paging: false});
+    });
+</script>
 @await Html.PartialAsync("BackButton")

@@ -1,4 +1,4 @@
-@model List<BlogDB.Core.Post>
+@model List<PostModel>
 
 
 <style = "text/css">
@@ -27,6 +27,11 @@ li{
             </tr>
         }
     </tbody>
-</table>>
+</table>
+<script type="text/javascript">
+    $(document).ready( function () {
+        $('#viewallposts').DataTable({searching: false, paging: true});
+    });
+</script>
 
 @await Html.PartialAsync("BackButton")

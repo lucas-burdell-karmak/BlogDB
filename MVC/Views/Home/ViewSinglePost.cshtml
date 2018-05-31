@@ -1,17 +1,32 @@
-@model BlogDB.Core.Post
+@model PostModel
 
 <div class="row">
     <div class="col-md-12">
         <h2>@Model.Title</h2>
-        <h4>by @Model.Author <small>@Model.Timestamp.ToString("dddd, dd MMMM yyyy hh:mm tt UTC")</small></h4>
+        <h4>by @Model.Author <small id="postTimestamp">@Model.Timestamp.ToString("ddd dd MMM yyy HH:mm:ss UTC")</small></h4>
     </div>
     <div class="col-md-12">
         <h5>@Model.Body.ToString()</h5>
     </div>
-    <div class="col-md-12">
-        <a class="btn btn-primary" href="/Home/EditPost?postid=@Model.PostID">Edit Post</a>
-        <a class="btn btn-danger" href="/Home/DeletePost?postid=@Model.PostID">Delete Post</a>
-        @await Html.PartialAsync("BackButton")
+    <div class="btn-group">    
+        @using (Html.BeginForm("DeletePostResult","Home",FormMethod.Post,new {postid=Model.PostID, @class="form-group"}))
+        {
+            @Html.HiddenFor(m => m.PostID)
+            @await Html.PartialAsync("BackButton")
+            <!-- <input type="submit" class="btn btn-danger box-shadow-4dp" value="Confirm deletion" data-toggle="modal" data-target="#deleteConfirmation" /> -->
+            <a class="btn btn-primary" href="/Home/EditPost?postid=@Model.PostID">Edit Post</a>
+            @await Html.PartialAsync("DeleteButton", Model)
+            
+        }
+        
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var date = new Date($("#postTimestamp").text());
+        date = new Date(date.toString());
+        $("#postTimestamp").text(dateFormat(date, "dddd, mmmm dS, yyyy, h:MM TT"));
+    });
+</script>
 

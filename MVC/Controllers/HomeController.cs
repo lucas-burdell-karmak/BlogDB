@@ -5,105 +5,133 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BlogDB.Core;
+using System.Web;
 using The_Intern_MVC.Models;
 
 namespace The_Intern_MVC.Controllers
 {
     public class HomeController : Controller
     {
-
-
-
-        private readonly IPostDataAccess logic;
+        private readonly IPostDataAccess _postDataAccess;
 
         public HomeController(IPostDataAccess logic)
         {
-            this.logic = logic;
+            this._postDataAccess = logic;
         }
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult AddPostResult(Post post)
+        public PartialViewResult AddPostConfirmation(PostModel post)
         {
-            var postResult = logic.AddPost(post);
-            if (postResult == null)
+            return PartialView("AddButton", post);
+        }
+
+        public IActionResult AddPostResult(PostModel post)
+        {
+            try
             {
-                string[] errorMessage = {"Invalid Post.", "The post could not be validated. :("};
+                PostModel postResult = _postDataAccess.AddPost(post);
+                ViewBag.History = "/Home";
+
+                return View("ViewSinglePost", postResult);
+            }
+            catch (ArgumentException e)
+            {
+                // TODO exception logging
+
+                string[] errorMessage = { "Cannot add post.", "The post had empty properties. :(" };
                 return View("NullPost", errorMessage);
             }
-            return View("PostResult", postResult);
         }
 
         public IActionResult AddPost()
         {
+            ViewBag.History = "/Home";
             return View();
         }
 
-        public IActionResult EditPostResult(Post post)
+        public IActionResult EditPostResult(PostModel post)
         {
-            var postResult = logic.EditPost(post);
-            if (postResult == null)
+            try
             {
-                string[] errorMessage = {"Invalid Post.", "The post contained some empty boxes. :("};
+                ViewBag.History = "/Home/ViewAll";
+                PostModel postResult = _postDataAccess.EditPost(post);
+                return View("PostResult", postResult);
+            }
+            catch (ArgumentException ae)
+            {
+                string[] errorMessage = { "Invalid Post.", "The post contained some empty boxes. :(" };
                 return View("NullPost", errorMessage);
             }
-
-            return View("PostResult", postResult);
         }
 
         public IActionResult EditPost(String postid)
         {
-            var postResult = logic.GetPostById(Guid.Parse(postid));
+            PostModel postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
-                string[] errorMessage = {"Invalid Post.", "We couldn't find the post. :("};
+                string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
+                ViewBag.History = "/Home/ViewAll";
                 return View("NullPost", errorMessage);
             }
+            ViewBag.History = "/Home/ViewSinglePost?postid=" + postid;
             return View(postResult);
         }
 
-        public IActionResult DeletePostResult(Post post)
+        public IActionResult DeletePostResult(PostModel post)
         {
-            var postResult = logic.DeletePost(post);
-            if (postResult == null)
+            try
             {
-                string[] errorMessage = {"Invalid Post.", "We couldn't find the post. :("};
+                PostModel postResult = _postDataAccess.DeletePost(post);
+                ViewBag.History = "/Home";
+                return RedirectToAction("ViewAll");
+            }
+            catch (ArgumentException ae)
+            {
+                string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
+                ViewBag.History = "/Home/ViewAll";
                 return View("NullPost", errorMessage);
             }
-            return View("Index");
         }
 
         public IActionResult DeletePost(String postid)
         {
-            var postResult = logic.GetPostById(Guid.Parse(postid));
+            PostModel postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
-                string[] errorMessage = {"Invalid Post.", "We couldn't find the post. :("};
+                string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
+                ViewBag.History = "/Home/ViewAll";
                 return View("NullPost", errorMessage);
             }
+            ViewBag.History = "/Home/ViewAll";
             return View(postResult);
         }
 
         public IActionResult NullPost(string message)
         {
+            ViewBag.History = "/Home";
             return View(message);
         }
 
         public IActionResult ViewSinglePost(String postid)
         {
-            var postResult = logic.GetPostById(Guid.Parse(postid));
+            PostModel postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
+                ViewBag.History = "/Home/";
                 return View("NullPost", "Post does not exist.");
             }
+            ViewBag.History = Request.Headers["Referer"].ToString();
             return View(postResult);
         }
 
         public IActionResult ViewAll()
         {
-            var postResult = logic.GetAllPosts();
+
+            ViewBag.History = "/Home";
+            List<PostModel> postResult = _postDataAccess.GetAllPosts().ConvertAll<PostModel>((p) => (PostModel) p);
             if (postResult == null)
             {
                 return View("NullPost", "There are no posts.");
@@ -113,23 +141,31 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult ViewByAuthor(string author)
         {
-            var list = logic.GetListOfPostsByAuthor(author);
+            ViewBag.History = "/Home/Authors";
+            List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) => (PostModel) p);
             return View("ViewAll", list);
         }
 
         public IActionResult Authors()
         {
-
-            return View(logic.GetListOfAuthors());
+            ViewBag.History = "/Home/";
+            return View(_postDataAccess.GetListOfAuthors());
         }
 
-        public IActionResult SearchResult(String searchCriteria)
+        public IActionResult SearchResult(SearchCriteria searchCriteria)
         {
-            var results = logic.SearchBy((post) => {
-                return post.Title.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1 || 
-                        post.Author.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1 ||
-                        post.Body.IndexOf(searchCriteria, StringComparison.OrdinalIgnoreCase) != -1;
-            });
+            ViewBag.History = "/Home/";
+            if (String.IsNullOrEmpty(searchCriteria.SearchString))
+            {
+                return RedirectToAction("ViewAll");
+            }
+            List<PostModel> results = _postDataAccess.SearchBy((post) =>
+                    {
+                        return post.Title.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
+                                post.Author.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
+                                post.Body.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1;
+                    }
+            ).ConvertAll<PostModel>((p) => (PostModel) p);
 
             return View("ViewAll", results);
         }
