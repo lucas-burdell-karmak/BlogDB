@@ -1,22 +1,53 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
+using Newtonsoft.Json;
+using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace BlogDB.Core
 {
-    public class PostRepo : IPostRepo
+    public class FilePostRepo : IPostRepo
     {
-        private readonly IBlogDB<Post> _database;
+        private readonly IConfiguration _config;
 
-        public PostRepo(IBlogDB<Post> database)
+        public FilePostRepo(IConfiguration config)
         {
-            _database = database;
+            _config = config;
+        }
+
+        private List<Post> ReadAll()
+        {
+            using (var reader = new StreamReader(new FileStream(_config["DatabaseFilePath"], FileMode.OpenOrCreate)))
+            {
+                var fileContents = reader.ReadToEnd();
+                var posts = JsonConvert.DeserializeObject<List<Post>>(fileContents);
+                if (posts == null)
+                {
+                    posts = new List<Post>();
+                }
+                return posts;
+            }
+        }
+
+        private void WriteAll(List<Post> listOfPosts)
+        {
+            // false means overwrite
+            using (var writer = new StreamWriter(_config["DatabaseFilePath"], false))
+            {
+                var contentsToWrite = JsonConvert.SerializeObject(listOfPosts);
+                writer.Write(contentsToWrite);
+            }
         }
 
         private Post AddPost(Post post)
         {
-            List<Post> posts = _database.ReadAll();
+            List<Post> posts = ReadAll();
             posts.Add(post);
-            _database.WriteAll(posts);
+            WriteAll(posts);
             return post;
         }
 
@@ -36,7 +67,7 @@ namespace BlogDB.Core
 
         private Post DeletePost(Guid id)
         {
-            List<Post> posts = _database.ReadAll();
+            List<Post> posts = ReadAll();
             Post toRemove = null;
             foreach (var p in posts)
             {
@@ -50,7 +81,7 @@ namespace BlogDB.Core
             {
                 posts.Remove(toRemove);
             }
-            _database.WriteAll(posts);
+            WriteAll(posts);
             return toRemove;
         }
 
@@ -66,14 +97,14 @@ namespace BlogDB.Core
 
         private Post EditPost(Post post)
         {
-            var listOfPosts = _database.ReadAll();
+            var listOfPosts = ReadAll();
 
             for (int i = 0; i < listOfPosts.Count; i++)
             {
                 if (listOfPosts[i].PostID == post.PostID)
                 {
                     listOfPosts[i] = post;
-                    _database.WriteAll(listOfPosts);
+                    WriteAll(listOfPosts);
                     return post;
                 }
             }
@@ -95,7 +126,7 @@ namespace BlogDB.Core
 
         public List<Post> GetAllPosts()
         {
-            return _database.ReadAll();
+            return ReadAll();
         }
     }
 }

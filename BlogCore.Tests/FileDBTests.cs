@@ -20,7 +20,7 @@ namespace BlogCore.Tests
         [Fact]
         public void ReadAllTest_Success()
         {
-            var fileDB = new FileDB<Post>(_path);
+            var fileDB = new FileDB(_path);
             var list = new List<Post>();
             var post = new Post("Title", "Author", "Body");
             list.Add(post);
@@ -46,7 +46,7 @@ namespace BlogCore.Tests
         [Fact]
         public void WriteAllTest_Success()
         {
-            var fileDB = new FileDB<Post>(_path);
+            var fileDB = new FileDB(_path);
             var post = new Post("Title", "Author", "Body");
             var list = new List<Post>();
             list.Add(post);
