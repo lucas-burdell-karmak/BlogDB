@@ -12,7 +12,7 @@ namespace BlogDB.Core
             _database = database;
         }
 
-        public Post AddPost(Post post)
+        private Post AddPost(Post post)
         {
             List<Post> posts = _database.ReadAll();
             posts.Add(post);
@@ -20,7 +20,21 @@ namespace BlogDB.Core
             return post;
         }
 
-        public Post DeletePost(Guid id)
+        public bool TryAddPost(Post post, out Post result)
+        {
+            if (post == null || post.Title == null || post.Author == null || post.Body == null)
+            {
+                result = null;
+                return false;
+            }
+            else
+            {
+                result = AddPost(post);
+                return true;
+            }
+        }
+
+        private Post DeletePost(Guid id)
         {
             List<Post> posts = _database.ReadAll();
             Post toRemove = null;
@@ -40,8 +54,19 @@ namespace BlogDB.Core
             return toRemove;
         }
 
-        public Post EditPost(Post post)
+        public bool TryDeletePost(Guid id, out Post result)
         {
+            result = DeletePost(id);
+            if (result == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private Post EditPost(Post post)
+        {
+            var isInDatabase = false;
             var listOfPosts = _database.ReadAll();
 
             for (int i = 0; i < listOfPosts.Count; i++)
@@ -49,11 +74,31 @@ namespace BlogDB.Core
                 if (listOfPosts[i].PostID == post.PostID)
                 {
                     listOfPosts[i] = post;
+                    isInDatabase = true;
                     break;
                 }
             }
-            _database.WriteAll(listOfPosts);
-            return post;
+
+            if(isInDatabase)
+            {
+                _database.WriteAll(listOfPosts);
+                return post;
+            }
+            return null;
+        }
+
+        public bool TryEditPost(Post post, out Post result)
+        {
+            if (post == null || post.Title == null || post.Author == null || post.Body == null)
+            {
+                result = null;
+                return false;
+            }
+            else
+            {
+                result = EditPost(post);
+                return (result == null) ? false : true;
+            }
         }
 
         public List<Post> GetAllPosts()

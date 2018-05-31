@@ -1,26 +1,24 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 using BlogDB.Core;
-using System.Collections.Generic;
 using BlogCore.Tests.Mocks;
 
 namespace BlogCore.Tests
 {
     public class PostDataAccessTests : IDisposable
     {
-
-
-        private readonly PostRepo _repo;
-        private readonly MockPostValidator _validator;
+        private readonly MockPostRepo _postRepo;
         private readonly IPostDataAccess _postDataAccess;
+        private readonly MockPostValidator _postValidator;
         private readonly List<Post> _testData;
 
         public PostDataAccessTests()
         {
             _testData = BuildTestData();
-            _repo = new PostRepo(new MockFileDB(_testData));
-            _validator = new MockPostValidator();
-            _postDataAccess = new PostDataAccess(_repo, _validator);
+            _postRepo = new MockPostRepo();
+            _postValidator = new MockPostValidator();
+            _postDataAccess = new PostDataAccess(_postRepo, _postValidator);
         }
 
         private List<Post> BuildTestData()
@@ -32,93 +30,93 @@ namespace BlogCore.Tests
             return testData;
         }
 
+        [Fact]
+        public void TestTryAddPost_ValidData_Success()
+        {
+
+        }
+
+        [Fact]
+        public void TestAddPost_InvalidData_Failure()
+        {
+
+        }
+
+        [Fact]
+        public void TestDeletePost_ValidData_Success()
+        {
+
+        }
+
+        [Fact]
+        public void TestDeletePost_InvalidData_Failure()
+        {
+
+        }
+
+        [Fact]
+        public void TestEditPost_ValidData_Success()
+        {
+
+        }
+
+        [Fact]
+        public void TestEditPost_InvalidData_Failure()
+        {
+
+        }
+
+        [Fact]
+        public void TestGetAllPosts()
+        {
+
+        }
+
+        [Fact]
+        public void TestGetListOfPostsByAuthors()
+        {
+
+        }
+
+        [Fact]
+        public void TestGetPostById()
+        {
+
+        }
+
+        [Fact]
+        public void TestGetPostCount()
+        {
+
+        }
+
+        [Fact]
+        public void TestGetPostFromList()
+        {
+
+        }
+
+        [Fact]
+        public void TestGetSortedListOfPosts()
+        {
+
+        }
+
+        [Fact]
+        public void TestSearchBy_ValidData_Success()
+        {
+
+        }
+
+        [Fact]
+        public void TestSearchBy_InvalidData_Failure()
+        {
+
+        }
+
         public void Dispose()
         {
 
-        }
-
-
-        [Fact]
-        public void AddPost_InvalidPost_Failure()
-        {
-            _validator.SetStubValidPost(false);
-
-            Assert.Throws<ArgumentException>(() => _postDataAccess.AddPost(null));
-        }
-
-        [Fact]
-        public void DeletePost_InvalidPost_Failure()
-        {
-            Assert.Throws<ArgumentException>(() => _postDataAccess.DeletePost(null));
-        }
-
-        [Fact]
-        public void DeletePost_InexistantPost_Failure()
-        {
-            _validator.SetStubValidPost(true).SetStubPostExists(false);
-            Assert.Throws<ArgumentException>(() => _postDataAccess.DeletePost(new Post()));
-        }
-
-        
-
-        [Fact]
-        public void DeletePost_Success()
-        {
-            var post = new Post("Title", "Body", "Author");
-
-            _postDataAccess.AddPost(post);
-            var resultPost = _postDataAccess.DeletePost(post);
-
-            Assert.Equal(post.Title, resultPost.Title);
-            Assert.Equal(post.Author, resultPost.Author);
-            Assert.Equal(post.Body, resultPost.Body);
-        }
-
-        [Fact]
-        public void EditPost_Success()
-        {
-            var testPost = _testData[0];
-
-            var resultPost = _postDataAccess.EditPost(testPost);
-
-            Assert.Equal(testPost.Title, resultPost.Title);
-            Assert.Equal(testPost.Author, resultPost.Author);
-            Assert.Equal(testPost.Body, resultPost.Body);
-        }
-
-        [Fact]
-        public void EditPost_Null_Failure()
-        {
-            Assert.Throws<ArgumentException>(() => _postDataAccess.EditPost(null));
-        }
-
-        [Fact]
-        public void EditPost_Empty_Failure()
-        {
-            Assert.Throws<ArgumentException>(() => _postDataAccess.EditPost(new Post()));
-        }
-
-        [Fact]
-        public void AddPost_Success()
-        {
-            var post = new Post("Title", "Body", "Author");
-
-            var postResult = _postDataAccess.AddPost(post);
-
-            Assert.NotNull(postResult);
-            Assert.Equal(post.Title, postResult.Title);
-            Assert.Equal(post.Author, postResult.Author);
-            Assert.Equal(post.Body, postResult.Body);
-        }
-
-        [Fact]
-        public void GetAllAuthors_Success()
-        {
-            var validList = _postDataAccess.GetListOfPostsByAuthor("Author1");
-
-            Assert.Equal(_testData[0].Title, validList[0].Title);
-            Assert.Equal(_testData[0].Author, validList[0].Author);
-            Assert.Equal(_testData[0].Body, validList[0].Body);
         }
     }
 

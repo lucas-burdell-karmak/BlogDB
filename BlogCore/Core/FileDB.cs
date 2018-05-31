@@ -19,9 +19,9 @@ namespace BlogDB.Core
             DatabaseFilePath = config["DatabaseFilePath"];
         }
 
-        public FileDB(string pathToDB)
+        public FileDB(string path)
         {
-            DatabaseFilePath = pathToDB;
+            DatabaseFilePath = path;
         }
 
         public List<T> ReadAll()

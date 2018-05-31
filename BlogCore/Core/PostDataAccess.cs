@@ -21,7 +21,8 @@ namespace BlogDB.Core
             {
                 post.PostID = Guid.NewGuid();
                 post.Timestamp = DateTime.UtcNow;
-                return _postRepo.AddPost(post);
+                var isSuccessful = _postRepo.TryAddPost(post, out var result);
+                return (isSuccessful) ? result : throw new ArgumentException("Something went horribly wrong in PostDataAccess.AddPost.");
             }
             else
             {
@@ -33,7 +34,8 @@ namespace BlogDB.Core
         {
             if (_postValidator.PostExists(_postRepo.GetAllPosts(), post))
             {
-                return _postRepo.DeletePost(post.PostID);
+                var isSuccessful = _postRepo.TryDeletePost(post.PostID, out var result);
+                return (isSuccessful) ? result : throw new ArgumentException("Something went horribly wrong in PostDataAccess.DeletePost.");
             }
             throw new ArgumentException("The post does not exist.");
         }
@@ -43,7 +45,8 @@ namespace BlogDB.Core
             if (_postValidator.PostExists(_postRepo.GetAllPosts(), post) && _postValidator.IsValidPost(post))
             {
                 post.Timestamp = DateTime.UtcNow;
-                return _postRepo.EditPost(post);
+                var isSuccessful = _postRepo.TryEditPost(post, out var result);
+                return (isSuccessful) ? result : throw new ArgumentException("Something went horribly wrong in PostDataAccess.EditPost.");
             }
             else
             {
