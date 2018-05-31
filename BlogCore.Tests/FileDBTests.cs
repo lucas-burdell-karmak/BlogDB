@@ -18,14 +18,42 @@ namespace BlogCore.Tests
         }
 
         [Fact]
-        public void ReadAll_TestDBvalidposts_Success()
+        public void ReadAllTest_Success()
+        {
+            var fileDB = new FileDB<Post>(_path);
+            var list = new List<Post>();
+            var post = new Post("Title", "Author", "Body");
+            list.Add(post);
+
+            // manually write to the Json file
+            using (var writer = new StreamWriter(_path, false)) // false flag means overwrite
+            {
+                var contentsToWrite = JsonConvert.SerializeObject(list);
+                writer.Write(contentsToWrite);
+            }
+
+            var listFromDB = fileDB.ReadAll();
+
+            Assert.NotEmpty(listFromDB);
+            Assert.Equal(list.Count, listFromDB.Count);
+            Assert.Equal(list[0].PostID, listFromDB[0].PostID);
+            Assert.Equal(list[0].Title, listFromDB[0].Title);
+            Assert.Equal(list[0].Author, listFromDB[0].Author);
+            Assert.Equal(list[0].Body, listFromDB[0].Body);
+            Assert.Equal(list[0].Timestamp, listFromDB[0].Timestamp);
+        }
+
+        [Fact]
+        public void WriteAllTest_Success()
         {
             var fileDB = new FileDB<Post>(_path);
             var post = new Post("Title", "Author", "Body");
             var list = new List<Post>();
             list.Add(post);
+
             fileDB.WriteAll(list);
 
+            // manually read from the Json file
             List<Post> listFromDB;
             using (var reader = new StreamReader(new FileStream(_path, FileMode.OpenOrCreate)))
             {
@@ -46,29 +74,6 @@ namespace BlogCore.Tests
             Assert.Equal(list[0].Timestamp, listFromDB[0].Timestamp);
         }
 
-        [Fact]
-        public void TestReadFromFile()
-        {
-            var fileDB = new FileDB<Post>(_path);
-            var list = new List<Post>();
-            var post = new Post("Title", "Author", "Body");
-            list.Add(post);
-            using (var writer = new StreamWriter(_path, false)) // false means overwrite
-            {
-                var contentsToWrite = JsonConvert.SerializeObject(list);
-                writer.Write(contentsToWrite);
-            }
-
-            var listFromDB = fileDB.ReadAll();
-
-            Assert.NotEmpty(listFromDB);
-            Assert.Equal(list.Count, listFromDB.Count);
-            Assert.Equal(list[0].PostID, listFromDB[0].PostID);
-            Assert.Equal(list[0].Title, listFromDB[0].Title);
-            Assert.Equal(list[0].Author, listFromDB[0].Author);
-            Assert.Equal(list[0].Body, listFromDB[0].Body);
-            Assert.Equal(list[0].Timestamp, listFromDB[0].Timestamp);
-        }
         public void Dispose() { }
     }
 }

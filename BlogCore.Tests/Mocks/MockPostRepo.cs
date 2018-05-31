@@ -20,9 +20,9 @@ namespace BlogCore.Tests.Mocks
         private Post StubedTryDeletePostResult;
         private Post StubedTryEditPostResult;
 
-        public void AssertAddPostCalled() => Assert.True(CalledTryAddPost);
-        public void AssertDeletePostCalled() => Assert.True(CalledTryDeletePost);
-        public void AssertEditPostCalled() => Assert.True(CalledTryEditPost);
+        public void AssertTryAddPostCalled() => Assert.True(CalledTryAddPost);
+        public void AssertTryDeletePostCalled() => Assert.True(CalledTryDeletePost);
+        public void AssertTryEditPostCalled() => Assert.True(CalledTryEditPost);
         public void AssertGetAllPostCalled() => Assert.True(CalledGetAllPosts);
 
 
@@ -55,19 +55,19 @@ namespace BlogCore.Tests.Mocks
             return StubedGetAllPosts;
         }
 
-        public MockPostRepo SetCalledAddPostToFalse()
+        public MockPostRepo SetCalledTryAddPostToFalse()
         {
             CalledTryAddPost = false;
             return this;
         }
 
-        public MockPostRepo SetCalledDeletePostToFalse()
+        public MockPostRepo SetCalledTryDeletePostToFalse()
         {
             CalledTryDeletePost = false;
             return this;
         }
 
-        public MockPostRepo SetCalledEditPostToFalse()
+        public MockPostRepo SetCalledTryEditPostToFalse()
         {
             CalledTryEditPost = false;
             return this;

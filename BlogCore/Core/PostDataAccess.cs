@@ -37,7 +37,10 @@ namespace BlogDB.Core
                 var isSuccessful = _postRepo.TryDeletePost(post.PostID, out var result);
                 return (isSuccessful) ? result : throw new ArgumentException("Something went horribly wrong in PostDataAccess.DeletePost.");
             }
-            throw new ArgumentException("The post does not exist.");
+            else
+            {
+                throw new ArgumentException("The post does not exist.");
+            }
         }
 
         public Post EditPost(Post post)
@@ -126,8 +129,10 @@ namespace BlogDB.Core
         {
             var posts = _postRepo.GetAllPosts();
             var results = new List<Post>();
-            posts.ForEach((post) => {
-                if (filter(post)) {
+            posts.ForEach((post) =>
+            {
+                if (filter(post))
+                {
                     results.Add(post);
                 }
             });
