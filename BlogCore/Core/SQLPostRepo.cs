@@ -19,6 +19,23 @@ namespace BlogDB.Core
             _config = config;
         }
 
+        private void DeletePostByID(Guid postID)
+        {
+            var commandText = "DELETE FROM Blog_Post WHERE id = @id";
+            using (SqlConnection connection = new SqlConnection(_config["SQLConnectionString"]))
+            {
+                SqlCommand command = new SqlCommand(commandText, connection);
+
+                command.Parameters.Add("@id", SqlDbType.NChar);
+                command.Parameters["@id"].Value = postID.ToString();
+
+                command.Connection.Open();
+                var result = command.ExecuteNonQuery();
+
+                if (result < 0) Console.WriteLine("Error deleting post from database!");
+            }
+        }
+
         public List<Post> GetAllPosts()
         {
             throw new NotImplementedException();
