@@ -5,7 +5,7 @@ using BlogDB.Core;
 
 namespace BlogCore.Tests.Mocks
 {
-    public class MockFileDB : BlogDB.Core.IBlogDB<Post>
+    public class MockFileDB : BlogDB.Core.IBlogDB
     {
 
         private List<Post> StubedListOfPosts;

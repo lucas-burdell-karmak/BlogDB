@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace BlogDB.Core
 {
-    public interface IBlogDB<T>
+    public interface IBlogDB
     {
 
-        List<T> ReadAll();
+        List<Post> ReadAll();
 
-        void WriteAll(List<T> posts);
+        void WriteAll(List<Post> posts);
 
 
     }

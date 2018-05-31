@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BlogDB.Core
 {
-    public class FileDB<T> : IBlogDB<T>
+    public class FileDB : IBlogDB
     {
         private readonly string DatabaseFilePath;
 
@@ -24,21 +24,21 @@ namespace BlogDB.Core
             DatabaseFilePath = path;
         }
 
-        public List<T> ReadAll()
+        public List<Post> ReadAll()
         {
             using (var reader = new StreamReader(new FileStream(DatabaseFilePath, FileMode.OpenOrCreate)))
             {
                 var fileContents = reader.ReadToEnd();
-                var posts = JsonConvert.DeserializeObject<List<T>>(fileContents);
+                var posts = JsonConvert.DeserializeObject<List<Post>>(fileContents);
                 if (posts == null)
                 {
-                    posts = new List<T>();
+                    posts = new List<Post>();
                 }
                 return posts;
             }
         }
 
-        public void WriteAll(List<T> listOfPosts)
+        public void WriteAll(List<Post> listOfPosts)
         {
             // false means overwrite
             using (var writer = new StreamWriter(DatabaseFilePath, false))

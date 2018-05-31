@@ -23,7 +23,7 @@ namespace The_Intern_MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddSingleton<IBlogDB<Post>, FileDB<Post>>();
+            services.AddSingleton<IBlogDB, FileDB>();
             services.AddSingleton<IPostValidator, PostValidator>();
             services.AddSingleton<IPostRepo, PostRepo>();
             services.AddSingleton<IPostDataAccess, PostDataAccess>();

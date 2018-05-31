@@ -5,9 +5,9 @@ namespace BlogDB.Core
 {
     public class PostRepo : IPostRepo
     {
-        private readonly IBlogDB<Post> _database;
+        private readonly IBlogDB _database;
 
-        public PostRepo(IBlogDB<Post> database)
+        public PostRepo(IBlogDB database)
         {
             _database = database;
         }
