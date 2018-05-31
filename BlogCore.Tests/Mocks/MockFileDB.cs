@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using Xunit;
 using BlogDB.Core;
 
+// TODO: Update this mock or delete it, code has changed
 namespace BlogCore.Tests.Mocks
 {
-    public class MockFileDB : BlogDB.Core.IBlogDB
+    public class MockFileDB
     {
 
         private List<Post> StubedListOfPosts;
