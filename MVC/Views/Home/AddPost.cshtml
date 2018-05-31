@@ -33,8 +33,8 @@
                 if (!$("#addPostForm").valid()) { // Not Valid
                     return false;
                 } else {
-                    $("#modalTitle").text("Are you sure you want to add " + $("#titletext").val() + " by " + $("#authortext").val())
-                    $("#modalBody").text($("#bodytext").val())
+                    $("#modalTitle").text("Are you sure you want to add \"" + $("#titletext").val() + "\" by " + $("#authortext").val() + "?")
+                    $("#modalBodyText").text($("#bodytext").val())
                     $("#addConfirmation").modal("show");
                     return true;
                 }

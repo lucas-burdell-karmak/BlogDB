@@ -8,13 +8,13 @@ namespace The_Intern_MVC.Models
     public class PostModel {
 
         [Required]
-        [StringLength(600)]
+        [StringLength(60)]
         public string Title {get; set;}
         [Required]
-        [StringLength(600)]
+        [StringLength(30)]
         public string Author {get; set;}
         [Required]
-        [StringLength(600)]
+        [StringLength(1200)]
         public string Body {get; set;}
 
         public DateTime Timestamp {get; set;}

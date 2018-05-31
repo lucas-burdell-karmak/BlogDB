@@ -49,7 +49,7 @@ namespace The_Intern_MVC.Controllers
         public IActionResult AddPost()
         {
             ViewBag.History = "/Home";
-            return View(PostModel.Empty);
+            return View();
         }
 
         public IActionResult EditPostResult(PostModel post)
