@@ -5,17 +5,30 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace BlogDB.Core
 {
-    public class SqlDB
+    public class SQLPostRepo : IPostRepo
     {
         public static string connString = "Persist Security Info=False;Integrated Security=true;Initial Catalog=Internship_Lucas_Burdell;server=devsql";
-        public List<Post> ReadAll()
+        public readonly IConfiguration _config;
+
+        public SQLPostRepo(IConfiguration config)
+        {
+            _config = config;
+        }
+
+        public List<Post> GetAllPosts()
+        {
+            throw new NotImplementedException();
+        }
+
+        private List<Post> ReadAll()
         {
             var list = new List<Post>();
             var commandText = "SELECT * FROM Blog_Post";
-            using (SqlConnection connection = new SqlConnection(connString))
+            using (SqlConnection connection = new SqlConnection(_config["SQLConnectionString"]))
             {
                 SqlCommand command = new SqlCommand(commandText, connection);
                 command.Connection.Open();
@@ -37,10 +50,25 @@ namespace BlogDB.Core
             return list;
         }
 
-        public void WriteAll(List<Post> list)
+        public bool TryAddPost(Post post, out Post result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryDeletePost(Guid id, out Post result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryEditPost(Post post, out Post result)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void WriteAll(List<Post> list)
         {
             var commandText = "INSERT INTO Blog_Post (author, body, id, timestamp, title) VALUES (@author, @body, @id, @timestamp, @title)";
-            using (SqlConnection connection = new SqlConnection(connString))
+            using (SqlConnection connection = new SqlConnection(_config["SQLConnectionString"]))
             {
                 SqlCommand command = new SqlCommand(commandText, connection);
 
