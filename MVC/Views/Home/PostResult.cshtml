@@ -9,7 +9,6 @@
         <h5>@Model.Body.ToString()</h5>
     </div>
     <div class="col-md-12">
-        
         @using (Html.BeginForm("DeletePostResult","Home",FormMethod.Post,new {postid=Model.PostID, @class="form-group"}))
         {
             <a class="btn btn-primary" href="/Home/EditPost?postid=@Model.PostID"><span class="glyphicon glyphicon-pencil"></span> Edit Post</a>
@@ -17,6 +16,6 @@
             @await Html.PartialAsync("DeleteButton", Model)
             <a class="btn btn-success" href="/Home"><span class="glyphicon glyphicon-ok"></span> Done</a>
         }
-        
+   
     </div>
 </div>
