@@ -16,15 +16,16 @@ namespace BlogDB.Core
         
         public SQLPostRepo(IConfiguration config)
         {
-            __sqlConnectionString = sqlConnectionString;
-            _connection = new SqlConnection(_config["SQLConnectionString"]);
+
+            _sqlConnectionString = config["SQLConnectionString"];
+            _connection = new SqlConnection(_sqlConnectionString);
             _connection.Open();
         }
         
         public SQLPostRepo(string sqlConnectionString)
         {
-            _sqlConnectionString = sqlConnectionString
-            _connection = new SqlConnection(_config["SQLConnectionString"]);
+            _sqlConnectionString = sqlConnectionString;
+            _connection = new SqlConnection(_sqlConnectionString);
             _connection.Open();
         }
 
@@ -127,6 +128,7 @@ namespace BlogDB.Core
                 catch (SqlException e)
                 {
                     result = null;
+                    Console.WriteLine(e);
                 }
                 return true;
             }
@@ -140,6 +142,7 @@ namespace BlogDB.Core
             }
             catch (SqlException e)
             {
+                Console.WriteLine(e);
                 result = null;
             }
 
@@ -165,6 +168,7 @@ namespace BlogDB.Core
                 catch (SqlException e)
                 {
                     result = null;
+                    Console.WriteLine(e);
                 }
 
             }
