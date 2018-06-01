@@ -10,7 +10,7 @@
     </div>
     <div class="col-md-12">
         <a class="btn btn-primary" href="/Home/EditPost?postid=@Model.PostID"><span class="glyphicon glyphicon-pencil"></span> Edit Post</a>
-        <a class="btn btn-danger" href="/Home/DeletePost?postid=@Model.PostID"><span class="glyphicon glyphicon-remove"></span> Delete Post</a>
+        @await Html.PartialAsync("DeleteButton", Model)
         <a class="btn btn-success" href="/Home"><span class="glyphicon glyphicon-ok"></span> Done</a>
     </div>
 </div>

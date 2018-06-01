@@ -99,19 +99,6 @@ namespace The_Intern_MVC.Controllers
             }
         }
 
-        public IActionResult DeletePost(String postid)
-        {
-            PostModel postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
-            if (postResult == null)
-            {
-                string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
-                ViewBag.History = "/Home/ViewAll";
-                return View("NullPost", errorMessage);
-            }
-            ViewBag.History = "/Home/ViewAll";
-            return View(postResult);
-        }
-
         public IActionResult NullPost(string message)
         {
             ViewBag.History = "/Home";
