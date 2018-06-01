@@ -11,7 +11,7 @@ namespace BlogCore.Tests
     public class FilePostRepoTests : IDisposable
     {
         private readonly List<Post> _testData;
-        private readonly string testDBPath = Path.Combine(Directory.GetCurrentDirectory(), "testDB.json");
+        private readonly string _testDBPath = Path.Combine(Directory.GetCurrentDirectory(), "testDB.json");
 
         public FilePostRepoTests()
         {
@@ -26,7 +26,7 @@ namespace BlogCore.Tests
             testData.Add(new Post("Title2", "Author2", "Body2", Convert.ToDateTime("2018-05-30T14:16:44.1562063Z"), Guid.Parse("33333333-3333-3333-3333-333333333333")));
 
             // false means overwrite
-            using (var writer = new StreamWriter(testDBPath, false))
+            using (var writer = new StreamWriter(_testDBPath, false))
             {
                 var contentsToWrite = JsonConvert.SerializeObject(testData);
                 writer.Write(contentsToWrite);
@@ -40,7 +40,7 @@ namespace BlogCore.Tests
         [InlineData(" ", "   ", "       ")]
         public void TestTryAddPost_ValidData_Success(string title, string author, string body)
         {
-            var postRepo = new FilePostRepo(testDBPath);
+            var postRepo = new FilePostRepo(_testDBPath);
             var p = new Post(title, author, body);
             var isSuccessful = postRepo.TryAddPost(p, out var result);
 
@@ -61,7 +61,7 @@ namespace BlogCore.Tests
         [InlineData(null, null, null)]
         public void TestTryAddPost_InvalidData_Failure(string title, string author, string body)
         {
-            var postRepo = new FilePostRepo(testDBPath);
+            var postRepo = new FilePostRepo(_testDBPath);
             var p = new Post(title, author, body);
             var isFailure = postRepo.TryAddPost(p, out var result);
 
@@ -75,7 +75,7 @@ namespace BlogCore.Tests
         [InlineData("Title2", "Author2", "Body2", "2018-05-30T14:16:44.1562063Z", "33333333-3333-3333-3333-333333333333")]
         public void TestTryDeletePost_ValidData_Success(string title, string author, string body, string datetime, string guid)
         {
-            var postRepo = new FilePostRepo(testDBPath);
+            var postRepo = new FilePostRepo(_testDBPath);
             var p = new Post(title, author, body, Convert.ToDateTime(datetime), Guid.Parse(guid));
             var isSuccessful = postRepo.TryDeletePost(p.PostID, out var result);
 
@@ -93,7 +93,7 @@ namespace BlogCore.Tests
         [InlineData(null, null, null, "1/1/0001 12:00:00 AM", "00000000-0000-0000-0000-000000000000")]
         public void TestTryDeletePost_InvalidData_Failure(string title, string author, string body, string datetime, string guid)
         {
-            var postRepo = new FilePostRepo(testDBPath);
+            var postRepo = new FilePostRepo(_testDBPath);
             var p = new Post(title, author, body, Convert.ToDateTime(datetime), Guid.Parse(guid));
             var isFailure = postRepo.TryDeletePost(p.PostID, out var result);
 
@@ -107,7 +107,7 @@ namespace BlogCore.Tests
         [InlineData("Title2", "Author2", "Body2", "2018-05-30T14:16:44.1562063Z", "33333333-3333-3333-3333-333333333333")]
         public void TestTryEditPost_ValidData_Success(string title, string author, string body, string datetime, string guid)
         {
-            var postRepo = new FilePostRepo(testDBPath);
+            var postRepo = new FilePostRepo(_testDBPath);
             var p = new Post(title, author, body, Convert.ToDateTime(datetime), Guid.Parse(guid));
             var isSuccessful = postRepo.TryEditPost(p, out var result);
 
@@ -127,7 +127,7 @@ namespace BlogCore.Tests
         [InlineData("Title", "Author3", null, "2018-05-30T14:16:44.1562063Z", "7ad7f688-9e68-4f59-b241-2a20d9ddd216")]
         public void TestTryEditPost_InvalidData_Failure(string title, string author, string body, string datetime, string guid)
         {
-            var postRepo = new FilePostRepo(testDBPath);
+            var postRepo = new FilePostRepo(_testDBPath);
             var p = new Post(title, author, body, Convert.ToDateTime(datetime), Guid.Parse(guid));
             var isFailure = postRepo.TryEditPost(p, out var result);
 
@@ -138,7 +138,7 @@ namespace BlogCore.Tests
         [Fact]
         public void TestGetAllPosts()
         {
-            var postRepo = new FilePostRepo(testDBPath);
+            var postRepo = new FilePostRepo(_testDBPath);
             var list = postRepo.GetAllPosts();
 
             Assert.NotEmpty(list);
