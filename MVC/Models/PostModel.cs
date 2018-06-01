@@ -14,7 +14,7 @@ namespace The_Intern_MVC.Models
         [StringLength(30)]
         public string Author {get; set;}
         [Required]
-        [StringLength(1200)]
+        [StringLength(7950)]
         public string Body {get; set;}
 
         public DateTime Timestamp {get; set;}

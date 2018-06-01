@@ -9,36 +9,49 @@ using Microsoft.Extensions.Configuration;
 
 namespace BlogDB.Core
 {
-    public class SQLPostRepo : IPostRepo
+    public class SQLPostRepo : IPostRepo, IDisposable
     {
+        private readonly SqlConnection _connection;
         private readonly string _sqlConnectionString;
-
+        
         public SQLPostRepo(IConfiguration config)
         {
-            _sqlConnectionString = config["SQLConnectionString"];
+            __sqlConnectionString = sqlConnectionString;
+            _connection = new SqlConnection(_config["SQLConnectionString"]);
+            _connection.Open();
         }
-
+        
         public SQLPostRepo(string sqlConnectionString)
         {
-            _sqlConnectionString = sqlConnectionString;
+            _sqlConnectionString = sqlConnectionString
+            _connection = new SqlConnection(_config["SQLConnectionString"]);
+            _connection.Open();
+        }
+
+        public void Dispose()
+        {
+            _connection.Close();
+        }
+
+        ~SQLPostRepo()
+        {
+            Dispose();
         }
 
         private Post DeletePostByID(Guid postID)
         {
             var post = ReadPost(postID);
             var commandText = "DELETE FROM Blog_Post WHERE id = @id";
-            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
-            {
-                SqlCommand command = new SqlCommand(commandText, connection);
+            var command = new SqlCommand(commandText, _connection);
 
-                command.Parameters.Add("@id", SqlDbType.NChar);
-                command.Parameters["@id"].Value = postID.ToString();
+            command.Parameters.Add("@id", SqlDbType.NChar);
+            command.Parameters["@id"].Value = postID.ToString();
 
-                command.Connection.Open();
-                var result = command.ExecuteNonQuery();
+            //command.Connection.Open();
+            var result = command.ExecuteNonQuery();
 
-                if (result < 0) Console.WriteLine("Error deleting post from database!");
-            }
+            if (result < 0) Console.WriteLine("Error deleting post from database!");
+
             return post;
         }
 
@@ -51,26 +64,24 @@ namespace BlogDB.Core
         {
             var list = new List<Post>();
             var commandText = "SELECT id, title, author, body, timestamp FROM Blog_Post";
-            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
+            var command = new SqlCommand(commandText, _connection);
+
+            //command.Connection.Open();
+            var reader = command.ExecuteReader();
+
+            if (reader.HasRows)
             {
-                SqlCommand command = new SqlCommand(commandText, connection);
-
-                command.Connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.HasRows)
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        list.Add(new Post(reader.GetString(1),
-                                          reader.GetString(2),
-                                          reader.GetString(3),
-                                          reader.GetDateTime(4),
-                                          Guid.Parse(reader.GetString(0))));
-                    }
+                    list.Add(new Post(reader.GetString(1),
+                                      reader.GetString(2),
+                                      reader.GetString(3),
+                                      reader.GetDateTime(4),
+                                      Guid.Parse(reader.GetString(0))));
                 }
-                reader.Close();
             }
+            reader.Close();
+
             return list;
         }
 
@@ -78,29 +89,25 @@ namespace BlogDB.Core
         {
             Post post = null;
             var commandText = "SELECT id, title, author, body, timestamp FROM Blog_Post WHERE id = @id";
-            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
+            var command = new SqlCommand(commandText, _connection);
+            command.Parameters.Add("@id", SqlDbType.NChar);
+            command.Parameters["@id"].Value = id.ToString();
+
+            //command.Connection.Open();
+            var reader = command.ExecuteReader();
+
+            if (reader.HasRows)
             {
-                SqlCommand command = new SqlCommand(commandText, connection);
-
-                command.Parameters.Add("@id", SqlDbType.NChar);
-                command.Parameters["@id"].Value = id.ToString();
-
-                command.Connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.HasRows)
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        post = new Post(reader.GetString(1),
-                                        reader.GetString(2),
-                                        reader.GetString(3),
-                                        reader.GetDateTime(4),
-                                        Guid.Parse(reader.GetString(0)));
-                    }
+                    post = new Post(reader.GetString(1),
+                                    reader.GetString(2),
+                                    reader.GetString(3),
+                                    reader.GetDateTime(4),
+                                    Guid.Parse(reader.GetString(0)));
                 }
-                reader.Close();
             }
+            reader.Close();
             return post;
         }
 
@@ -113,14 +120,29 @@ namespace BlogDB.Core
             }
             else
             {
-                result = WritePost(post);
+                try
+                {
+                    result = WritePost(post);
+                }
+                catch (SqlException e)
+                {
+                    result = null;
+                }
                 return true;
             }
         }
 
         public bool TryDeletePost(Guid id, out Post result)
         {
-            result = DeletePostByID(id);
+            try
+            {
+                result = DeletePostByID(id);
+            }
+            catch (SqlException e)
+            {
+                result = null;
+            }
+
             if (result == null)
             {
                 return false;
@@ -136,7 +158,15 @@ namespace BlogDB.Core
             }
             else
             {
-                result = UpdatePost(post);
+                try
+                {
+                    result = UpdatePost(post);
+                }
+                catch (SqlException e)
+                {
+                    result = null;
+                }
+
             }
             return (result == null) ? false : true;
         }
@@ -144,40 +174,64 @@ namespace BlogDB.Core
         public Post UpdatePost(Post post)
         {
             var commandText = "UPDATE Blog_Post SET author = @author, body = @body, timestamp = @timestamp, title = @title WHERE id = @id";
-            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
-            {
-                SqlCommand command = new SqlCommand(commandText, connection);
+            var command = new SqlCommand(commandText, _connection);
+            command.Parameters.Add("@author", SqlDbType.NChar);
+            command.Parameters["@author"].Value = post.Author;
 
-                command.Parameters.Add("@author", SqlDbType.NChar);
-                command.Parameters["@author"].Value = post.Author;
+            command.Parameters.Add("@body", SqlDbType.NChar);
+            command.Parameters["@body"].Value = post.Body;
 
-                command.Parameters.Add("@body", SqlDbType.NChar);
-                command.Parameters["@body"].Value = post.Body;
+            command.Parameters.Add("@id", SqlDbType.NChar);
+            command.Parameters["@id"].Value = post.PostID.ToString();
 
-                command.Parameters.Add("@id", SqlDbType.NChar);
-                command.Parameters["@id"].Value = post.PostID.ToString();
+            command.Parameters.Add("@timestamp", SqlDbType.DateTime);
+            command.Parameters["@timestamp"].Value = post.Timestamp;
 
-                command.Parameters.Add("@timestamp", SqlDbType.DateTime);
-                command.Parameters["@timestamp"].Value = post.Timestamp;
+            command.Parameters.Add("@title", SqlDbType.NChar);
+            command.Parameters["@title"].Value = post.Title;
 
-                command.Parameters.Add("@title", SqlDbType.NChar);
-                command.Parameters["@title"].Value = post.Title;
+            //command.Connection.Open();
+            var result = command.ExecuteNonQuery();
 
-                command.Connection.Open();
-                var result = command.ExecuteNonQuery();
+            if (result < 0) return null;
 
-                if (result < 0) return null;
-            }
             return post;
         }
 
         public Post WritePost(Post post)
         {
             var commandText = "INSERT INTO Blog_Post (author, body, id, timestamp, title) VALUES (@author, @body, @id, @timestamp, @title)";
-            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
-            {
-                SqlCommand command = new SqlCommand(commandText, connection);
+            var command = new SqlCommand(commandText, _connection);
 
+            command.Parameters.Add("@author", SqlDbType.NChar);
+            command.Parameters["@author"].Value = post.Author;
+
+            command.Parameters.Add("@body", SqlDbType.NChar);
+            command.Parameters["@body"].Value = post.Body;
+
+            command.Parameters.Add("@id", SqlDbType.NChar);
+            command.Parameters["@id"].Value = post.PostID.ToString();
+
+            command.Parameters.Add("@timestamp", SqlDbType.DateTime);
+            command.Parameters["@timestamp"].Value = post.Timestamp;
+
+            command.Parameters.Add("@title", SqlDbType.NChar);
+            command.Parameters["@title"].Value = post.Title;
+
+            //command.Connection.Open();
+            var result = command.ExecuteNonQuery();
+
+            if (result < 0) return null;
+            return post;
+        }
+
+        private void WriteAll(List<Post> list)
+        {
+            var commandText = "INSERT INTO Blog_Post (author, body, id, timestamp, title) VALUES (@author, @body, @id, @timestamp, @title)";
+            var command = new SqlCommand(commandText, _connection);
+
+            foreach (var post in list)
+            {
                 command.Parameters.Add("@author", SqlDbType.NChar);
                 command.Parameters["@author"].Value = post.Author;
 
@@ -192,45 +246,12 @@ namespace BlogDB.Core
 
                 command.Parameters.Add("@title", SqlDbType.NChar);
                 command.Parameters["@title"].Value = post.Title;
-
-                command.Connection.Open();
-                var result = command.ExecuteNonQuery();
-
-                if (result < 0) return null;
             }
-            return post;
-        }
 
-        private void WriteAll(List<Post> list)
-        {
-            var commandText = "INSERT INTO Blog_Post (author, body, id, timestamp, title) VALUES (@author, @body, @id, @timestamp, @title)";
-            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
-            {
-                SqlCommand command = new SqlCommand(commandText, connection);
+            //command.Connection.Open();
+            var result = command.ExecuteNonQuery();
 
-                foreach (Post p in list)
-                {
-                    command.Parameters.Add("@author", SqlDbType.NChar);
-                    command.Parameters["@author"].Value = p.Author;
-
-                    command.Parameters.Add("@body", SqlDbType.NChar);
-                    command.Parameters["@body"].Value = p.Body;
-
-                    command.Parameters.Add("@id", SqlDbType.NChar);
-                    command.Parameters["@id"].Value = p.PostID.ToString();
-
-                    command.Parameters.Add("@timestamp", SqlDbType.DateTime);
-                    command.Parameters["@timestamp"].Value = p.Timestamp;
-
-                    command.Parameters.Add("@title", SqlDbType.NChar);
-                    command.Parameters["@title"].Value = p.Title;
-                }
-
-                command.Connection.Open();
-                var result = command.ExecuteNonQuery();
-
-                if (result < 0) Console.WriteLine("Error inserting data into database!");
-            }
+            if (result < 0) Console.WriteLine("Error inserting data into database!");
         }
     }
 }
