@@ -25,7 +25,6 @@ namespace BlogCore.Tests.Mocks
         public void AssertTryEditPostCalled() => Assert.True(CalledTryEditPost);
         public void AssertGetAllPostCalled() => Assert.True(CalledGetAllPosts);
 
-
         public bool TryAddPost(Post post, out Post result)
         {
             CalledTryAddPost = true;
