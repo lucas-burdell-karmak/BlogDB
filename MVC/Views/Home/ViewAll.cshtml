@@ -13,7 +13,6 @@ li{
             <th>Title</th>
             <th>Author</th>
             <th>Timestamp</th>
-            <th>Body</th>
         </tr>
     </thead>
     <tbody>
@@ -22,8 +21,7 @@ li{
             <tr>
                 <td><a class="" href="/Home/ViewSinglePost/?postid=@post.PostID"> @post.Title</a></td>
                 <td><a class="" href="/Home/ViewByAuthor/?author=@post.Author"> @post.Author</a></td>
-                <td><a class="" href="/Home/ViewSinglePost/?postid=@post.PostID"> @post.Timestamp</a></td>
-                <td><a class="" href="/Home/ViewSinglePost/?postid=@post.PostID"> @post.Body</a></td>
+                <td><a class="" href="/Home/ViewSinglePost/?postid=@post.PostID"> @post.Timestamp.ToLocalTime()</a></td>
             </tr>
         }
     </tbody>
