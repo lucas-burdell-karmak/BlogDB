@@ -21,6 +21,16 @@ namespace BlogDB.Core
             _connection.Open();
         }
 
+        public void Dispose()
+        {
+            _connection.Close();
+        }
+
+        ~SQLPostRepo()
+        {
+            Dispose();
+        }
+
         private Post DeletePostByID(Guid postID)
         {
             var post = ReadPost(postID);
@@ -237,16 +247,6 @@ namespace BlogDB.Core
             var result = command.ExecuteNonQuery();
 
             if (result < 0) Console.WriteLine("Error inserting data into database!");
-        }
-
-        public void Dispose()
-        {
-            _connection.Close();
-        }
-
-        ~SQLPostRepo()
-        {
-            Dispose();
         }
     }
 }
