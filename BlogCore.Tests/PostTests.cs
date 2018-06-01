@@ -10,7 +10,7 @@ namespace BlogCore.Tests
         public void TestAuthor()
         {
             var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", DateTime.UtcNow, Guid.NewGuid());
-            Assert.Equal(post.Author, "authorName");
+            Assert.Equal("authorName", post.Author);
         }
 
         [Fact]

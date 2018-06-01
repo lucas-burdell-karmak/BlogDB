@@ -11,18 +11,23 @@ namespace BlogDB.Core
 {
     public class SQLPostRepo : IPostRepo
     {
-        public readonly IConfiguration _config;
+        private readonly string _sqlConnectionString;
 
         public SQLPostRepo(IConfiguration config)
         {
-            _config = config;
+            _sqlConnectionString = config["SQLConnectionString"];
+        }
+
+        public SQLPostRepo(string sqlConnectionString)
+        {
+            _sqlConnectionString = sqlConnectionString;
         }
 
         private Post DeletePostByID(Guid postID)
         {
             var post = ReadPost(postID);
             var commandText = "DELETE FROM Blog_Post WHERE id = @id";
-            using (SqlConnection connection = new SqlConnection(_config["SQLConnectionString"]))
+            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
             {
                 SqlCommand command = new SqlCommand(commandText, connection);
 
@@ -46,7 +51,7 @@ namespace BlogDB.Core
         {
             var list = new List<Post>();
             var commandText = "SELECT id, title, author, body, timestamp FROM Blog_Post";
-            using (SqlConnection connection = new SqlConnection(_config["SQLConnectionString"]))
+            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
             {
                 SqlCommand command = new SqlCommand(commandText, connection);
 
@@ -73,7 +78,7 @@ namespace BlogDB.Core
         {
             Post post = null;
             var commandText = "SELECT id, title, author, body, timestamp FROM Blog_Post WHERE id = @id";
-            using (SqlConnection connection = new SqlConnection(_config["SQLConnectionString"]))
+            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
             {
                 SqlCommand command = new SqlCommand(commandText, connection);
 
@@ -139,7 +144,7 @@ namespace BlogDB.Core
         public Post UpdatePost(Post post)
         {
             var commandText = "UPDATE Blog_Post SET author = @author, body = @body, timestamp = @timestamp, title = @title WHERE id = @id";
-            using (SqlConnection connection = new SqlConnection(_config["SQLConnectionString"]))
+            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
             {
                 SqlCommand command = new SqlCommand(commandText, connection);
 
@@ -169,7 +174,7 @@ namespace BlogDB.Core
         public Post WritePost(Post post)
         {
             var commandText = "INSERT INTO Blog_Post (author, body, id, timestamp, title) VALUES (@author, @body, @id, @timestamp, @title)";
-            using (SqlConnection connection = new SqlConnection(_config["SQLConnectionString"]))
+            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
             {
                 SqlCommand command = new SqlCommand(commandText, connection);
 
@@ -199,7 +204,7 @@ namespace BlogDB.Core
         private void WriteAll(List<Post> list)
         {
             var commandText = "INSERT INTO Blog_Post (author, body, id, timestamp, title) VALUES (@author, @body, @id, @timestamp, @title)";
-            using (SqlConnection connection = new SqlConnection(_config["SQLConnectionString"]))
+            using (SqlConnection connection = new SqlConnection(_sqlConnectionString))
             {
                 SqlCommand command = new SqlCommand(commandText, connection);
 
