@@ -12,16 +12,21 @@ namespace BlogDB.Core
 {
     public class FilePostRepo : IPostRepo
     {
-        private readonly IConfiguration _config;
+        private readonly string _pathToDB;
 
         public FilePostRepo(IConfiguration config)
         {
-            _config = config;
+            _pathToDB = config["DatabaseFilePath"];
+        }
+
+        public FilePostRepo(string pathToDB)
+        {
+            _pathToDB = pathToDB;
         }
 
         private List<Post> ReadAll()
         {
-            using (var reader = new StreamReader(new FileStream(_config["DatabaseFilePath"], FileMode.OpenOrCreate)))
+            using (var reader = new StreamReader(new FileStream(_pathToDB, FileMode.OpenOrCreate)))
             {
                 var fileContents = reader.ReadToEnd();
                 var posts = JsonConvert.DeserializeObject<List<Post>>(fileContents);
@@ -36,7 +41,7 @@ namespace BlogDB.Core
         private void WriteAll(List<Post> listOfPosts)
         {
             // false means overwrite
-            using (var writer = new StreamWriter(_config["DatabaseFilePath"], false))
+            using (var writer = new StreamWriter(_pathToDB, false))
             {
                 var contentsToWrite = JsonConvert.SerializeObject(listOfPosts);
                 writer.Write(contentsToWrite);

@@ -42,6 +42,7 @@ namespace The_Intern_MVC.Controllers
                 // TODO exception logging
 
                 string[] errorMessage = { "Cannot add post.", "The post had empty properties. :(" };
+                Console.WriteLine(e.ToString());
                 return View("NullPost", errorMessage);
             }
         }
@@ -60,9 +61,10 @@ namespace The_Intern_MVC.Controllers
                 PostModel postResult = _postDataAccess.EditPost(post);
                 return View("PostResult", postResult);
             }
-            catch (ArgumentException ae)
+            catch (ArgumentException e)
             {
                 string[] errorMessage = { "Invalid Post.", "The post contained some empty boxes. :(" };
+                Console.WriteLine(e.ToString());
                 return View("NullPost", errorMessage);
             }
         }
@@ -88,10 +90,11 @@ namespace The_Intern_MVC.Controllers
                 ViewBag.History = "/Home";
                 return RedirectToAction("ViewAll");
             }
-            catch (ArgumentException ae)
+            catch (ArgumentException e)
             {
                 string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
                 ViewBag.History = "/Home/ViewAll";
+                Console.WriteLine(e.ToString());
                 return View("NullPost", errorMessage);
             }
         }

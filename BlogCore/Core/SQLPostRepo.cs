@@ -11,12 +11,19 @@ namespace BlogDB.Core
 {
     public class SQLPostRepo : IPostRepo, IDisposable
     {
-        public readonly IConfiguration _config;
         private readonly SqlConnection _connection;
-
+        private readonly string _sqlConnectionString;
+        
         public SQLPostRepo(IConfiguration config)
         {
-            _config = config;
+            __sqlConnectionString = sqlConnectionString;
+            _connection = new SqlConnection(_config["SQLConnectionString"]);
+            _connection.Open();
+        }
+        
+        public SQLPostRepo(string sqlConnectionString)
+        {
+            _sqlConnectionString = sqlConnectionString
             _connection = new SqlConnection(_config["SQLConnectionString"]);
             _connection.Open();
         }
@@ -83,7 +90,6 @@ namespace BlogDB.Core
             Post post = null;
             var commandText = "SELECT id, title, author, body, timestamp FROM Blog_Post WHERE id = @id";
             var command = new SqlCommand(commandText, _connection);
-
             command.Parameters.Add("@id", SqlDbType.NChar);
             command.Parameters["@id"].Value = id.ToString();
 
@@ -169,7 +175,6 @@ namespace BlogDB.Core
         {
             var commandText = "UPDATE Blog_Post SET author = @author, body = @body, timestamp = @timestamp, title = @title WHERE id = @id";
             var command = new SqlCommand(commandText, _connection);
-
             command.Parameters.Add("@author", SqlDbType.NChar);
             command.Parameters["@author"].Value = post.Author;
 
