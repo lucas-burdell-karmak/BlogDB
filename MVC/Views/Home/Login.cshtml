@@ -1,5 +1,5 @@
 @model UserLogin
-<h2>Simple Login Page</h2>
+<h2>Login Page</h2>
 @using (Html.BeginForm("LoginConfirm","Home",FormMethod.Post,new {@class= "form-horizontal", id="loginForm"}))
 {
     <div class="row">
@@ -20,3 +20,19 @@
         </div>
     </div>
 }
+
+<script type="text/javascript" src="~/js/sha512.min.js"></script>
+
+<script type="text/javascript">
+    $("#LoginButton").click(function() {
+        if (!$("#loginForm").valid()) { // Not Valid
+            return false;
+        } else {
+            var hash = sha512.create();
+            hash.update($("#passwordText").value);
+            $("#passwordText").value = hash.hex();
+            $("#loginForm").submit();
+            return true;
+        }
+    });
+</script>

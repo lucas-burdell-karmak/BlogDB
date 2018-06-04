@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-
+using BlogDB.Core;
 
 namespace The_Intern_MVC.Models
 {

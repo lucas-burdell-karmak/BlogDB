@@ -104,6 +104,9 @@ namespace The_Intern_MVC.Controllers
         }
 
         public IActionResult LoginConfirm(UserLogin userLogin) {
+            
+            
+
             // hashing
             // validation
             // sql check (does it exist)
