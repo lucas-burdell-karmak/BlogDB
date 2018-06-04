@@ -66,9 +66,9 @@ namespace BlogDB.Core
             var authors = new List<string>();
             posts.ForEach((Post post) =>
             {
-                if (!authors.Contains(post.Author, StringComparer.OrdinalIgnoreCase))
+                if (!authors.Contains(post.Author.Name, StringComparer.OrdinalIgnoreCase))
                 {
-                    authors.Add(post.Author);
+                    authors.Add(post.Author.Name);
                 }
             });
             return authors;

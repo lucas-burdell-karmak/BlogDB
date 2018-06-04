@@ -99,20 +99,6 @@ namespace The_Intern_MVC.Controllers
             }
         }
 
-        public IActionResult Login() {
-            return View();
-        }
-
-        public IActionResult LoginConfirm(UserLogin userLogin) {
-            
-            
-
-            // hashing
-            // validation
-            // sql check (does it exist)
-            // return to home as "logged in"
-            return View("Index");
-        }
 
         public IActionResult NullPost(string message)
         {
@@ -167,7 +153,7 @@ namespace The_Intern_MVC.Controllers
             List<PostModel> results = _postDataAccess.SearchBy((post) =>
                     {
                         return post.Title.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
-                                post.Author.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
+                                post.Author.Name.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
                                 post.Body.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1;
                     }
             ).ConvertAll<PostModel>((p) => (PostModel) p);

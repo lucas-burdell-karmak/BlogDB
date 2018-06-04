@@ -11,9 +11,9 @@ namespace BlogDB.Core
 {
     public interface IAuthorizor {
 
-        Author ValidateAuthor(string name, string passwordHash);
+        bool TryValidateAuthor(string name, string passwordHash,out Author author);
 
-        void RegisterAuthor(string name, string passwordHash);
+        bool TryRegisterAuthor(string name, string passwordHash, out Author author);
 
     }
 }
