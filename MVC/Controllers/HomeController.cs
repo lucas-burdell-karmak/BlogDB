@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using BlogDB.Core;
 using System.Web;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using BlogDB.Core;
+
 using The_Intern_MVC.Models;
 
 namespace The_Intern_MVC.Controllers
@@ -18,9 +22,35 @@ namespace The_Intern_MVC.Controllers
         {
             this._postDataAccess = logic;
         }
+
+        [Authorize(Roles = "BlogAuthor")]
         public IActionResult Index()
         {
             return View();
+        }
+
+        public string GetCookie(string cookieID)
+        {
+            return Request.Cookies["cookieID"];
+        }
+
+        public void RemoveCookie(string cookieID)
+        {
+            Response.Cookies.Delete(cookieID);
+        }
+
+        public void SetCookie(string cookieID, string value, int expireTimeInMinutes)
+        {
+            CookieOptions cookieOption = new CookieOptions();
+            if (expireTimeInMinutes > 0)
+            {
+                cookieOption.Expires = DateTime.Now.AddMinutes(expireTimeInMinutes);
+            }
+            else
+            {
+                cookieOption.Expires = DateTime.Now.AddMinutes(10);
+            }
+            Response.Cookies.Append(cookieID, value, cookieOption);
         }
 
         public PartialViewResult AddPostConfirmation(PostModel post)
@@ -53,6 +83,28 @@ namespace The_Intern_MVC.Controllers
             return View();
         }
 
+        public IActionResult Authors()
+        {
+            ViewBag.History = "/Home/";
+            return View(_postDataAccess.GetListOfAuthors());
+        }
+
+        public IActionResult DeletePostResult(PostModel post)
+        {
+            try
+            {
+                PostModel postResult = _postDataAccess.DeletePost(post);
+                ViewBag.History = "/Home";
+                return RedirectToAction("ViewAll");
+            }
+            catch (ArgumentException e)
+            {
+                string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
+                ViewBag.History = "/Home/ViewAll";
+                Console.WriteLine(e.ToString());
+                return View("NullPost", errorMessage);
+            }
+        }
         public IActionResult EditPostResult(PostModel post)
         {
             try
@@ -82,20 +134,40 @@ namespace The_Intern_MVC.Controllers
             return View(postResult);
         }
 
-        public IActionResult DeletePostResult(PostModel post)
+
+        public IActionResult Error()
         {
-            try
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(LoginViewModel lvModel)
+        {
+            // TODO: Hash the password before init new Author
+            Author user = new Author(lvModel.Username, lvModel.Password);
+            if (true/* TODO: Author is in DB && rememberMe is true*/)
             {
-                PostModel postResult = _postDataAccess.DeletePost(post);
-                ViewBag.History = "/Home";
-                return RedirectToAction("ViewAll");
+                var claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.Name, user.Name));
+                string[] roles = { "BlogAuthor", "BlogReader" }; //look this up in the DB by UserID later
+
+                foreach (string role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
+                SetCookie(new Guid().ToString(), lvModel.Username, 30);
+                return View("Index");
             }
-            catch (ArgumentException e)
+            else
             {
-                string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
-                ViewBag.History = "/Home/ViewAll";
-                Console.WriteLine(e.ToString());
-                return View("NullPost", errorMessage);
+                //user.Roles = "InvalidUser";
+                ViewData["message"] = "Invalid login credentials!";
+                return View("Login");
             }
         }
 
@@ -104,6 +176,55 @@ namespace The_Intern_MVC.Controllers
             ViewBag.History = "/Home";
             return View(message);
         }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Register(RegisterViewModel rvModel)
+        {
+
+            if (rvModel.Password.CompareTo(rvModel.ConfirmPassword) == 0)
+            {
+                if (true/* TODO: username is available*/)
+                {
+                    // register a new user in the database
+                    SetCookie(new Guid().ToString(), rvModel.Username, 30);
+                    return View("Index");
+                }
+                else
+                {
+                    ViewData["message"] = "Username is not available!";
+                    return View("Register");
+                }
+            }
+            else
+            {
+                ViewData["message"] = "Passwords do not match!";
+                return View("Register");
+            }
+        }
+
+        public IActionResult SearchResult(SearchCriteria searchCriteria)
+        {
+            ViewBag.History = "/Home/";
+            if (String.IsNullOrEmpty(searchCriteria.SearchString))
+            {
+                return RedirectToAction("ViewAll");
+            }
+            List<PostModel> results = _postDataAccess.SearchBy((post) =>
+                    {
+                        return post.Title.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
+                                post.Author.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
+                                post.Body.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1;
+                    }
+            ).ConvertAll<PostModel>((p) => (PostModel)p);
+
+            return View("ViewAll", results);
+        }
+
 
         public IActionResult ViewSinglePost(String postid)
         {
@@ -121,7 +242,7 @@ namespace The_Intern_MVC.Controllers
         {
 
             ViewBag.History = "/Home";
-            List<PostModel> postResult = _postDataAccess.GetAllPosts().ConvertAll<PostModel>((p) => (PostModel) p);
+            List<PostModel> postResult = _postDataAccess.GetAllPosts().ConvertAll<PostModel>((p) => (PostModel)p);
             if (postResult == null)
             {
                 return View("NullPost", "There are no posts.");
@@ -132,37 +253,8 @@ namespace The_Intern_MVC.Controllers
         public IActionResult ViewByAuthor(string author)
         {
             ViewBag.History = "/Home/Authors";
-            List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) => (PostModel) p);
+            List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) => (PostModel)p);
             return View("ViewAll", list);
-        }
-
-        public IActionResult Authors()
-        {
-            ViewBag.History = "/Home/";
-            return View(_postDataAccess.GetListOfAuthors());
-        }
-
-        public IActionResult SearchResult(SearchCriteria searchCriteria)
-        {
-            ViewBag.History = "/Home/";
-            if (String.IsNullOrEmpty(searchCriteria.SearchString))
-            {
-                return RedirectToAction("ViewAll");
-            }
-            List<PostModel> results = _postDataAccess.SearchBy((post) =>
-                    {
-                        return post.Title.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
-                                post.Author.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
-                                post.Body.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1;
-                    }
-            ).ConvertAll<PostModel>((p) => (PostModel) p);
-
-            return View("ViewAll", results);
-        }
-
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

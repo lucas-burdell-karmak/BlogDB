@@ -1,0 +1,41 @@
+@model LoginViewModel
+<h2>Login Page</h2>
+@using (Html.BeginForm("Login","Home",FormMethod.Post,new {@class= "form-horizontal", id="loginForm"}))
+{
+    <div class="row">
+        <div class="input-group col-md-12">
+            <div class="form-group">
+                <label for="usernameText" class="control-label">Username:</label>
+                @Html.TextBoxFor(m => m.Username, new {@class="form-control", id="usernameText"})
+                @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <label for="passwordText" class="control-label">Password:</label>
+                @Html.PasswordFor(m => m.Password, new {@class="form-control", id="passwordText"})
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+            <div>
+                <input type="submit" id="LoginButton" class="btn btn-success box-shadow-4dp" value="Login"></input>
+            </div>
+            <div>
+                @ViewData["message"]
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript" src="~/js/sha512.min.js"></script>
+
+<script type="text/javascript">
+    $("#LoginButton").click(function() {
+        if (!$("#loginForm").valid()) { // Not Valid
+            return false;
+        } else {
+            var hash = sha512.create();
+            hash.update($("#passwordText").value);
+            $("#passwordText").value = hash.hex();
+            $("#loginForm").submit();
+            return true;
+        }
+    });
+</script>

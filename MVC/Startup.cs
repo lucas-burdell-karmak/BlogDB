@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BlogDB.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace The_Intern_MVC
 {
@@ -23,6 +25,8 @@ namespace The_Intern_MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(o => o.LoginPath = new PathString("/Home/Login"));
             services.AddSingleton<IPostValidator, PostValidator>();
             services.AddSingleton<IPostRepo, SQLPostRepo>();
             services.AddSingleton<IPostDataAccess, PostDataAccess>();
@@ -41,7 +45,7 @@ namespace The_Intern_MVC
             }
 
             app.UseStaticFiles();
-
+            app.UseAuthentication(); // used to invoke Authentication Middleware that sets the HttpContext.User property
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
