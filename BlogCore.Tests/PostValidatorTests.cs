@@ -9,17 +9,13 @@ namespace BlogCore.Tests
     {
         private readonly IPostValidator _postValidator;
 
-        public PostValidatorTests()
-        {
-            _postValidator = new PostValidator();
-        }
+        public PostValidatorTests() { _postValidator = new PostValidator(); }
 
         [Fact]
         public void PostExists_True_Success()
         {
             var listOfPosts = new List<Post>();
-            var author = new Author("authorName", 0);
-            var postInList = new Post("I Like To Code", author, "This is my body, this is my soul.");
+            var postInList = new Post("title", new Author("author", 0), "body");
             listOfPosts.Add(postInList);
 
             Assert.True(_postValidator.PostExists(listOfPosts, postInList));
@@ -29,14 +25,13 @@ namespace BlogCore.Tests
         public void PostExists_False_Success()
         {
             var listOfPosts = new List<Post>();
-            var author = new Author("authorName", 0);
-            var postNotInList = new Post("I Love To Code", author, "This is my body, seriously... I'm trapped here.");
+            var postNotInList = new Post("title", new Author("author", 0), "body");
 
             Assert.False(_postValidator.PostExists(listOfPosts, postNotInList));
         }
 
         [Theory]
-        [InlineData(""  )]
+        [InlineData("")]
         [InlineData("  ")]
         [InlineData(null)]
         public void IsValidAuthor_CaughtInvalid_Success(string invalidInput)
@@ -47,14 +42,14 @@ namespace BlogCore.Tests
         [Fact]
         public void IsValidAuthor_Valid_Success()
         {
-            var notEmptyNullOrWhitespace = "Codes Alot";
+            var notEmptyNullOrWhitespace = "author";
 
             Assert.True(_postValidator.IsValidAuthor(notEmptyNullOrWhitespace));
         }
 
         [Theory]
-        [InlineData(""  )]
-        [InlineData(" " )]
+        [InlineData("")]
+        [InlineData(" ")]
         [InlineData(null)]
         public void IsValidBody_CaughtInvalid_Success(string invalidInput)
         {
@@ -64,14 +59,14 @@ namespace BlogCore.Tests
         [Fact]
         public void IsValidBody_Valid_Success()
         {
-            var notEmptyNullOrWhitespace = "This is my body, this is my soul.";
+            var notEmptyNullOrWhitespace = "body";
 
             Assert.True(_postValidator.IsValidBody(notEmptyNullOrWhitespace));
         }
 
         [Theory]
-        [InlineData(""  )]
-        [InlineData(" " )]
+        [InlineData("")]
+        [InlineData(" ")]
         [InlineData(null)]
         public void IsValidTitle_CatchInvalid_Success(string invalidInput)
         {
@@ -81,14 +76,14 @@ namespace BlogCore.Tests
         [Fact]
         public void IsValidTitle_Valid_Success()
         {
-            var notEmptyNullOrWhitespace = "I Like To Code Stuff";
+            var notEmptyNullOrWhitespace = "title";
 
             Assert.True(_postValidator.IsValidTitle(notEmptyNullOrWhitespace));
         }
 
         [Theory]
-        [InlineData(""  )]
-        [InlineData(" " )]
+        [InlineData("")]
+        [InlineData(" ")]
         [InlineData(null)]
         public void IsValidString_CatchInvalid_Success(string invalidInput)
         {
@@ -104,22 +99,21 @@ namespace BlogCore.Tests
         }
 
         [Theory]
-        [InlineData("",      "",       ""    )]
-        [InlineData("title", "author", ""    )]
-        [InlineData("title", "",       "body")]
-        [InlineData("",      "author", "body")]
-        [InlineData(null,    null,     null  )]
-        [InlineData("title", "author", null  )]
-        [InlineData("title", null,     "body")]
-        [InlineData(null,    "author", "body")]
-        [InlineData(" ",     " ",      " "   )]
-        [InlineData("title", "author", " "   )]
-        [InlineData("title", " ",      "body")]
-        [InlineData(" ",     "author", "body")]
+        [InlineData("", "", "")]
+        [InlineData("title", "author", "")]
+        [InlineData("title", "", "body")]
+        [InlineData("", "author", "body")]
+        [InlineData(null, null, null)]
+        [InlineData("title", "author", null)]
+        [InlineData("title", null, "body")]
+        [InlineData(null, "author", "body")]
+        [InlineData(" ", " ", " ")]
+        [InlineData("title", "author", " ")]
+        [InlineData("title", " ", "body")]
+        [InlineData(" ", "author", "body")]
         public void IsValidPost_CatchInvalid_Success(string title, string authorName, string body)
         {
-            var author = new Author(authorName, 0);
-            var invalidPost = new Post(title, author, body);
+            var invalidPost = new Post(title, new Author(authorName, 0), body);
 
             Assert.False(_postValidator.IsValidPost(invalidPost));
         }
@@ -135,8 +129,7 @@ namespace BlogCore.Tests
         [Fact]
         public void IsValidPost_Valid_Success()
         {
-            var author = new Author("authorName", 0);
-            var validPostValues = new Post("title", author, "body");
+            var validPostValues = new Post("title", new Author("author", 0), "body");
 
             Assert.True(_postValidator.IsValidPost(validPostValues));
         }
