@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using BlogDB.Core;
 using System.Web;
 using The_Intern_MVC.Models;
+using The_Intern_MVC.Builders;
 
 namespace The_Intern_MVC.Controllers
 {
@@ -28,14 +29,17 @@ namespace The_Intern_MVC.Controllers
             return PartialView("AddButton", post);
         }
 
-        public IActionResult AddPostResult(PostModel post)
+        public IActionResult AddPostResult(PostModel postModel)
         {
             try
             {
-                PostModel postResult = _postDataAccess.AddPost(post);
+                var builder = new PostBuilder(postModel);
+                var postResult = _postDataAccess.AddPost(builder.build());
+                var modelBuilder = new PostModelBuilder(postResult);
+
                 ViewBag.History = "/Home";
 
-                return View("ViewSinglePost", postResult);
+                return View("ViewSinglePost", modelBuilder.build());
             }
             catch (ArgumentException e)
             {
@@ -57,9 +61,11 @@ namespace The_Intern_MVC.Controllers
         {
             try
             {
+                var postBuilder = new PostBuilder(post);
                 ViewBag.History = "/Home/ViewAll";
-                PostModel postResult = _postDataAccess.EditPost(post);
-                return View("PostResult", postResult);
+                var postResult = _postDataAccess.EditPost(postBuilder.build());
+                var postModelBuilder = new PostModelBuilder(postResult);
+                return View("PostResult", postModelBuilder.build());
             }
             catch (ArgumentException e)
             {
@@ -71,7 +77,7 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult EditPost(String postid)
         {
-            PostModel postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
+            var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
                 string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
@@ -79,14 +85,16 @@ namespace The_Intern_MVC.Controllers
                 return View("NullPost", errorMessage);
             }
             ViewBag.History = "/Home/ViewSinglePost?postid=" + postid;
-            return View(postResult);
+            var modelBuilder = new PostModelBuilder(postResult);
+            return View(modelBuilder.build());
         }
 
-        public IActionResult DeletePostResult(PostModel post)
+        public IActionResult DeletePostResult(PostModel postModel)
         {
             try
             {
-                PostModel postResult = _postDataAccess.DeletePost(post);
+                var postBuilder = new PostBuilder(postModel);
+                var postResult = _postDataAccess.DeletePost(postBuilder.build());
                 ViewBag.History = "/Home";
                 return RedirectToAction("ViewAll");
             }
@@ -108,21 +116,26 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult ViewSinglePost(String postid)
         {
-            PostModel postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
+            var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
                 ViewBag.History = "/Home/";
                 return View("NullPost", "Post does not exist.");
             }
             ViewBag.History = Request.Headers["Referer"].ToString();
-            return View(postResult);
+            var modelBuilder = new PostModelBuilder(postResult);
+            return View(modelBuilder.build());
         }
 
         public IActionResult ViewAll()
         {
 
             ViewBag.History = "/Home";
-            List<PostModel> postResult = _postDataAccess.GetAllPosts().ConvertAll<PostModel>((p) => (PostModel) p);
+            List<PostModel> postResult = _postDataAccess.GetAllPosts().ConvertAll<PostModel>((p) =>
+            {
+                var modelBuilder = new PostModelBuilder(p);
+                return modelBuilder.build();
+            });
             if (postResult == null)
             {
                 return View("NullPost", "There are no posts.");
@@ -133,7 +146,11 @@ namespace The_Intern_MVC.Controllers
         public IActionResult ViewByAuthor(string author)
         {
             ViewBag.History = "/Home/Authors";
-            List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) => (PostModel) p);
+            List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) =>
+            {
+                var modelBuilder = new PostModelBuilder(p);
+                return modelBuilder.build();
+            });
             return View("ViewAll", list);
         }
 
@@ -156,7 +173,11 @@ namespace The_Intern_MVC.Controllers
                                 post.Author.Name.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
                                 post.Body.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1;
                     }
-            ).ConvertAll<PostModel>((p) => (PostModel) p);
+            ).ConvertAll<PostModel>((p) =>
+            {
+                var modelBuilder = new PostModelBuilder(p);
+                return modelBuilder.build();
+            });
 
             return View("ViewAll", results);
         }

@@ -7,23 +7,6 @@ namespace BlogDB.Core
     public class Authorizor : IAuthorizor
     {
 
-        private static byte[] CombineByteArrays(byte[] array1, byte[] array2)
-        {
-            byte[] output = new byte[array1.Length + array2.Length];
-            var currentIndex = 0;
-            for (var i = 0; i < array1.Length; i++)
-            {
-                output[currentIndex] = array1[i];
-                currentIndex++;
-            }
-            for (var i = 0; i < array2.Length; i++)
-            {
-                output[currentIndex] = array2[i];
-                currentIndex++;
-            }
-            return output;
-        }
-
         private static string ByteArrayToString(byte[] ba)
         {
             StringBuilder hex = new StringBuilder(ba.Length * 2);
