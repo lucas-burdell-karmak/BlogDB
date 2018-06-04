@@ -8,6 +8,8 @@ namespace BlogDB.Core
         public string Name {get; set;}
         public string PasswordHash {get; set;}
         public int ID {get; set;}
+        public string Roles { get; set; }
+        
         public Author(string name, string passwordHash)
         {
             Name = name;

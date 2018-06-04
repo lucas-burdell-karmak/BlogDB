@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BlogDB.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace The_Intern_MVC
 {
@@ -24,7 +25,8 @@ namespace The_Intern_MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(o => o.LoginPath = new PathString("/Home/Login"));
             services.AddSingleton<IPostValidator, PostValidator>();
             services.AddSingleton<IPostRepo, SQLPostRepo>();
             services.AddSingleton<IPostDataAccess, PostDataAccess>();
