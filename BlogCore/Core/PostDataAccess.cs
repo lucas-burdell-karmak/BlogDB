@@ -76,7 +76,7 @@ namespace BlogDB.Core
 
         public List<Post> GetListOfPostsByAuthor(string authorName)
         {
-            return _postRepo.GetAllPosts().Where((post) => authorName.CompareTo(post.Author) == 0).ToList();
+            return _postRepo.GetAllPosts().Where((post) => authorName.CompareTo(post.Author.Name) == 0).ToList();
         }
 
         public Post GetPostById(Guid id)
@@ -115,7 +115,7 @@ namespace BlogDB.Core
             switch (sortType)
             {
                 case PostComponent.author:
-                    return posts.OrderBy(x => x.Author).ToList();
+                    return posts.OrderBy(x => x.Author.Name).ToList();
                 case PostComponent.title:
                     return posts.OrderBy(x => x.Title).ToList();
                 case PostComponent.timestamp:

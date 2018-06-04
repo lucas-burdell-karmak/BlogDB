@@ -9,21 +9,28 @@ namespace BlogCore.Tests
         [Fact]
         public void TestAuthor()
         {
-            var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", DateTime.UtcNow, Guid.NewGuid());
-            Assert.Equal("authorName", post.Author);
+            var author = new Author("authorName", 0);
+            var post = new BlogDB.Core.Post("titleName", author, "bodyText", DateTime.UtcNow, Guid.NewGuid());
+
+            Assert.Equal("authorName", post.Author.Name);
+            Assert.Equal(0, post.Author.ID);
         }
 
         [Fact]
         public void TestTitle()
         {
-            var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", DateTime.UtcNow, Guid.NewGuid());
+            var author = new Author("authorName", 0);
+            var post = new BlogDB.Core.Post("titleName", author, "bodyText", DateTime.UtcNow, Guid.NewGuid());
+
             Assert.Equal("titleName", post.Title);
         }
 
         [Fact]
         public void TestBody()
         {
-            var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", DateTime.UtcNow, Guid.NewGuid());
+            var author = new Author("authorName", 0);
+            var post = new BlogDB.Core.Post("titleName", author, "bodyText", DateTime.UtcNow, Guid.NewGuid());
+
             Assert.Equal("bodyText", post.Body);
         }
 
@@ -31,7 +38,9 @@ namespace BlogCore.Tests
         public void TestDateTime()
         {
             var date = DateTime.UtcNow;
-            var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", date, Guid.NewGuid());
+            var author = new Author("authorName", 0);
+            var post = new BlogDB.Core.Post("titleName", author, "bodyText", date, Guid.NewGuid());
+
             Assert.Equal(date, post.Timestamp);
         }
 
@@ -39,7 +48,9 @@ namespace BlogCore.Tests
         public void TestPostID()
         {
             var guid = Guid.NewGuid();
-            var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", DateTime.UtcNow, guid);
+            var author = new Author("authorName", 0);
+            var post = new BlogDB.Core.Post("titleName", author, "bodyText", DateTime.UtcNow, guid);
+
             Assert.Equal(guid, post.PostID);
         }
 
