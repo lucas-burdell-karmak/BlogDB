@@ -23,37 +23,6 @@ namespace The_Intern_MVC.Models
 
         public Guid PostID { get; set; }
 
-
-        public static implicit operator PostModel(Post post)
-        {
-
-
-            if (post == null)
-                return null;
-
-            var postModel = new PostModel();
-            postModel.Title = post.Title;
-            postModel.AuthorName = post.Author.Name;
-            postModel.Body = post.Body;
-            postModel.PostID = post.PostID;
-            postModel.Timestamp = post.Timestamp;
-            return postModel;
-        }
-
-        public static implicit operator Post(PostModel postModel)
-        {
-            if (postModel == null)
-                return null;
-
-            var post = new Post();
-            post.Title = postModel.Title;
-            post.Author = null; // TODO
-            post.Body = postModel.Body;
-            post.Timestamp = postModel.Timestamp;
-            post.PostID = postModel.PostID;
-            return post;
-        }
-
         public static PostModel Empty { get => new PostModel(); }
 
     }
