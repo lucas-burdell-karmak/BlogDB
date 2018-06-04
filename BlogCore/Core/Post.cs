@@ -5,14 +5,14 @@ namespace BlogDB.Core
     public class Post
     {
         public string Title { get; set; }
-        public string Author { get; set; }
+        public Author Author { get; set; }
         public string Body { get; set; }
         public DateTime Timestamp { get; set; }
         public Guid PostID { get; set; }
 
         public Post() { }
 
-        public Post(string title, string author, string body)
+        public Post(string title, Author author, string body)
         {
             Title = title;
             Author = author;
@@ -21,7 +21,7 @@ namespace BlogDB.Core
             PostID = Guid.NewGuid();
         }
 
-        public Post(string title, string author, string body, DateTime timestamp, Guid postid)
+        public Post(string title, Author author, string body, DateTime timestamp, Guid postid)
         {
             Title = title;
             Author = author;

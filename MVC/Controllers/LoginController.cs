@@ -24,7 +24,7 @@ namespace The_Intern_MVC.Controllers
         public IActionResult Index(LoginViewModel lvModel)
         {
             // TODO: Hash the password before init new Author
-            Author user = new Author(lvModel.Username, lvModel.Password);
+            Author user = new Author(lvModel.Username, 0);
             if (true/* TODO: Author is in DB && rememberMe is true*/)
             {
                 var claims = new List<Claim>();

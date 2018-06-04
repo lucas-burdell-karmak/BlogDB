@@ -27,6 +27,7 @@ namespace The_Intern_MVC
             services.AddMvc();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(o => o.LoginPath = new PathString("/Login/Index"));
+            services.AddSingleton<IAuthorRepo, SQLAuthorRepo>();
             services.AddSingleton<IPostValidator, PostValidator>();
             services.AddSingleton<IPostRepo, SQLPostRepo>();
             services.AddSingleton<IPostDataAccess, PostDataAccess>();
