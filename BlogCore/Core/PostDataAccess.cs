@@ -8,11 +8,13 @@ namespace BlogDB.Core
     {
         private readonly IPostRepo _postRepo;
         private readonly IPostValidator _postValidator;
+        private readonly IAuthorRepo _authorRepo;
 
-        public PostDataAccess(IPostRepo postRepo, IPostValidator postValidator)
+        public PostDataAccess(IPostRepo postRepo, IPostValidator postValidator, IAuthorRepo authorRepo)
         {
             _postRepo = postRepo;
             _postValidator = postValidator;
+            _authorRepo = authorRepo;
         }
 
         public Post AddPost(Post post)
@@ -66,9 +68,9 @@ namespace BlogDB.Core
             var authors = new List<string>();
             posts.ForEach((Post post) =>
             {
-                if (!authors.Contains(post.Author, StringComparer.OrdinalIgnoreCase))
+                if (!authors.Contains(post.Author.Name, StringComparer.OrdinalIgnoreCase))
                 {
-                    authors.Add(post.Author);
+                    authors.Add(post.Author.Name);
                 }
             });
             return authors;

@@ -35,7 +35,7 @@ namespace BlogDB.Core
             {
                 return false;
             }
-            return IsValidAuthor(post.Author) && IsValidBody(post.Body) && IsValidTitle(post.Title);
+            return IsValidAuthor(post.Author.Name) && IsValidBody(post.Body) && IsValidTitle(post.Title);
         }
     }
 }

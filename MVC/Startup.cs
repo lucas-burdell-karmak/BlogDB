@@ -27,10 +27,12 @@ namespace The_Intern_MVC
             services.AddMvc();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(o => o.LoginPath = new PathString("/Home/Login"));
+            services.AddSingleton<IAuthorRepo, SQLAuthorRepo>();
             services.AddSingleton<IPostValidator, PostValidator>();
             services.AddSingleton<IPostRepo, SQLPostRepo>();
             services.AddSingleton<IPostDataAccess, PostDataAccess>();
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using BlogDB.Core;
-
+using The_Intern_MVC.Builders;
 using The_Intern_MVC.Models;
 
 namespace The_Intern_MVC.Controllers
@@ -62,10 +62,12 @@ namespace The_Intern_MVC.Controllers
         {
             try
             {
-                PostModel postResult = _postDataAccess.AddPost(post);
+                var postBuilder = new PostBuilder(post);
+                var postResult = _postDataAccess.AddPost(postBuilder.build());
                 ViewBag.History = "/Home";
 
-                return View("ViewSinglePost", postResult);
+                var pmBuilder = new PostModelBuilder(postResult);
+                return View("ViewSinglePost", pmBuilder.build());
             }
             catch (ArgumentException e)
             {
@@ -93,7 +95,8 @@ namespace The_Intern_MVC.Controllers
         {
             try
             {
-                PostModel postResult = _postDataAccess.DeletePost(post);
+                var postBuilder = new PostBuilder(post);
+                var postResult = _postDataAccess.DeletePost(postBuilder.build());
                 ViewBag.History = "/Home";
                 return RedirectToAction("ViewAll");
             }
@@ -110,8 +113,10 @@ namespace The_Intern_MVC.Controllers
             try
             {
                 ViewBag.History = "/Home/ViewAll";
-                PostModel postResult = _postDataAccess.EditPost(post);
-                return View("PostResult", postResult);
+                var postBuilder = new PostBuilder(post);
+                var postResult = _postDataAccess.EditPost(postBuilder.build());
+                var pmBuilder = new PostModelBuilder(postResult);
+                return View("PostResult", pmBuilder.build());
             }
             catch (ArgumentException e)
             {
@@ -123,7 +128,7 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult EditPost(String postid)
         {
-            PostModel postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
+            var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
                 string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
@@ -131,7 +136,8 @@ namespace The_Intern_MVC.Controllers
                 return View("NullPost", errorMessage);
             }
             ViewBag.History = "/Home/ViewSinglePost?postid=" + postid;
-            return View(postResult);
+            var postModelBuilder = new PostModelBuilder(postResult);
+            return View(postModelBuilder.build());
         }
 
 
@@ -149,7 +155,7 @@ namespace The_Intern_MVC.Controllers
         public IActionResult Login(LoginViewModel lvModel)
         {
             // TODO: Hash the password before init new Author
-            Author user = new Author(lvModel.Username, lvModel.Password);
+            Author user = new Author(lvModel.Username, 0);
             if (true/* TODO: Author is in DB && rememberMe is true*/)
             {
                 var claims = new List<Claim>();
@@ -217,10 +223,14 @@ namespace The_Intern_MVC.Controllers
             List<PostModel> results = _postDataAccess.SearchBy((post) =>
                     {
                         return post.Title.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
-                                post.Author.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
+                                post.Author.Name.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
                                 post.Body.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1;
                     }
-            ).ConvertAll<PostModel>((p) => (PostModel)p);
+            ).ConvertAll<PostModel>((p) =>
+            {
+                var pmBuilder = new PostModelBuilder(p);
+                return pmBuilder.build();
+            });
 
             return View("ViewAll", results);
         }
@@ -228,21 +238,26 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult ViewSinglePost(String postid)
         {
-            PostModel postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
+            var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
                 ViewBag.History = "/Home/";
                 return View("NullPost", "Post does not exist.");
             }
             ViewBag.History = Request.Headers["Referer"].ToString();
-            return View(postResult);
+            var pmBuilder = new PostModelBuilder(postResult);
+            return View(pmBuilder.build());
         }
 
         public IActionResult ViewAll()
         {
 
             ViewBag.History = "/Home";
-            List<PostModel> postResult = _postDataAccess.GetAllPosts().ConvertAll<PostModel>((p) => (PostModel)p);
+            List<PostModel> postResult = _postDataAccess.GetAllPosts().ConvertAll<PostModel>((p) =>
+            {
+                var pmBuilder = new PostModelBuilder(p);
+                return pmBuilder.build();
+            });
             if (postResult == null)
             {
                 return View("NullPost", "There are no posts.");
@@ -253,7 +268,11 @@ namespace The_Intern_MVC.Controllers
         public IActionResult ViewByAuthor(string author)
         {
             ViewBag.History = "/Home/Authors";
-            List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) => (PostModel)p);
+            List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) =>
+            {
+                var pmBuilder = new PostModelBuilder(p);
+                return pmBuilder.build();
+            });
             return View("ViewAll", list);
         }
     }
