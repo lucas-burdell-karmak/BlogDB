@@ -13,10 +13,11 @@ namespace BlogDB.Core
     {
         private readonly SqlConnection _connection;
         private readonly string _sqlConnectionString;
+        private readonly IAuthorRepo _authorRepo;
         
-        public SQLPostRepo(IConfiguration config)
+        public SQLPostRepo(IAuthorRepo authorRepo, IConfiguration config)
         {
-
+            _authorRepo = authorRepo;
             _sqlConnectionString = config["SQLConnectionString"];
             _connection = new SqlConnection(_sqlConnectionString);
             _connection.Open();
@@ -75,7 +76,7 @@ namespace BlogDB.Core
                 while (reader.Read())
                 {
                     list.Add(new Post(reader.GetString(1),
-                                      GetAuthor(reader.GetInt32(2)),
+                                      GetAuthor(reader.GetInt32(2)),  // TODO: AUTHOR CREATION MOVED TO IAuthorRepo
                                       reader.GetString(3),
                                       reader.GetDateTime(4),
                                       Guid.Parse(reader.GetString(0))));
@@ -123,7 +124,7 @@ namespace BlogDB.Core
                 while (reader.Read())
                 {
                     post = new Post(reader.GetString(1),
-                                    GetAuthor(reader.GetInt32(2)),
+                                    GetAuthor(reader.GetInt32(2)), // TODO: AUTHOR CREATION MOVED TO IAuthorRepo
                                     reader.GetString(3),
                                     reader.GetDateTime(4),
                                     Guid.Parse(reader.GetString(0)));
