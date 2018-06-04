@@ -1,10 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using BlogDB.Core;
+using Microsoft.AspNetCore.Authorization;
 
 namespace The_Intern_MVC.Models
 {
-    public class UserLogin
+    public class RegisterViewModel
     {
 
         [Required]
@@ -14,5 +14,8 @@ namespace The_Intern_MVC.Models
         [Required]
         [StringLength(32, MinimumLength = 6)]
         public string Password { get; set; }
+
+        [Compare("Password")]
+        public string ConfirmPassword { get; set; }
     }
 }

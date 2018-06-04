@@ -1,6 +1,6 @@
-@model LoginViewModel
+@model RegisterViewModel
 <h2>Login Page</h2>
-@using (Html.BeginForm("Login","Home",FormMethod.Post,new {@class= "form-horizontal", id="loginForm"}))
+@using (Html.BeginForm("Register","Home",FormMethod.Post,new {@class= "form-horizontal", id="registerForm"}))
 {
     <div class="row">
         <div class="input-group col-md-12">
@@ -14,8 +14,13 @@
                 @Html.PasswordFor(m => m.Password, new {@class="form-control", id="passwordText"})
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
             </div>
+            <div class="form-group">
+                <label for="confirmPasswordText" class="control-label">Password:</label>
+                @Html.PasswordFor(m => m.ConfirmPassword, new {@class="form-control", id="confirmPasswordText"})
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
             <div>
-                <input type="button" id="LoginButton" class="btn btn-success box-shadow-4dp" value="Login"></input>
+                <input type="button" id="RegisterButton" class="btn btn-success box-shadow-4dp" value="Register"></input>
             </div>
             <div>
                 @ViewData["message"]
@@ -27,8 +32,8 @@
 <script type="text/javascript" src="~/js/sha512.min.js"></script>
 
 <script type="text/javascript">
-    $("#LoginButton").click(function() {
-        if (!$("#loginForm").valid()) { // Not Valid
+    $("#RegisterButton").click(function() {
+        if (!$("#registerForm").valid()) { // Not Valid
             return false;
         } else {
             var hash = sha512.create();
