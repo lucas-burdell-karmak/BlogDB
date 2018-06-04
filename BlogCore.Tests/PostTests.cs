@@ -9,29 +9,35 @@ namespace BlogCore.Tests
         [Fact]
         public void TestAuthor()
         {
-            var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", DateTime.UtcNow, Guid.NewGuid());
-            Assert.Equal("authorName", post.Author);
+            var author = new Author("author", 0);
+            var post = new BlogDB.Core.Post("", author, "");
+
+            Assert.Equal("author", post.Author.Name);
+            Assert.Equal(0, post.Author.ID);
         }
 
         [Fact]
         public void TestTitle()
         {
-            var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", DateTime.UtcNow, Guid.NewGuid());
-            Assert.Equal("titleName", post.Title);
+            var post = new BlogDB.Core.Post("title", new Author("", 0), "");
+
+            Assert.Equal("title", post.Title);
         }
 
         [Fact]
         public void TestBody()
         {
-            var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", DateTime.UtcNow, Guid.NewGuid());
-            Assert.Equal("bodyText", post.Body);
+            var post = new BlogDB.Core.Post("", new Author("", 0), "body");
+
+            Assert.Equal("body", post.Body);
         }
 
         [Fact]
         public void TestDateTime()
         {
             var date = DateTime.UtcNow;
-            var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", date, Guid.NewGuid());
+            var post = new BlogDB.Core.Post("", new Author("", 0), "", date, Guid.NewGuid());
+
             Assert.Equal(date, post.Timestamp);
         }
 
@@ -39,7 +45,8 @@ namespace BlogCore.Tests
         public void TestPostID()
         {
             var guid = Guid.NewGuid();
-            var post = new BlogDB.Core.Post("titleName", "authorName", "bodyText", DateTime.UtcNow, guid);
+            var post = new BlogDB.Core.Post("", new Author("", 0), "", DateTime.UtcNow, guid);
+
             Assert.Equal(guid, post.PostID);
         }
 

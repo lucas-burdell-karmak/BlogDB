@@ -177,6 +177,7 @@ namespace The_Intern_MVC.Controllers
             }
         }
 
+
         public IActionResult NullPost(string message)
         {
             ViewBag.History = "/Home";
