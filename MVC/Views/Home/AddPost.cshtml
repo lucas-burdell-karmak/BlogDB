@@ -21,12 +21,12 @@
             </div>
             <div>
                 <input type="button" id="addButton" class="btn btn-success box-shadow-4dp" value="Add Post"></input>
-                @await Html.PartialAsync("BackButton")
+                @await Html.PartialAsync("~/Partials/BackButton")
             </div>
         </div>
     </div>
 }
-@await Html.PartialAsync("AddConfirmation")
+@await Html.PartialAsync("~/Partials/AddConfirmation")
     <script type="text/javascript">
         $(document).ready( function () {
             $("#addButton").click(function() {
