@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using BlogDB.Core;
-using System.Web;
+
 using The_Intern_MVC.Models;
 
 namespace The_Intern_MVC.Controllers
@@ -99,25 +101,74 @@ namespace The_Intern_MVC.Controllers
             }
         }
 
-        public IActionResult Login() {
+        public IActionResult Login()
+        {
             return View();
         }
 
-        public IActionResult LoginConfirm(UserLogin userLogin) {
-            
-            
+        [HttpPost]
+        public IActionResult Login(LoginViewModel lvModel)
+        {
+            // TODO: Hash the password before init new Author
+            Author user = new Author(lvModel.Username, lvModel.Password);
+            if (true/* TODO: Author is in DB && rememberMe is true*/)
+            {
+                var claims = new List<Claim>();
+                claims.Add(new Claim(ClaimTypes.Name, user.Name));
+                string[] roles = user.Roles.Split(",");
 
-            // hashing
-            // validation
-            // sql check (does it exist)
-            // return to home as "logged in"
-            return View("Index");
+                foreach (string role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
+
+                
+                // set cookie that will "remember" this author
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScene);
+                return View("Index");
+            }
+            else
+            {
+                user.Roles = "InvalidUser";
+                ViewData["message"] = "Invalid login credentials!";
+                return View("Login");
+            }
         }
 
         public IActionResult NullPost(string message)
         {
             ViewBag.History = "/Home";
             return View(message);
+        }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Register(RegisterViewModel rvModel)
+        {
+
+            if (rvModel.Password.CompareTo(rvModel.ConfirmPassword) == 0)
+            {
+                if (true/* TODO: username is available*/)
+                {
+                    // register a new user in the database
+                    // log them in
+                    return View("Index");
+                }
+                else
+                {
+                    ViewData["message"] = "Username is not available!";
+                    return View("Register");
+                }
+            }
+            else
+            {
+                ViewData["message"] = "Passwords do not match!";
+                return View("Register");
+            }
         }
 
         public IActionResult ViewSinglePost(String postid)
@@ -136,7 +187,7 @@ namespace The_Intern_MVC.Controllers
         {
 
             ViewBag.History = "/Home";
-            List<PostModel> postResult = _postDataAccess.GetAllPosts().ConvertAll<PostModel>((p) => (PostModel) p);
+            List<PostModel> postResult = _postDataAccess.GetAllPosts().ConvertAll<PostModel>((p) => (PostModel)p);
             if (postResult == null)
             {
                 return View("NullPost", "There are no posts.");
@@ -147,7 +198,7 @@ namespace The_Intern_MVC.Controllers
         public IActionResult ViewByAuthor(string author)
         {
             ViewBag.History = "/Home/Authors";
-            List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) => (PostModel) p);
+            List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) => (PostModel)p);
             return View("ViewAll", list);
         }
 
@@ -170,7 +221,7 @@ namespace The_Intern_MVC.Controllers
                                 post.Author.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1 ||
                                 post.Body.IndexOf(searchCriteria.SearchString, StringComparison.OrdinalIgnoreCase) != -1;
                     }
-            ).ConvertAll<PostModel>((p) => (PostModel) p);
+            ).ConvertAll<PostModel>((p) => (PostModel)p);
 
             return View("ViewAll", results);
         }
