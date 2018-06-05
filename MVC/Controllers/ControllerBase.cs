@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 
+
 namespace The_Intern_MVC.Controllers
 {
     public class ControllerBase : Controller
     {
         public string GetCookie(string cookieID)
         {
-            return Request.Cookies["cookieID"];
+            return Request.Cookies[cookieID];
         }
 
         public void RemoveCookie(string cookieID)

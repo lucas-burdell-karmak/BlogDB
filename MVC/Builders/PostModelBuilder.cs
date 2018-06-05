@@ -23,8 +23,11 @@ namespace The_Intern_MVC.Builders {
 
             var postModel = new PostModel();
             postModel.Title = Post.Title;
-            postModel.AuthorName = Post.Author.Name;
-            postModel.AuthorID = Post.Author.ID;
+            if (Post.Author != null)
+            {
+                postModel.AuthorName = Post.Author.Name;
+                postModel.AuthorID = Post.Author.ID;
+            }
             postModel.Body = Post.Body;
             postModel.PostID = Post.PostID;
             postModel.Timestamp = Post.Timestamp;

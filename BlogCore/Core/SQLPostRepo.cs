@@ -151,6 +151,7 @@ namespace BlogDB.Core
                 {
                     result = null;
                     Console.WriteLine(e);
+                    return false;
                 }
                 return true;
             }
@@ -226,11 +227,11 @@ namespace BlogDB.Core
 
         public Post WritePost(Post post)
         {
-            var commandText = "INSERT INTO Blog_Post (author, body, id, timestamp, title) VALUES (@author, @body, @id, @timestamp, @title)";
+            var commandText = "INSERT INTO Blog_Post (authorid, body, id, timestamp, title) VALUES (@authorid, @body, @id, @timestamp, @title)";
             var command = new SqlCommand(commandText, _connection);
 
-            command.Parameters.Add("@author", SqlDbType.NChar);
-            command.Parameters["@author"].Value = post.Author;
+            command.Parameters.Add("@authorid", SqlDbType.Int);
+            command.Parameters["@authorid"].Value = post.Author.ID;
 
             command.Parameters.Add("@body", SqlDbType.NChar);
             command.Parameters["@body"].Value = post.Body;
