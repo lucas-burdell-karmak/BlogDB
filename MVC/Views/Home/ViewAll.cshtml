@@ -20,7 +20,7 @@ li{
         {
             <tr>
                 <td><a class="" href="/Home/ViewSinglePost/?postid=@post.PostID"> @post.Title</a></td>
-                <td><a class="" href="/Home/ViewByAuthor/?author=@post.Author"> @post.AuthorName</a></td>
+                <td><a class="" href="/Home/ViewByAuthor/?author=@post.AuthorID"> @post.AuthorName</a></td>
                 <td><a class="" href="/Home/ViewSinglePost/?postid=@post.PostID"> @post.Timestamp.ToLocalTime()</a></td>
             </tr>
         }
@@ -32,4 +32,4 @@ li{
     });
 </script>
 
-@await Html.PartialAsync("BackButton")
+@await Html.PartialAsync("~/Partials/BackButton.cshtml")

@@ -45,7 +45,7 @@
             <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Home</a>
         </div>
         <div class="col-sm-3 col-md-3 navbar-right">
-            @Html.Partial("SearchBar", new SearchCriteria())
+            @Html.Partial("~/Views/Partials/SearchBar.cshtml", new SearchCriteria())
         </div>
     </nav>
     <div class="container body-content">

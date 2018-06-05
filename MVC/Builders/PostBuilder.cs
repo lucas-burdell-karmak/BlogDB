@@ -8,7 +8,6 @@ namespace The_Intern_MVC.Builders {
     {
 
 
-
         public PostModel Model {get; set;}
 
         public PostBuilder(PostModel model)

@@ -58,7 +58,7 @@ namespace BlogDB.Core
 
         public bool TryAddPost(Post post, out Post result)
         {
-            if (post == null || post.Title == null || post.Author.Name == null || post.Body == null)
+            if (post == null || post.Title == null || post.Author == null || post.Body == null)
             {
                 result = null;
                 return false;
@@ -118,7 +118,7 @@ namespace BlogDB.Core
 
         public bool TryEditPost(Post post, out Post result)
         {
-            if (post == null || post.Title == null || post.Author.Name == null || post.Body == null)
+            if (post == null || post.Title == null || post.Author == null || post.Body == null)
             {
                 result = null;
             }
