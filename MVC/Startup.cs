@@ -26,7 +26,11 @@ namespace The_Intern_MVC
         {
             services.AddMvc();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(o => o.LoginPath = new PathString("/Login/Index"));
+                .AddCookie(options =>
+                {
+                    options.LoginPath = new PathString("/Login/Index");
+                    options.AccessDeniedPath = new PathString("/NullPost/Index");
+                });
             services.AddSingleton<IAuthorRepo, SQLAuthorRepo>();
             services.AddSingleton<IPostValidator, PostValidator>();
             services.AddSingleton<IPostRepo, SQLPostRepo>();
@@ -47,14 +51,25 @@ namespace The_Intern_MVC
 
             app.UseStaticFiles();
             app.UseAuthentication(); // used to invoke Authentication Middleware that sets the HttpContext.User property
+            var cookiePolicy = new CookiePolicyOptions(); // use default options
+            app.UseCookiePolicy(cookiePolicy);
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
-                    name:"Home Default",
+                    name: "Home Default",
                     template: "{controller=Home}/{action=Index}");
+                routes.MapRoute(
+                    name: "Login",
+                    template: "{controller=Login}/{action=Index}/{id?}");
+                routes.MapRoute(
+                    name: "NullPost Default",
+                    template: "{controller=NullPost}/{action=Index}/{id?}");
+                routes.MapRoute(
+                    name: "Register Default",
+                    template: "{controller=Register}/{action=Index}/{id?}");
             });
         }
     }

@@ -1,5 +1,5 @@
-@model string[]
-<h1>@Model[0]</h1>
-<h5>@Model[1]</h5>
+@model ErrorPageModel
+<h1>@Model.Title</h1>
+<h5>@Model.Message</h5>
 
-@await Html.PartialAsync("~/Partials/BackButton")
+@await Html.PartialAsync("~/Views/Partials/BackButton.cshtml")

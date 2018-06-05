@@ -17,15 +17,14 @@ namespace The_Intern_MVC.Controllers
     public class NullPostController : ControllerBase
     {
 
-        public IActionResult Index()
+        public IActionResult Index(ErrorPageModel message)
         {
-            return View();
-        }
-
-        public IActionResult Index(string message)
-        {
+            if (message == null) 
+            {
+                message = new ErrorPageModel("","");
+            }
             ViewBag.History = "/Home/Index";
-            return View(message);
+            return View("Index", message);
         }
     }
 }
