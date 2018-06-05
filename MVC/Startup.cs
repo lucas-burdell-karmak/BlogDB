@@ -32,8 +32,9 @@ namespace The_Intern_MVC
                     options.AccessDeniedPath = new PathString("/NullPost/Index");
                 });
             services.AddSingleton<IAuthorRepo, SQLAuthorRepo>();
-            services.AddSingleton<IPostValidator, PostValidator>();
             services.AddSingleton<IPostRepo, SQLPostRepo>();
+            services.AddSingleton<IAuthorValidator, AuthorValidator>();
+            services.AddSingleton<IPostValidator, PostValidator>();
             services.AddSingleton<IPostDataAccess, PostDataAccess>();
         }
 

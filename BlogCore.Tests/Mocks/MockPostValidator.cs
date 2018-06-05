@@ -7,32 +7,23 @@ namespace BlogCore.Tests.Mocks
 {
     public class MockPostValidator : IPostValidator
     {
-        private bool CalledIsValidAuthor = false;
         private bool CalledIsValidBody = false;
         private bool CalledIsValidPost = false;
         private bool CalledIsValidString = false;
         private bool CalledIsValidTitle = false;
         private bool CalledPostExits = false;
 
-        private bool StubedValidAuthor;
         private bool StubedValidTitle;
         private bool StubedValidBody;
         private bool StubedValidString;
         private bool StubedValidPost;
         private bool StubedPostExists;
 
-        public void AssertIsValidAuthorCalled() => Assert.True(CalledIsValidAuthor);
         public void AssertIsValidBodyCalled() => Assert.True(CalledIsValidBody);
         public void AssertIsValidPostCalled() => Assert.True(CalledIsValidPost);
         public void AssertIsValidStringCalled() => Assert.True(CalledIsValidString);
         public void AssertIsValidTitleCalled() => Assert.True(CalledIsValidTitle);
-        public void AssertPostExitsCalled() => Assert.True(CalledPostExits);
-
-        public bool IsValidAuthor(string author)
-        {
-            CalledIsValidAuthor = true;
-            return StubedValidAuthor;
-        }
+        public void AssertPostExistsCalled() => Assert.True(CalledPostExits);
 
         public bool IsValidBody(string body)
         {
@@ -64,11 +55,6 @@ namespace BlogCore.Tests.Mocks
             return StubedPostExists;
         }
 
-        public MockPostValidator SetCalledIsValidAuthorToFalse()
-        {
-            CalledIsValidAuthor = false;
-            return this;
-        }
         public MockPostValidator SetCalledIsValidBodyToFalse()
         {
             CalledIsValidBody = false;
@@ -99,36 +85,26 @@ namespace BlogCore.Tests.Mocks
             return this;
         }
 
-        public MockPostValidator StubValidAuthor(bool validAuthor)
-        {
-            StubedValidAuthor = validAuthor;
-            return this;
-        }
-
         public MockPostValidator StubValidTitle(bool validTitle)
         {
             StubedValidTitle = validTitle;
             return this;
         }
-
         public MockPostValidator StubValidBody(bool validBody)
         {
             StubedValidBody = validBody;
             return this;
         }
-
         public MockPostValidator StubValidString(bool validString)
         {
             StubedValidString = validString;
             return this;
         }
-
         public MockPostValidator StubPostExists(bool postExists)
         {
             StubedPostExists = postExists;
             return this;
         }
-
         public MockPostValidator StubValidPost(bool validPost)
         {
             StubedValidPost = validPost;

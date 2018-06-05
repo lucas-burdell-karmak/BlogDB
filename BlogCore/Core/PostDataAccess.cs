@@ -10,16 +10,19 @@ namespace BlogDB.Core
         private readonly IPostValidator _postValidator;
         private readonly IAuthorRepo _authorRepo;
 
-        public PostDataAccess(IPostRepo postRepo, IPostValidator postValidator, IAuthorRepo authorRepo)
+        private readonly IAuthorValidator _authorValidator;
+
+        public PostDataAccess(IPostRepo postRepo, IPostValidator postValidator, IAuthorRepo authorRepo, IAuthorValidator authorValidator)
         {
             _postRepo = postRepo;
             _postValidator = postValidator;
             _authorRepo = authorRepo;
+            _authorValidator = authorValidator;
         }
 
         public Post AddPost(Post post)
         {
-            if (_postValidator.IsValidPost(post))
+            if (_postValidator.IsValidPost(post) && _authorValidator.IsValidAuthor(post.Author))
             {
                 post.PostID = Guid.NewGuid();
                 post.Timestamp = DateTime.UtcNow;
@@ -47,7 +50,7 @@ namespace BlogDB.Core
 
         public Post EditPost(Post post)
         {
-            if (_postValidator.PostExists(_postRepo.GetAllPosts(), post) && _postValidator.IsValidPost(post))
+            if (_postValidator.PostExists(_postRepo.GetAllPosts(), post) && _postValidator.IsValidPost(post) && _authorValidator.IsValidAuthor(post.Author))
             {
                 post.Timestamp = DateTime.UtcNow;
                 var isSuccessful = _postRepo.TryEditPost(post, out var result);
@@ -59,26 +62,37 @@ namespace BlogDB.Core
             }
         }
 
+        public List<Author> GetAllAuthors() => _authorRepo.GetListOfAuthors();
         public List<Post> GetAllPosts() => _postRepo.GetAllPosts();
 
-
-        public List<string> GetListOfAuthors()
+        public List<int> GetListOfAuthorIDs()
         {
-            var posts = _postRepo.GetAllPosts();
-            var authors = new List<string>();
-            posts.ForEach((Post post) =>
+            List<Author> authors = _authorRepo.GetListOfAuthors();
+            List<int> authorIDs = new List<int>();
+            foreach (Author a in authors)
             {
-                if (!authors.Contains(post.Author.Name, StringComparer.OrdinalIgnoreCase))
-                {
-                    authors.Add(post.Author.Name);
-                }
-            });
-            return authors;
+                authorIDs.Add(a.ID);
+            }
+            return authorIDs;
         }
 
-        public List<Post> GetListOfPostsByAuthor(string authorName)
+        public List<string> GetListOfAuthorNames()
         {
-            return _postRepo.GetAllPosts().Where((post) => authorName.CompareTo(post.Author.Name) == 0).ToList();
+            List<Author> authors = _authorRepo.GetListOfAuthors();
+            List<string> authorNames = new List<string>();
+            foreach (Author a in authors)
+            {
+                authorNames.Add(a.Name);
+            }
+            return authorNames;
+        }
+
+        public List<Post> GetListOfPostsByAuthorID(int authorID)
+        {
+            var listOfPostsByAuthor = _postRepo.GetAllPostsByAuthor(authorID);
+            if (listOfPostsByAuthor == null) return new List<Post>();
+
+            return listOfPostsByAuthor;
         }
 
         public Post GetPostById(Guid id)

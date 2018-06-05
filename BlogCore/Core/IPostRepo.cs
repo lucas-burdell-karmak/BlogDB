@@ -9,5 +9,6 @@ namespace BlogDB.Core
         bool TryDeletePost(Guid id, out Post result);
         bool TryEditPost(Post post, out Post result);
         List<Post> GetAllPosts();
+        List<Post> GetAllPostsByAuthor(int authorID);
     }
 }

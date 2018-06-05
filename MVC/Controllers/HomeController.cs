@@ -47,7 +47,7 @@ namespace The_Intern_MVC.Controllers
                 var authorId = -1;
                 Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
                         .Select(c => c.Value).SingleOrDefault(), out authorId);
-                post.AuthorID = authorId; 
+                post.AuthorID = authorId;
                 var postBuilder = new PostBuilder(post);
                 var postToAdd = postBuilder.build();
                 var postResult = _postDataAccess.AddPost(postToAdd);
@@ -76,7 +76,8 @@ namespace The_Intern_MVC.Controllers
         public IActionResult Authors()
         {
             ViewBag.History = "/Home";
-            return View(_postDataAccess.GetListOfAuthors());
+            var listOfAuthors = _postDataAccess.GetAllAuthors();
+            return View(listOfAuthors);
         }
 
         public IActionResult DeletePostResult(PostModel post)
@@ -160,7 +161,7 @@ namespace The_Intern_MVC.Controllers
             var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
-                ViewBag.History = "/Home/";
+                ViewBag.History = "/Home";
                 return RedirectToAction("Index", "NullPost", new ErrorPageModel("Post Does Not Exist", "This post does not exist."));
                 //return RedirectToAction("Index", "NullPost", "Post does not exist");;
                 //return View("~/Views/NullPost/Index", "Post does not exist.");
@@ -188,15 +189,19 @@ namespace The_Intern_MVC.Controllers
             return View(postResult);
         }
 
-        public IActionResult ViewByAuthor(string author)
+        public IActionResult ViewByAuthor(int authorID)
         {
             ViewBag.History = "/Home/Authors";
-            List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) =>
+            var listOfPostsByAuthor = _postDataAccess.GetListOfPostsByAuthorID(authorID);
+            var listOfPostModels = new List<PostModel>();
+
+            foreach (Post p in listOfPostsByAuthor)
             {
                 var pmBuilder = new PostModelBuilder(p);
-                return pmBuilder.build();
-            });
-            return View("ViewAll", list);
+                listOfPostModels.Add(pmBuilder.build());
+            }
+
+            return View("ViewAll", listOfPostModels);
         }
     }
 }

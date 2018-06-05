@@ -38,12 +38,11 @@ namespace The_Intern_MVC.Controllers
 
             if (authorExists)
             {
-                // register a new user in the database
-                var isSuccessful = _authorRepo.TryValidateAuthor(username, passwordHash, out var Author);
+                _authorRepo.TryValidateAuthor(username, passwordHash, out var isSuccessful);
 
                 if (isSuccessful)
                 {
-                    AddClaims(Author);
+                    AddClaims(author);
                     return RedirectToAction("Index", "Home");
                 }
                 else

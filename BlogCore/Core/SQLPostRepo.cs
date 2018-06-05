@@ -14,7 +14,7 @@ namespace BlogDB.Core
         private readonly SqlConnection _connection;
         private readonly string _sqlConnectionString;
         private readonly IAuthorRepo _authorRepo;
-        
+
         public SQLPostRepo(IAuthorRepo authorRepo, IConfiguration config)
         {
             _authorRepo = authorRepo;
@@ -22,7 +22,7 @@ namespace BlogDB.Core
             _connection = new SqlConnection(_sqlConnectionString);
             _connection.Open();
         }
-        
+
         public SQLPostRepo(string sqlConnectionString)
         {
             _sqlConnectionString = sqlConnectionString;
@@ -62,15 +62,16 @@ namespace BlogDB.Core
             return ReadAll();
         }
 
-        private List<Post> ReadAll()
+        public List<Post> GetAllPostsByAuthor(int authorID)
         {
             var list = new List<Post>();
-            var commandText = "SELECT id, title, authorID, body, timestamp FROM Blog_Post";
+            var commandText = "SELECT id, title, authorID, body, timestamp FROM Blog_Post WHERE authorID = @id";
             var command = new SqlCommand(commandText, _connection);
 
-            //command.Connection.Open();
-            var reader = command.ExecuteReader();
+            command.Parameters.Add("@id", SqlDbType.NChar);
+            command.Parameters["@id"].Value = authorID;
 
+            var reader = command.ExecuteReader();
             if (reader.HasRows)
             {
                 while (reader.Read())
@@ -97,15 +98,40 @@ namespace BlogDB.Core
 
             var reader = command.ExecuteReader();
 
-            if(reader.HasRows)
+            if (reader.HasRows)
             {
-                while(reader.Read())
+                while (reader.Read())
                 {
-                    author = new Author(reader.GetString(1), id);
+                    author = new Author(reader.GetString(0), id);
                 }
             }
             reader.Close();
             return author;
+        }
+
+        private List<Post> ReadAll()
+        {
+            var list = new List<Post>();
+            var commandText = "SELECT id, title, authorID, body, timestamp FROM Blog_Post";
+            var command = new SqlCommand(commandText, _connection);
+
+            //command.Connection.Open();
+            var reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    list.Add(new Post(reader.GetString(1),
+                                      GetAuthor(reader.GetInt32(2)),  // TODO: AUTHOR CREATION MOVED TO IAuthorRepo
+                                      reader.GetString(3),
+                                      reader.GetDateTime(4),
+                                      Guid.Parse(reader.GetString(0))));
+                }
+            }
+            reader.Close();
+
+            return list;
         }
 
         private Post ReadPost(Guid id)

@@ -18,8 +18,6 @@ namespace BlogDB.Core
             return false;
         }
 
-        public bool IsValidAuthor(string author) => IsValidString(author);
-
         public bool IsValidBody(string body) => IsValidString(body);
 
         public bool IsValidTitle(string title) => IsValidString(title);
@@ -35,7 +33,7 @@ namespace BlogDB.Core
             {
                 return false;
             }
-            return IsValidAuthor(post.Author.Name) && IsValidBody(post.Body) && IsValidTitle(post.Title);
+            return IsValidBody(post.Body) && IsValidTitle(post.Title);
         }
     }
 }

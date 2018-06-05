@@ -1,4 +1,4 @@
-@model List<string>
+@model List<BlogDB.Core.Author>
 <table id="viewauthors" style="width:100%">
     <thead>
         <tr>
@@ -6,10 +6,10 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var name in Model)
+        @foreach(var author in Model)
         {
             <tr>
-                <td><a class="text-capitalize" href="/Home/ViewByAuthor/?author=@name">@name</a></td>
+                <td><a class="text-capitalize" href="/Home/ViewByAuthor/?authorid=@author.ID">@author.Name</a></td>
             </tr>
         }
     </tbody>
