@@ -48,7 +48,7 @@ namespace The_Intern_MVC.Controllers
                     new AuthenticationProperties()
                 );
 
-                SetCookie("BlogAuth", JsonConvert.SerializeObject(roles), 30);
+                //SetCookie("BlogAuth", JsonConvert.SerializeObject(roles), 30);
                 return View("~/Views/Home/Index.cshtml");
             }
             else
