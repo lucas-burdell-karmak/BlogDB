@@ -160,7 +160,7 @@ namespace The_Intern_MVC.Controllers
             var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
-                ViewBag.History = "/Home/";
+                ViewBag.History = "/Home";
                 return RedirectToAction("Index", "NullPost", new ErrorPageModel("Post Does Not Exist", "This post does not exist."));
                 //return RedirectToAction("Index", "NullPost", "Post does not exist");;
                 //return View("~/Views/NullPost/Index", "Post does not exist.");

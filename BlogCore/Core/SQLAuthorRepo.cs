@@ -45,13 +45,65 @@ namespace BlogDB.Core
             return hex.ToString();
         }
 
-        private static byte[] HexStringToByteArray(String hex)
+        public Author GetAuthor(int id)
         {
-            int NumberChars = hex.Length;
-            byte[] bytes = new byte[NumberChars / 2];
-            for (int i = 0; i < NumberChars; i += 2)
-                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-            return bytes;
+            Author author = null;
+            var commandText = "SELECT name FROM author WHERE id = @id";
+            var command = new SqlCommand(commandText, _connection);
+            command.Parameters.Add("@id", SqlDbType.Int);
+            command.Parameters["@id"].Value = id.ToString();
+
+            var reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    author = new Author(reader.GetString(0), id);
+                }
+            }
+            reader.Close();
+            return author;
+        }
+
+        public Author GetAuthorByName(string name)
+        {
+            Author author = null;
+            var commandText = "SELECT id FROM author WHERE name = @name";
+            var command = new SqlCommand(commandText, _connection);
+            command.Parameters.Add("@name", SqlDbType.NVarChar);
+            command.Parameters["@name"].Value = name;
+
+            var reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    author = new Author(name, reader.GetInt32(0));
+                }
+            }
+            reader.Close();
+            return author;
+        }
+
+        public List<Author> GetListOfAuthors()
+        {
+            var authors = new List<Author>();
+            var commandText = "SELECT name, id FROM author";
+            var command = new SqlCommand(commandText, _connection);
+
+            var reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    authors.Add(new Author(reader.GetString(0), reader.GetInt32(1)));
+                }
+            }
+
+            return authors;
         }
 
         private byte[] GetPasswordHash(int id)
@@ -74,6 +126,16 @@ namespace BlogDB.Core
             reader.Close();
             return HexStringToByteArray(passwordHash);
         }
+
+        private static byte[] HexStringToByteArray(String hex)
+        {
+            int NumberChars = hex.Length;
+            byte[] bytes = new byte[NumberChars / 2];
+            for (int i = 0; i < NumberChars; i += 2)
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+            return bytes;
+        }
+
 
         private byte[] GetSalt(int id)
         {
@@ -161,48 +223,6 @@ namespace BlogDB.Core
             {
                 isSuccessful = false;
             }
-        }
-
-        public Author GetAuthor(int id)
-        {
-            Author author = null;
-            var commandText = "SELECT name FROM author WHERE id = @id";
-            var command = new SqlCommand(commandText, _connection);
-            command.Parameters.Add("@id", SqlDbType.Int);
-            command.Parameters["@id"].Value = id.ToString();
-
-            var reader = command.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    author = new Author(reader.GetString(0), id);
-                }
-            }
-            reader.Close();
-            return author;
-        }
-
-        public Author GetAuthorByName(string name)
-        {
-            Author author = null;
-            var commandText = "SELECT id FROM author WHERE name = @name";
-            var command = new SqlCommand(commandText, _connection);
-            command.Parameters.Add("@name", SqlDbType.NVarChar);
-            command.Parameters["@name"].Value = name;
-
-            var reader = command.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    author = new Author(name, reader.GetInt32(0));
-                }
-            }
-            reader.Close();
-            return author;
         }
     }
 }

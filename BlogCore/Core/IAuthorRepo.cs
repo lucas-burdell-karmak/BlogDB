@@ -9,5 +9,6 @@ namespace BlogDB.Core
         void TryRegisterAuthor(string name, string passwordHash, out bool isSuccessful);
         Author GetAuthor(int id);
         Author GetAuthorByName(string name);
+        List<Author> GetListOfAuthors();
     }
 }

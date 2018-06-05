@@ -27,18 +27,17 @@ namespace BlogCore.Tests.Mocks
         public void AssertGetAuthorByNameCalled() => Assert.True(CalledGetAuthorByName);
         public void AssertGetListOfAuthorCalled() => Assert.True(CalledGetListOfAuthors);
 
-        public bool TryValidateAuthorLogin(string name, string passwordHash, out Author author)
+        public bool TryValidateAuthor(string name, string passwordHash, out Author author)
         {
             CalledTryValidateAuthorLogin = true;
             author = StubedTryValidateAuthorLogin;
             return StubedTryValidateAuthorLoginBool;
         }
 
-        public bool TryRegisterAuthor(string name, string passwordHash, out Author author)
+        public void TryRegisterAuthor(string name, string passwordHash, out bool isSuccessful)
         {
             CalledTryRegisterAuthor = true;
-            author = StubedTryRegisterAuthor;
-            return StubedTryRegisterAuthorBool;
+            isSuccessful = StubedTryRegisterAuthorBool;
         }
 
         public Author GetAuthor(int id)
