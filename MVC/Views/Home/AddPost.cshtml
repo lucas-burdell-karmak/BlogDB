@@ -12,7 +12,7 @@
             <div class="form-group">
                 <label for="authortext" class="control-label">Author:</label>
                 @Html.TextBoxFor(m => m.AuthorName, new {@class="form-control", id="authortext"})
-                @Html.ValidationMessageFor(m => m.Author, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(m => m.AuthorName, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
                 <label for="bodytext" class="control-label">Body:</label>
