@@ -12,10 +12,10 @@
         @using (Html.BeginForm("DeletePostResult","Home",FormMethod.Post,new {postid=Model.PostID, @class="form-group"}))
         {
             @Html.HiddenFor(m => m.PostID)
-            @await Html.PartialAsync("BackButton")
+            @await Html.PartialAsync("~/Partials/BackButton")
             <!-- <input type="submit" class="btn btn-danger box-shadow-4dp" value="Confirm deletion" data-toggle="modal" data-target="#deleteConfirmation" /> -->
             <a class="btn btn-primary" href="/Home/EditPost?postid=@Model.PostID">Edit Post</a>
-            @await Html.PartialAsync("DeleteButton", Model)
+            @await Html.PartialAsync("~/Partials/DeleteButton", Model)
             
         }
         
