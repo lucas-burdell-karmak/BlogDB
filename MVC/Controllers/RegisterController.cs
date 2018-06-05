@@ -33,7 +33,7 @@ namespace The_Intern_MVC.Controllers
             if (authorDoesNotAlreadyExist)
             {
                 // register a new user in the database
-                var isSuccessful = _authorRepo.TryRegisterAuthor(username, passwordHash, out var Author);
+                _authorRepo.TryRegisterAuthor(username, passwordHash, out bool isSuccessful);
 
                 if (isSuccessful)
                 {

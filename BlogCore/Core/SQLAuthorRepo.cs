@@ -54,7 +54,7 @@ namespace BlogDB.Core
             return bytes;
         }
 
-        private byte[] GetPasswordHash(int id) 
+        private byte[] GetPasswordHash(int id)
         {
             string passwordHash = null;
             var commandText = "SELECT PasswordHash FROM author WHERE id = @id";
@@ -100,7 +100,8 @@ namespace BlogDB.Core
         {
             var authorInDB = GetAuthorByName(name);
             author = null;
-            if (authorInDB == null) {
+            if (authorInDB == null)
+            {
                 return false;
             }
 
@@ -113,7 +114,8 @@ namespace BlogDB.Core
             byte[] computedHash = hash.ComputeHash(HexStringToByteArray(passwordHash));
 
             var authorized = computedHash.SequenceEqual(passwordHashInDB);
-            if (authorized) {
+            if (authorized)
+            {
                 author = authorInDB;
 
             }
@@ -122,43 +124,43 @@ namespace BlogDB.Core
 
         }
 
-        public bool TryRegisterAuthor(string name, string passwordHash, out Author author)
+        public void TryRegisterAuthor(string name, string passwordHash, out bool isSuccessful)
         {
-            Guid salt = Guid.NewGuid();
-            HMACSHA512 hash = new HMACSHA512();
+            try
+            {
+                Guid salt = Guid.NewGuid();
+                HMACSHA512 hash = new HMACSHA512();
 
-            hash.Key = salt.ToByteArray();
-            byte[] computedHash = hash.ComputeHash(HexStringToByteArray(passwordHash));
+                hash.Key = salt.ToByteArray();
+                byte[] computedHash = hash.ComputeHash(HexStringToByteArray(passwordHash));
 
-            string hexOfComputedHash = ByteArrayToHexString(computedHash);
+                string hexOfComputedHash = ByteArrayToHexString(computedHash);
 
-            var commandText = "INSERT INTO Author (Name, PasswordHash, Salt, Roles) VALUES (@Name, @PasswordHash, @Salt, @Roles)";
-            var command = new SqlCommand(commandText, _connection);
+                var commandText = "INSERT INTO Author (Name, PasswordHash, Salt, Roles) VALUES (@Name, @PasswordHash, @Salt, @Roles)";
+                var command = new SqlCommand(commandText, _connection);
 
-            command.Parameters.Add("@Name", SqlDbType.NVarChar);
-            command.Parameters["@Name"].Value = name;
+                command.Parameters.Add("@Name", SqlDbType.NVarChar);
+                command.Parameters["@Name"].Value = name;
 
-            command.Parameters.Add("@PasswordHash", SqlDbType.NVarChar);
-            command.Parameters["@PasswordHash"].Value = hexOfComputedHash;
+                command.Parameters.Add("@PasswordHash", SqlDbType.NVarChar);
+                command.Parameters["@PasswordHash"].Value = hexOfComputedHash;
 
-            command.Parameters.Add("@Salt", SqlDbType.NVarChar);
-            command.Parameters["@Salt"].Value = ByteArrayToHexString(salt.ToByteArray());
+                command.Parameters.Add("@Salt", SqlDbType.NVarChar);
+                command.Parameters["@Salt"].Value = ByteArrayToHexString(salt.ToByteArray());
 
-            command.Parameters.Add("@Roles", SqlDbType.NVarChar);
+                command.Parameters.Add("@Roles", SqlDbType.NVarChar);
 
-            command.Parameters["@Roles"].Value = JsonConvert.SerializeObject(new List<string>(){
+                command.Parameters["@Roles"].Value = JsonConvert.SerializeObject(new List<string>(){
                 "BlogWriter"
             });
 
-            var result = command.ExecuteNonQuery();
-
-            if (result < 0)
-            {
-                author = null;
-                return false;
+                command.ExecuteNonQuery();
+                isSuccessful = true;
             }
-            author = GetAuthorByName(name);
-            return true;
+            catch (Exception)
+            {
+                isSuccessful = false;
+            }
         }
 
         public Author GetAuthor(int id)
