@@ -159,8 +159,6 @@ namespace BlogDB.Core
             }
             author = GetAuthorByName(name);
             return true;
-
-
         }
 
         public Author GetAuthor(int id)
