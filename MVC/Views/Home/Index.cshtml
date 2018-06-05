@@ -13,5 +13,9 @@
         <a class="btn btn-primary" href="~/Home/ViewAll" role="button"><span class="glyphicon glyphicon-th-list"></span> View All</a>
         <a class="btn btn-primary" href="~/Home/Authors" role="button"><span class="glyphicon glyphicon-user"></span> View Authors</a>
         <a class="btn btn-primary" href="~/Home/AddPost" role="button"><span class="glyphicon glyphicon-plus"></span> Add New Post</a>
+        @using (Html.BeginForm("Logout","Login",FormMethod.Post,new {@class= "form-horizontal", id="logoutForm"})) 
+        {
+            <button type="submit" class="btn btn-warning" role="button"><span class="glyphicon glyphicon"></span> Logout</button>
+        }
     </div>
 </div>

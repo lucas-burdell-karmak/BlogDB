@@ -30,6 +30,15 @@ namespace The_Intern_MVC.Controllers
             return View();
         }
 
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync();
+            return RedirectToAction("Index");
+        }
+
         [HttpPost]
         public IActionResult Index(string username, string passwordHash)
         {
