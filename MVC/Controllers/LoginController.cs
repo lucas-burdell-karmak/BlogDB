@@ -18,45 +18,66 @@ namespace The_Intern_MVC.Controllers
     public class LoginController : ControllerBase
     {
 
+        private readonly IAuthorRepo _authorRepo;
+
+        public LoginController(IAuthorRepo authorRepo)
+        {
+            _authorRepo = authorRepo;
+        }
+
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Index(LoginViewModel lvModel)
+        public IActionResult Index(string username, string passwordHash)
         {
-            // TODO: Hash the password before init new Author
-            Author user = new Author(lvModel.Username, 0);
-            if (true/* TODO: Author is in DB && rememberMe is true*/)
+            Author author = _authorRepo.GetAuthorByName(username);
+            bool authorExists = (author != null);
+
+            if (authorExists)
             {
-                var claims = new List<Claim>();
-                claims.Add(new Claim(ClaimTypes.Name, user.Name));
-                claims.Add(new Claim("AuthorID", user.ID.ToString()));
+                // register a new user in the database
+                var isSuccessful = _authorRepo.TryValidateAuthor(username, passwordHash, out var Author);
 
-                string[] roles = { "BlogWriter", "BlogReader" }; //look this up in the DB by UserID later
-
-                foreach (string role in roles)
+                if (isSuccessful)
                 {
-                    claims.Add(new Claim(ClaimTypes.Role, role));
+                    AddClaims(Author);
+                    return RedirectToAction("Index", "Home");
                 }
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    new AuthenticationProperties()
-                );
-
-                //SetCookie("BlogAuth", JsonConvert.SerializeObject(roles), 30);
-                return View("~/Views/Home/Index.cshtml");
+                else
+                {
+                    TempData["message"] = "Login failed! Did you type the right password?";
+                    return View("Index");
+                }
             }
             else
             {
-                //user.Roles = "InvalidUser";
-                ViewData["message"] = "Invalid login credentials!";
-                return View("~/Views/Login/Index");
+                TempData["message"] = "Username does not exist. Click the Register button to claim it as your own!";
+                return View("Index");
             }
+        }
+
+        private void AddClaims(Author user)
+        {
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Name, user.Name));
+            claims.Add(new Claim("AuthorID", user.ID.ToString()));
+
+            string[] roles = { "BlogWriter", "BlogReader" }; //look this up in the DB by UserID later
+
+            foreach (string role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                new AuthenticationProperties()
+            );
         }
     }
 }

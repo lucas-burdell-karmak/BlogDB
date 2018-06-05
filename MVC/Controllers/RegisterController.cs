@@ -25,16 +25,15 @@ namespace The_Intern_MVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(RegisterViewModel rvModel)
+        public IActionResult Index(string username, string passwordHash)
         {
-            Author author = _authorRepo.GetAuthorByName(rvModel.Username);
+            Author author = _authorRepo.GetAuthorByName(username);
             bool authorDoesNotAlreadyExist = (author == null);
-            bool passwordsAreSame = rvModel.Password.CompareTo(rvModel.ConfirmPassword) == 0;
 
-            if (passwordsAreSame && authorDoesNotAlreadyExist)
+            if (authorDoesNotAlreadyExist)
             {
                 // register a new user in the database
-                var isSuccessful = _authorRepo.TryRegisterAuthor(rvModel.Username, rvModel.Password, out var Author);
+                var isSuccessful = _authorRepo.TryRegisterAuthor(username, passwordHash, out var Author);
 
                 if (isSuccessful)
                 {
@@ -42,17 +41,12 @@ namespace The_Intern_MVC.Controllers
                 }
                 else 
                 {
-                    ViewData["message"] = "Something went horribly wrong when you tried to register...:(";
+                    TempData["message"] = "Something went horribly wrong when you tried to register... :(";
                 }
             }
-            else if (!passwordsAreSame)
+            else
             {
-                ViewData["message"] = "Passwords do not match!";
-
-            }
-            else if (!authorDoesNotAlreadyExist)
-            {
-                ViewData["message"] = "Username is not available!";
+                TempData["message"] = "Username is not available!";
             }
             return View("~/Views/Register/Index");
         }

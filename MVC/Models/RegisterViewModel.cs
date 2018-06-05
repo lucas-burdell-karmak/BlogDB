@@ -17,5 +17,6 @@ namespace The_Intern_MVC.Models
 
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
+
     }
 }

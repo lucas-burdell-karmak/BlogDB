@@ -15,16 +15,22 @@
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
             </div>
             <div>
-                <input type="submit" id="LoginButton" class="btn btn-success box-shadow-4dp" value="Login"></input>
-            </div>
-            <div>
-                @ViewData["message"]
+                <input type="button" id="LoginButton" class="btn btn-success box-shadow-4dp" value="Login"></input>
             </div>
             <div class="register">
                 <a class="btn btn-primary" href="~/Register/Index" role="button"><span class=""></span>Register Page</a>
             </div>
+            <div>
+                @TempData["message"]
+            </div>
         </div>
     </div>
+}
+
+@using (Html.BeginForm("Index", "Login", FormMethod.Post, new {@class= "form-horizontal", id="loginFormHidden"}))
+{
+    @Html.Hidden("Username");
+    @Html.Hidden("PasswordHash");
 }
 
 <script type="text/javascript" src="~/js/sha512.min.js"></script>
@@ -35,9 +41,10 @@
             return false;
         } else {
             var hash = sha512.create();
-            hash.update($("#passwordText").value);
-            $("#passwordText").value = hash.hex();
-            $("#loginForm").submit();
+            hash.update($("#passwordText").val());
+            $("#PasswordHash").val(hash.hex());
+            $("#Username").val($("#usernameText").val());
+            $("#loginFormHidden").submit();
             return true;
         }
     });
