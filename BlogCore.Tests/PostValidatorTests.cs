@@ -32,23 +32,6 @@ namespace BlogCore.Tests
 
         [Theory]
         [InlineData("")]
-        [InlineData("  ")]
-        [InlineData(null)]
-        public void IsValidAuthor_CaughtInvalid_Success(string invalidInput)
-        {
-            Assert.False(_postValidator.IsValidAuthor(invalidInput));
-        }
-
-        [Fact]
-        public void IsValidAuthor_Valid_Success()
-        {
-            var notEmptyNullOrWhitespace = "author";
-
-            Assert.True(_postValidator.IsValidAuthor(notEmptyNullOrWhitespace));
-        }
-
-        [Theory]
-        [InlineData("")]
         [InlineData(" ")]
         [InlineData(null)]
         public void IsValidBody_CaughtInvalid_Success(string invalidInput)

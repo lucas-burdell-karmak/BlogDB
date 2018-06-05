@@ -10,16 +10,19 @@ namespace BlogDB.Core
         private readonly IPostValidator _postValidator;
         private readonly IAuthorRepo _authorRepo;
 
-        public PostDataAccess(IPostRepo postRepo, IPostValidator postValidator, IAuthorRepo authorRepo)
+        private readonly IAuthorValidator _authorValidator;
+
+        public PostDataAccess(IPostRepo postRepo, IPostValidator postValidator, IAuthorRepo authorRepo, IAuthorValidator authorValidator)
         {
             _postRepo = postRepo;
             _postValidator = postValidator;
             _authorRepo = authorRepo;
+            _authorValidator = authorValidator;
         }
 
         public Post AddPost(Post post)
         {
-            if (_postValidator.IsValidPost(post))
+            if (_postValidator.IsValidPost(post) && _authorValidator.IsValidAuthor(post.Author))
             {
                 post.PostID = Guid.NewGuid();
                 post.Timestamp = DateTime.UtcNow;
@@ -47,7 +50,7 @@ namespace BlogDB.Core
 
         public Post EditPost(Post post)
         {
-            if (_postValidator.PostExists(_postRepo.GetAllPosts(), post) && _postValidator.IsValidPost(post))
+            if (_postValidator.PostExists(_postRepo.GetAllPosts(), post) && _postValidator.IsValidPost(post) && _authorValidator.IsValidAuthor(post.Author))
             {
                 post.Timestamp = DateTime.UtcNow;
                 var isSuccessful = _postRepo.TryEditPost(post, out var result);
