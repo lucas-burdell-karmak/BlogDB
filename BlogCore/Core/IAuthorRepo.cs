@@ -5,10 +5,10 @@ namespace BlogDB.Core
 {
     public interface IAuthorRepo
     {
-        bool TryValidateAuthor(string name, string passwordHash, out Author author);
-        void TryRegisterAuthor(string name, string passwordHash, out bool isSuccessful);
-        Author GetAuthor(int id);
+        Author GetAuthorByID(int id);
         Author GetAuthorByName(string name);
         List<Author> GetListOfAuthors();
+        void TryRegisterAuthor(string name, string passwordHash, out bool isSuccessful);
+        void TryValidateAuthor(string name, string passwordHash, out bool isSuccessful);
     }
 }

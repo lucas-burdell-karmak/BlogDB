@@ -35,8 +35,6 @@ namespace BlogDB.Core
             _connection.Open();
         }
 
-
-
         private static string ByteArrayToHexString(byte[] ba)
         {
             StringBuilder hex = new StringBuilder(ba.Length * 2);
@@ -45,7 +43,7 @@ namespace BlogDB.Core
             return hex.ToString();
         }
 
-        public Author GetAuthor(int id)
+        public Author GetAuthorByID(int id)
         {
             Author author = null;
             var commandText = "SELECT name FROM author WHERE id = @id";
@@ -54,7 +52,6 @@ namespace BlogDB.Core
             command.Parameters["@id"].Value = id.ToString();
 
             var reader = command.ExecuteReader();
-
             if (reader.HasRows)
             {
                 while (reader.Read())
@@ -63,6 +60,7 @@ namespace BlogDB.Core
                 }
             }
             reader.Close();
+
             return author;
         }
 
@@ -94,7 +92,6 @@ namespace BlogDB.Core
             var command = new SqlCommand(commandText, _connection);
 
             var reader = command.ExecuteReader();
-
             if (reader.HasRows)
             {
                 while (reader.Read())
@@ -106,7 +103,7 @@ namespace BlogDB.Core
             return authors;
         }
 
-        private byte[] GetPasswordHash(int id)
+        private byte[] GetPasswordHashByAuthorID(int id)
         {
             string passwordHash = null;
             var commandText = "SELECT PasswordHash FROM author WHERE id = @id";
@@ -115,7 +112,6 @@ namespace BlogDB.Core
             command.Parameters["@id"].Value = id.ToString();
 
             var reader = command.ExecuteReader();
-
             if (reader.HasRows)
             {
                 while (reader.Read())
@@ -136,8 +132,7 @@ namespace BlogDB.Core
             return bytes;
         }
 
-
-        private byte[] GetSalt(int id)
+        private byte[] GetSaltByAuthorID(int id)
         {
             string salt = null;
             var commandText = "SELECT Salt FROM author WHERE id = @id";
@@ -146,7 +141,6 @@ namespace BlogDB.Core
             command.Parameters["@id"].Value = id.ToString();
 
             var reader = command.ExecuteReader();
-
             if (reader.HasRows)
             {
                 while (reader.Read())
@@ -158,32 +152,32 @@ namespace BlogDB.Core
             return HexStringToByteArray(salt);
         }
 
-        public bool TryValidateAuthor(string name, string passwordHash, out Author author)
+        public void TryValidateAuthor(string name, string passwordHash, out bool isSuccessful)
         {
-            var authorInDB = GetAuthorByName(name);
-            author = null;
-            if (authorInDB == null)
+            try
             {
-                return false;
+                var authorInDB = GetAuthorByName(name);
+                if (authorInDB == null)
+                {
+                    isSuccessful = false;
+                }
+                else
+                {
+                    byte[] salt = GetSaltByAuthorID(authorInDB.ID);
+                    byte[] passwordHashInDB = GetPasswordHashByAuthorID(authorInDB.ID);
+
+                    HMACSHA512 hash = new HMACSHA512();
+
+                    hash.Key = salt;
+                    byte[] computedHash = hash.ComputeHash(HexStringToByteArray(passwordHash));
+
+                    isSuccessful = (computedHash.SequenceEqual(passwordHashInDB));
+                }
             }
-
-            byte[] salt = GetSalt(authorInDB.ID);
-            byte[] passwordHashInDB = GetPasswordHash(authorInDB.ID);
-
-            HMACSHA512 hash = new HMACSHA512();
-
-            hash.Key = salt;
-            byte[] computedHash = hash.ComputeHash(HexStringToByteArray(passwordHash));
-
-            var authorized = computedHash.SequenceEqual(passwordHashInDB);
-            if (authorized)
+            catch (Exception)
             {
-                author = authorInDB;
-
+                isSuccessful = false;
             }
-
-            return authorized;
-
         }
 
         public void TryRegisterAuthor(string name, string passwordHash, out bool isSuccessful)
