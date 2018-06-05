@@ -35,7 +35,7 @@ namespace The_Intern_MVC.Controllers
                 {
                     claims.Add(new Claim(ClaimTypes.Role, role));
                 }
-                SetCookie(new Guid().ToString(), lvModel.Username, 30);
+                SetCookie(Guid.NewGuid().ToString(), lvModel.Username, 30);
                 return View("~/Views/Home/Index.cshtml");
             }
             else

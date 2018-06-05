@@ -24,7 +24,7 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult Index(string message)
         {
-            ViewBag.History = "~/Views/Home/Index";
+            ViewBag.History = "/Home/Index";
             return View(message);
         }
     }
