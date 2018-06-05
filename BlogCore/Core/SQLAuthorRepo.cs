@@ -189,7 +189,7 @@ namespace BlogDB.Core
             Author author = null;
             var commandText = "SELECT id FROM author WHERE name = @name";
             var command = new SqlCommand(commandText, _connection);
-            command.Parameters.Add("@name", SqlDbType.Int);
+            command.Parameters.Add("@name", SqlDbType.NVarChar);
             command.Parameters["@name"].Value = name;
 
             var reader = command.ExecuteReader();
