@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using BlogDB.Core;
 using Xunit;
 
@@ -10,6 +11,7 @@ namespace BlogCore.Tests.Mocks
         private bool CalledTryRegisterAuthor = false;
         private bool CalledGetAuthor = false;
         private bool CalledGetAuthorByName = false;
+        private bool CalledGetListOfAuthors = false;
 
         private bool StubedTryValidateAuthorBool;
         private bool StubedTryRegisterAuthorBool;
@@ -17,13 +19,15 @@ namespace BlogCore.Tests.Mocks
         private Author StubedTryRegisterAuthor;
         private Author StubedGetAuthor;
         private Author StubedGetAuthorByName;
+        private List<Author> StubedGetListOfAuthors;
 
         public void AssertTryValidateAuthorCalled() => Assert.True(CalledTryValidateAuthor);
         public void AssertTryRegisterAuthorCalled() => Assert.True(CalledTryRegisterAuthor);
         public void AssertGetAuthorCalled() => Assert.True(CalledGetAuthor);
         public void AssertGetAuthorByNameCalled() => Assert.True(CalledGetAuthorByName);
+        public void AssertGetListOfAuthorCalled() => Assert.True(CalledGetListOfAuthors);
 
-        public bool TryValidateAuthor(string name, string passwordHash, out Author author)
+        public bool TryValidateAuthorLogin(string name, string passwordHash, out Author author)
         {
             CalledTryValidateAuthor = true;
             author = StubedTryValidateAuthor;
@@ -49,6 +53,12 @@ namespace BlogCore.Tests.Mocks
             return StubedGetAuthorByName;
         }
 
+        public List<Author> GetListOfAuthors()
+        {
+            CalledGetListOfAuthors = true;
+            return StubedGetListOfAuthors;
+        }
+
         public MockAuthorRepo SetCalledTryValidateAuthorToFalse()
         {
             CalledTryValidateAuthor = false;
@@ -70,6 +80,12 @@ namespace BlogCore.Tests.Mocks
         public MockAuthorRepo SetCalledGetAuthorByNameToFalse()
         {
             CalledGetAuthorByName = false;
+            return this;
+        }
+
+        public MockAuthorRepo SetCalledGetListOfAuthorsToFalse()
+        {
+            CalledGetListOfAuthors = false;
             return this;
         }
 
@@ -106,6 +122,12 @@ namespace BlogCore.Tests.Mocks
         public MockAuthorRepo StubGetAuthorByName(Author author)
         {
             StubedGetAuthorByName = author;
+            return this;
+        }
+
+        public MockAuthorRepo StubGetListOfAuthors(List<Author> authors)
+        {
+            StubedGetListOfAuthors = authors;
             return this;
         }
     }

@@ -13,16 +13,21 @@ namespace BlogCore.Tests
         {
             var mockPostRepo = new MockPostRepo();
             var mockPostValidator = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator);
-            var post = new Post("title", new Author("author", 0), "body");
+            var mockAuthorRepo = new MockAuthorRepo();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo);
+            var author = new Author("author", 0);
+            var post = new Post("title", author, "body");
 
             mockPostValidator.StubValidPost(true);
             mockPostRepo.StubTryAddPostResult(post)
                         .StubTryAddPostBool(true);
+            mockAuthorRepo.StubTryValidateAuthor(author)
+                          .StubTryValidateAuthorBool(true);
             var returnedPost = postDataAccess.AddPost(post);
 
             mockPostValidator.AssertIsValidPostCalled();
             mockPostRepo.AssertTryAddPostCalled();
+            mockAuthorRepo.AssertTryValidateAuthorCalled();
             Assert.NotNull(returnedPost);
             AssertPostsEqual(post, returnedPost);
         }
@@ -44,8 +49,10 @@ namespace BlogCore.Tests
         {
             var mockPostRepo = new MockPostRepo();
             var mockPostValidator = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator);
-            var post = new Post(title, new Author(authorName, 0), body);
+            var mockAuthorRepo = new MockAuthorRepo();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo);
+            var author = new Author(authorName, 0);
+            var post = new Post(title, author, body);
 
             mockPostValidator.StubValidPost(false);
 
