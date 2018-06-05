@@ -23,7 +23,7 @@ namespace BlogCore.Tests.Mocks
         public void AssertIsValidPostCalled() => Assert.True(CalledIsValidPost);
         public void AssertIsValidStringCalled() => Assert.True(CalledIsValidString);
         public void AssertIsValidTitleCalled() => Assert.True(CalledIsValidTitle);
-        public void AssertPostExitsCalled() => Assert.True(CalledPostExits);
+        public void AssertPostExistsCalled() => Assert.True(CalledPostExits);
 
         public bool IsValidBody(string body)
         {

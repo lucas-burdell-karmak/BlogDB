@@ -14,20 +14,20 @@ namespace BlogCore.Tests
             var mockPostRepo = new MockPostRepo();
             var mockPostValidator = new MockPostValidator();
             var mockAuthorRepo = new MockAuthorRepo();
-            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo);
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var author = new Author("author", 0);
             var post = new Post("title", author, "body");
 
             mockPostValidator.StubValidPost(true);
             mockPostRepo.StubTryAddPostResult(post)
                         .StubTryAddPostBool(true);
-            mockAuthorRepo.StubTryValidateAuthor(author)
-                          .StubTryValidateAuthorBool(true);
+            mockAuthorValidator.StubIsValidAuthor(true);
             var returnedPost = postDataAccess.AddPost(post);
 
             mockPostValidator.AssertIsValidPostCalled();
             mockPostRepo.AssertTryAddPostCalled();
-            mockAuthorRepo.AssertTryValidateAuthorCalled();
+            mockAuthorValidator.AssertIsValidAuthorCalled();
             Assert.NotNull(returnedPost);
             AssertPostsEqual(post, returnedPost);
         }
@@ -45,12 +45,13 @@ namespace BlogCore.Tests
         [InlineData("title", "author", " ")]
         [InlineData("title", " ", "body")]
         [InlineData(" ", "author", "body")]
-        public void TestAddPost_InvalidData_Failure(string title, string authorName, string body)
+        public void TestAddPost_InvalidPost_Failure(string title, string authorName, string body)
         {
             var mockPostRepo = new MockPostRepo();
             var mockPostValidator = new MockPostValidator();
             var mockAuthorRepo = new MockAuthorRepo();
-            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo);
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var author = new Author(authorName, 0);
             var post = new Post(title, author, body);
 
@@ -60,116 +61,180 @@ namespace BlogCore.Tests
             mockPostValidator.AssertIsValidPostCalled();
         }
 
+        [Theory]
+        [InlineData("", "", "")]
+        [InlineData("title", "author", "")]
+        [InlineData("title", "", "body")]
+        [InlineData("", "author", "body")]
+        [InlineData(null, null, null)]
+        [InlineData("title", "author", null)]
+        [InlineData("title", null, "body")]
+        [InlineData(null, "author", "body")]
+        [InlineData(" ", " ", " ")]
+        [InlineData("title", "author", " ")]
+        [InlineData("title", " ", "body")]
+        [InlineData(" ", "author", "body")]
+        public void TestAddPost_InvalidAuthor_Failure(string title, string authorName, string body)
+        {
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
+            var author = new Author(authorName, 0);
+            var post = new Post(title, author, body);
+
+            mockPostValidator.StubValidPost(true);
+            mockAuthorValidator.StubIsValidAuthor(false);
+
+            Assert.Throws<ArgumentException>(() => postDataAccess.AddPost(post));
+            mockPostValidator.AssertIsValidPostCalled();
+            mockAuthorValidator.AssertIsValidAuthorCalled();
+        }
+
         [Fact]
         public void TestDeletePost_ValidData_Success()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var post = new Post("", new Author("", 0), "");
             var listOfPosts = new List<Post>();
 
             listOfPosts.Add(post);
-            postValidatorMock.StubPostExists(true);
-            postRepoMock.StubGetAllPosts(listOfPosts)
+            mockPostValidator.StubPostExists(true);
+            mockPostRepo.StubGetAllPosts(listOfPosts)
                         .StubTryDeletePostBool(true)
                         .StubTryDeletePostResult(post);
             var returnedPost = postDataAccess.DeletePost(post);
 
-            postValidatorMock.AssertPostExitsCalled();
-            postRepoMock.AssertGetAllPostCalled();
-            postRepoMock.AssertTryDeletePostCalled();
+            mockPostValidator.AssertPostExistsCalled();
+            mockPostRepo.AssertGetAllPostCalled();
+            mockPostRepo.AssertTryDeletePostCalled();
             Assert.NotNull(returnedPost);
             AssertPostsEqual(post, returnedPost);
         }
 
         [Fact]
-        public void TestDeletePost_InvalidData_Failure()
+        public void TestDeletePost_InvalidPost_Failure()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var post = new Post("", new Author("", 0), "");
 
-            postValidatorMock.StubPostExists(false);
+            mockPostValidator.StubPostExists(false);
 
             Assert.Throws<ArgumentException>(() => postDataAccess.DeletePost(post));
-            postValidatorMock.AssertPostExitsCalled();
+            mockPostValidator.AssertPostExistsCalled();
         }
 
         [Fact]
         public void TestEditPost_ValidData_Success()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var post = new Post("OriginalTitle", new Author("OriginalAuthor", 0), "OriginalBody");
             var expectedPost = new Post("newTitle", new Author("newAuthor", 0), "newBody", post.Timestamp, post.PostID);
             var listOfPosts = new List<Post>();
 
             listOfPosts.Add(post);
-            postValidatorMock.StubPostExists(true)
+            mockPostValidator.StubPostExists(true)
                              .StubValidPost(true);
-            postRepoMock.StubGetAllPosts(listOfPosts)
+            mockPostRepo.StubGetAllPosts(listOfPosts)
                         .StubTryEditPostBool(true)
                         .StubTryEditPostResult(expectedPost);
+            mockAuthorValidator.StubIsValidAuthor(true);
             var returnedPost = postDataAccess.EditPost(post);
 
-            postValidatorMock.AssertPostExitsCalled();
-            postRepoMock.AssertGetAllPostCalled();
-            postValidatorMock.AssertIsValidPostCalled();
-            postRepoMock.AssertTryEditPostCalled();
+            mockPostValidator.AssertPostExistsCalled();
+            mockPostRepo.AssertGetAllPostCalled();
+            mockPostValidator.AssertIsValidPostCalled();
+            mockPostRepo.AssertTryEditPostCalled();
+            mockAuthorValidator.AssertIsValidAuthorCalled();
             Assert.NotNull(returnedPost);
-            AssertPostsEqual(listOfPosts[0], returnedPost);
+            AssertPostsEqual(expectedPost, returnedPost);
         }
 
         [Fact]
         public void TestEditPost_PostDoesNotExists()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var post = new Post("", new Author("", 0), "");
 
-            postValidatorMock.StubPostExists(false)
-                             .StubValidPost(false);
+            mockPostValidator.StubPostExists(false);
 
             Assert.Throws<ArgumentException>(() => postDataAccess.EditPost(post));
-            postValidatorMock.AssertPostExitsCalled();
+            mockPostValidator.AssertPostExistsCalled();
         }
 
         [Fact]
-        public void TestEditPost_PostExistsButInvalid()
+        public void TestEditPost_PostExistsButInvalidPost()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var post = new Post("", new Author("", 0), "");
 
-            postValidatorMock.StubPostExists(true)
+            mockPostValidator.StubPostExists(true)
                              .StubValidPost(false);
 
             Assert.Throws<ArgumentException>(() => postDataAccess.EditPost(post));
-            postValidatorMock.AssertPostExitsCalled();
-            postValidatorMock.AssertIsValidPostCalled();
+            mockPostValidator.AssertPostExistsCalled();
+            mockPostValidator.AssertIsValidPostCalled();
+        }
+
+        [Fact]
+        public void TestEditPost_PostExistsButInvalidAuthor()
+        {
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
+            var post = new Post("", new Author("", 0), "");
+
+            mockPostValidator.StubPostExists(true)
+                             .StubValidPost(true);
+            mockAuthorValidator.StubIsValidAuthor(false);
+
+            Assert.Throws<ArgumentException>(() => postDataAccess.EditPost(post));
+            mockPostValidator.AssertPostExistsCalled();
+            mockPostValidator.AssertIsValidPostCalled();
+            mockAuthorValidator.AssertIsValidAuthorCalled();
         }
 
 
         [Fact]
         public void TestGetAllPosts()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var post = new Post("", new Author("", 0), "");
             var listOfPosts = new List<Post>();
 
             listOfPosts.Add(post);
-            postRepoMock.StubGetAllPosts(listOfPosts);
+            mockPostRepo.StubGetAllPosts(listOfPosts);
 
             var returnedListOfPosts = postDataAccess.GetAllPosts();
 
-            postRepoMock.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostCalled();
             Assert.Equal(listOfPosts.Count, returnedListOfPosts.Count);
             AssertPostsEqual(listOfPosts[0], returnedListOfPosts[0]);
         }
@@ -177,9 +242,11 @@ namespace BlogCore.Tests
         [Fact]
         public void TestGetListOfPostsByAuthors()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var postNotByAuthor = new Post("", new Author("NotAuthor", 0), "");
             var postByAuthor = new Post("", new Author("Author", 0), "");
             var listOfPosts = new List<Post>();
@@ -187,28 +254,30 @@ namespace BlogCore.Tests
             listOfPosts.Add(postNotByAuthor);
             listOfPosts.Add(postByAuthor);
 
-            postRepoMock.StubGetAllPosts(listOfPosts);
+            mockPostRepo.StubGetAllPosts(listOfPosts);
 
             var returnedListOfPosts = postDataAccess.GetListOfPostsByAuthor("Author");
 
-            postRepoMock.AssertGetAllPostCalled();
-            AssertPostsEqual(listOfPosts[0], returnedListOfPosts[0]);
+            mockPostRepo.AssertGetAllPostCalled();
+            AssertPostsEqual(postByAuthor, returnedListOfPosts[0]);
         }
 
         [Fact]
         public void TestGetPostById_ValidID_Success()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var post = new Post("", new Author("", 0), "");
             var listOfPosts = new List<Post>();
 
             listOfPosts.Add(post);
-            postRepoMock.StubGetAllPosts(listOfPosts);
+            mockPostRepo.StubGetAllPosts(listOfPosts);
             var returnedPost = postDataAccess.GetPostById(post.PostID);
 
-            postRepoMock.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostCalled();
             Assert.NotNull(returnedPost);
             AssertPostsEqual(post, returnedPost);
         }
@@ -217,43 +286,49 @@ namespace BlogCore.Tests
         public void TestGetPostById_InvalidID_Success()
         {
             var nonExistentPostID = "33b9def6-f7db-4120-9f00-6137bbeeb8d1";
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var post = new Post("", new Author("", 0), "", DateTime.Now, Guid.Parse("bb2da75b-3bec-4d92-ba7e-4cbdf7b50759"));
             var listOfPosts = new List<Post>();
 
             listOfPosts.Add(post);
-            postRepoMock.StubGetAllPosts(listOfPosts);
+            mockPostRepo.StubGetAllPosts(listOfPosts);
             var returnedPost = postDataAccess.GetPostById(Guid.Parse(nonExistentPostID));
 
-            postRepoMock.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostCalled();
             Assert.Null(returnedPost);
         }
 
         [Fact]
         public void TestGetPostCount()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var post = new Post("", new Author("", 0), "");
             var listOfPosts = new List<Post>();
 
             listOfPosts.Add(post);
-            postRepoMock.StubGetAllPosts(listOfPosts);
+            mockPostRepo.StubGetAllPosts(listOfPosts);
             var returnedCount = postDataAccess.GetPostCount();
 
-            postRepoMock.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostCalled();
             Assert.Equal(listOfPosts.Count, returnedCount);
         }
 
         [Fact]
         public void TestGetPostFromList_ValidID()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var post = new Post("", new Author("", 0), "");
             var listOfPosts = new List<Post>();
 
@@ -268,9 +343,11 @@ namespace BlogCore.Tests
         public void TestGetPostFromList_invalidID()
         {
             var nonExistentPostID = "00000000-0000-0000-0000-000000000000";
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var post = new Post("", new Author("", 0), "");
             var listOfPosts = new List<Post>();
 
@@ -283,9 +360,11 @@ namespace BlogCore.Tests
         [Fact]
         public void TestGetPostFromList_EmptyList()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
             var listOfPosts = new List<Post>();
 
             var returnedPost = postDataAccess.GetPostFromList(listOfPosts, Guid.NewGuid());
@@ -299,21 +378,23 @@ namespace BlogCore.Tests
         [InlineData(PostComponent.timestamp)]
         public void TestGetSortedListOfPosts(PostComponent postComp)
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
-            var aPost = new Post("AAA", new Author("AAA", 0), "AAA");
-            var bPost = new Post("BBB", new Author("BBB", 1), "BBB");
-            var cPost = new Post("CCC", new Author("CCC", 2), "CCC");
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
+            var aPost = new Post("AAA", new Author("AAA", 0), "AAA", Convert.ToDateTime("1111-01-01T11:11:11.1111111Z"), Guid.Parse("11111111-1111-1111-1111-111111111111"));
+            var bPost = new Post("BBB", new Author("BBB", 1), "BBB", Convert.ToDateTime("1112-02-02T12:22:22.2222222Z"), Guid.Parse("22222222-2222-2222-2222-222222222222"));
+            var cPost = new Post("CCC", new Author("CCC", 2), "CCC", Convert.ToDateTime("1113-03-03T13:33:33.3333333Z"), Guid.Parse("33333333-3333-3333-3333-333333333333"));
             var listOfPosts = new List<Post>();
 
             listOfPosts.Add(cPost);
             listOfPosts.Add(aPost);
             listOfPosts.Add(bPost);
-            postRepoMock.StubGetAllPosts(listOfPosts);
+            mockPostRepo.StubGetAllPosts(listOfPosts);
             var returnedListOfPosts = postDataAccess.GetSortedListOfPosts(postComp);
 
-            postRepoMock.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostCalled();
             Assert.Equal(listOfPosts.Count, returnedListOfPosts.Count);
             AssertPostsEqual(aPost, returnedListOfPosts[0]);
             AssertPostsEqual(bPost, returnedListOfPosts[1]);
@@ -333,9 +414,11 @@ namespace BlogCore.Tests
         [Fact]
         public void TestSearchBy_ValidData_Success()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
 
             //TODO
         }
@@ -343,9 +426,11 @@ namespace BlogCore.Tests
         [Fact]
         public void TestSearchBy_InvalidData_Failure()
         {
-            var postRepoMock = new MockPostRepo();
-            var postValidatorMock = new MockPostValidator();
-            var postDataAccess = new PostDataAccess(postRepoMock, postValidatorMock);
+            var mockPostRepo = new MockPostRepo();
+            var mockPostValidator = new MockPostValidator();
+            var mockAuthorRepo = new MockAuthorRepo();
+            var mockAuthorValidator = new MockAuthorValidator();
+            var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
 
             //TODO
         }

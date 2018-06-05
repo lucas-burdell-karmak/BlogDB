@@ -7,21 +7,21 @@ namespace BlogCore.Tests.Mocks
 {
     public class MockAuthorRepo : IAuthorRepo
     {
-        private bool CalledTryValidateAuthor = false;
+        private bool CalledTryValidateAuthorLogin = false;
         private bool CalledTryRegisterAuthor = false;
         private bool CalledGetAuthor = false;
         private bool CalledGetAuthorByName = false;
         private bool CalledGetListOfAuthors = false;
 
-        private bool StubedTryValidateAuthorBool;
+        private bool StubedTryValidateAuthorLoginBool;
         private bool StubedTryRegisterAuthorBool;
-        private Author StubedTryValidateAuthor;
+        private Author StubedTryValidateAuthorLogin;
         private Author StubedTryRegisterAuthor;
         private Author StubedGetAuthor;
         private Author StubedGetAuthorByName;
         private List<Author> StubedGetListOfAuthors;
 
-        public void AssertTryValidateAuthorCalled() => Assert.True(CalledTryValidateAuthor);
+        public void AssertTryValidateAuthorLoginCalled() => Assert.True(CalledTryValidateAuthorLogin);
         public void AssertTryRegisterAuthorCalled() => Assert.True(CalledTryRegisterAuthor);
         public void AssertGetAuthorCalled() => Assert.True(CalledGetAuthor);
         public void AssertGetAuthorByNameCalled() => Assert.True(CalledGetAuthorByName);
@@ -29,9 +29,9 @@ namespace BlogCore.Tests.Mocks
 
         public bool TryValidateAuthorLogin(string name, string passwordHash, out Author author)
         {
-            CalledTryValidateAuthor = true;
-            author = StubedTryValidateAuthor;
-            return StubedTryValidateAuthorBool;
+            CalledTryValidateAuthorLogin = true;
+            author = StubedTryValidateAuthorLogin;
+            return StubedTryValidateAuthorLoginBool;
         }
 
         public bool TryRegisterAuthor(string name, string passwordHash, out Author author)
@@ -59,9 +59,9 @@ namespace BlogCore.Tests.Mocks
             return StubedGetListOfAuthors;
         }
 
-        public MockAuthorRepo SetCalledTryValidateAuthorToFalse()
+        public MockAuthorRepo SetCalledTryValidateAuthorLoginToFalse()
         {
-            CalledTryValidateAuthor = false;
+            CalledTryValidateAuthorLogin = false;
             return this;
         }
 
@@ -89,9 +89,9 @@ namespace BlogCore.Tests.Mocks
             return this;
         }
 
-        public MockAuthorRepo StubTryValidateAuthorBool(bool b)
+        public MockAuthorRepo StubTryValidateAuthorLoginBool(bool b)
         {
-            StubedTryValidateAuthorBool = b;
+            StubedTryValidateAuthorLoginBool = b;
             return this;
         }
 
@@ -101,9 +101,9 @@ namespace BlogCore.Tests.Mocks
             return this;
         }
 
-        public MockAuthorRepo StubTryValidateAuthor(Author author)
+        public MockAuthorRepo StubTryValidateAuthorLogin(Author author)
         {
-            StubedTryValidateAuthor = author;
+            StubedTryValidateAuthorLogin = author;
             return this;
         }
 

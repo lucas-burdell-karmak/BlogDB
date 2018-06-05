@@ -9,14 +9,14 @@ namespace BlogCore.Tests.Mocks
     {
         private bool CalledIsValidAuthor = false;
 
-        private bool StubedIsValidAuthorBool;
+        private bool StubedIsValidAuthor;
 
         public void AssertIsValidAuthorCalled() => Assert.True(CalledIsValidAuthor);
 
         public bool IsValidAuthor(Author author)
         {
             CalledIsValidAuthor = true;
-            return StubedIsValidAuthorBool;
+            return StubedIsValidAuthor;
         }
 
         public MockAuthorValidator SetCalledIsValidAuthorToFalse()
@@ -25,9 +25,9 @@ namespace BlogCore.Tests.Mocks
             return this;
         }
 
-        public MockAuthorValidator StubIsValidAuthorBool(bool b)
+        public MockAuthorValidator StubIsValidAuthor(bool b)
         {
-            StubedIsValidAuthorBool = b;
+            StubedIsValidAuthor = b;
             return this;
         }
     }
