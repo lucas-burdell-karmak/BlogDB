@@ -40,7 +40,7 @@ namespace The_Intern_MVC.Controllers
             {
                 var postBuilder = new PostBuilder(post);
                 var postResult = _postDataAccess.AddPost(postBuilder.build());
-                ViewBag.History = "~/Views/Home";
+                ViewBag.History = "/Home";
 
                 var pmBuilder = new PostModelBuilder(postResult);
                 return View("~/Views/Home/ViewSinglePost", pmBuilder.build());
@@ -57,13 +57,13 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult AddPost()
         {
-            ViewBag.History = "~/Views/Home";
+            ViewBag.History = "/Home";
             return View("~/Views/Home/AddPost");
         }
 
         public IActionResult Authors()
         {
-            ViewBag.History = "~/Views/Home";
+            ViewBag.History = "/Home";
             return View(_postDataAccess.GetListOfAuthors());
         }
 
@@ -73,13 +73,13 @@ namespace The_Intern_MVC.Controllers
             {
                 var postBuilder = new PostBuilder(post);
                 var postResult = _postDataAccess.DeletePost(postBuilder.build());
-                ViewBag.History = "~/Views/Home";
+                ViewBag.History = "/Home";
                 return RedirectToAction("~/Views/Home/ViewAll");
             }
             catch (ArgumentException e)
             {
                 string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
-                ViewBag.History = "~/Views/Home/ViewAll";
+                ViewBag.History = "/Home/ViewAll";
                 Console.WriteLine(e.ToString());
                 return View("~/Views/NullPost/Index", errorMessage);
             }
@@ -88,7 +88,7 @@ namespace The_Intern_MVC.Controllers
         {
             try
             {
-                ViewBag.History = "~/Views/Home/ViewAll";
+                ViewBag.History = "/Home/ViewAll";
                 var postBuilder = new PostBuilder(post);
                 var postResult = _postDataAccess.EditPost(postBuilder.build());
                 var pmBuilder = new PostModelBuilder(postResult);
@@ -108,10 +108,10 @@ namespace The_Intern_MVC.Controllers
             if (postResult == null)
             {
                 string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
-                ViewBag.History = "~/Views/Home/ViewAll";
+                ViewBag.History = "/Home/ViewAll";
                 return View("~/Views/NullPost/Index", errorMessage);
             }
-            ViewBag.History = "~/Views/Home/ViewSinglePost?postid=" + postid;
+            ViewBag.History = "/Home/ViewSinglePost?postid=" + postid;
             var postModelBuilder = new PostModelBuilder(postResult);
             return View("~/Views/Home/EditPost", postModelBuilder.build());
         }
@@ -123,7 +123,7 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult SearchResult(SearchCriteria searchCriteria)
         {
-            ViewBag.History = "~/Views/Home/";
+            ViewBag.History = "/Home/";
             if (String.IsNullOrEmpty(searchCriteria.SearchString))
             {
                 return RedirectToAction("~/Views/Home/ViewAll");
@@ -147,7 +147,7 @@ namespace The_Intern_MVC.Controllers
             var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
-                ViewBag.History = "~/Views/Home/";
+                ViewBag.History = "/Home/";
                 return View("~/Views/NullPost/Index", "Post does not exist.");
             }
 
@@ -159,7 +159,7 @@ namespace The_Intern_MVC.Controllers
         public IActionResult ViewAll()
         {
 
-            ViewBag.History = "~/Views/Home";
+            ViewBag.History = "/Home";
             List<PostModel> postResult = _postDataAccess.GetAllPosts().ConvertAll<PostModel>((p) =>
             {
                 var pmBuilder = new PostModelBuilder(p);
@@ -174,7 +174,7 @@ namespace The_Intern_MVC.Controllers
 
         public IActionResult ViewByAuthor(string author)
         {
-            ViewBag.History = "~/Views/Home/Authors";
+            ViewBag.History = "/Home/Authors";
             List<PostModel> list = _postDataAccess.GetListOfPostsByAuthor(author).ConvertAll<PostModel>((p) =>
             {
                 var pmBuilder = new PostModelBuilder(p);
