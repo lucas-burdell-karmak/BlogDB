@@ -1,6 +1,6 @@
 @model RegisterViewModel
 <h2>Register Page</h2>
-@using (Html.BeginForm("Index","Login",FormMethod.Post,new {@class= "form-horizontal", id="registerForm"}))
+@using (Html.BeginForm("Index","Register",FormMethod.Post,new {@class= "form-horizontal", id="registerForm"}))
 {
     <div class="row">
         <div class="input-group col-md-12">
@@ -20,13 +20,19 @@
                 @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
             </div>
             <div>
-                <input type="submit" id="RegisterButton" class="btn btn-success box-shadow-4dp" value="Register"></input>
+                <input type="button" id="RegisterButton" class="btn btn-success box-shadow-4dp" value="Register"></input>
             </div>
             <div>
-                @ViewData["message"]
+                @TempData["message"]
             </div>
         </div>
     </div>
+}
+
+@using (Html.BeginForm("Index", "Register", FormMethod.Post, new {@class= "form-horizontal", id="registerFormHidden"}))
+{
+    @Html.Hidden("Username");
+    @Html.Hidden("PasswordHash");
 }
 
 <script type="text/javascript" src="~/js/sha512.min.js"></script>
@@ -37,9 +43,10 @@
             return false;
         } else {
             var hash = sha512.create();
-            hash.update($("#passwordText").value);
-            $("#passwordText").value = hash.hex();
-            $("#loginForm").submit();
+            hash.update($("#passwordText").val());
+            $("#PasswordHash").val(hash.hex());
+            $("#Username").val($("#usernameText").val());
+            $("#registerFormHidden").submit();
             return true;
         }
     });
