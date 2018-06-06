@@ -23,12 +23,6 @@ namespace The_Intern_MVC.Controllers
         public HomeController(IPostDataAccess postdataccess)
         {
             this._postDataAccess = postdataccess;
-            /*
-            string roleJson = GetCookie("BlogAuth");
-            string[] roles = (string[]) JsonConvert.DeserializeObject(roleJson);
-            */
-
-            //add roles from cookie to context.user.request.roles 
         }
 
         [Authorize(Policy = "BlogReader")]
@@ -46,11 +40,13 @@ namespace The_Intern_MVC.Controllers
             {
                 var claims = HttpContext.User.Claims;
                 post.AuthorName = claims.Where(c => c.Type == ClaimTypes.Name)
-                        .Select(c => c.Value).SingleOrDefault();
-                var authorId = -1;
+                                        .Select(c => c.Value)
+                                        .SingleOrDefault();
+                var authorID = -1;
                 Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
-                        .Select(c => c.Value).SingleOrDefault(), out authorId);
-                post.AuthorID = authorId;
+                                     .Select(c => c.Value)
+                                     .SingleOrDefault(), out authorID);
+                post.AuthorID = authorID;
                 var postBuilder = new PostBuilder(post);
                 var postToAdd = postBuilder.build();
                 var postResult = _postDataAccess.AddPost(postToAdd);
@@ -61,8 +57,6 @@ namespace The_Intern_MVC.Controllers
             }
             catch (ArgumentException e)
             {
-                // TODO exception logging
-
                 var errorMessage = new ErrorPageModel("Cannot add post.", "The post had empty properties.");
                 Console.WriteLine(e.ToString());
                 return ShowError(errorMessage);
@@ -73,8 +67,29 @@ namespace The_Intern_MVC.Controllers
         [HttpGet]
         public IActionResult AddPost()
         {
-            ViewBag.History = "/Home";
-            return View();
+            try
+            {
+                ViewBag.History = "/Home";
+                var claims = HttpContext.User.Claims;
+                var authorName = claims.Where(c => c.Type == ClaimTypes.Name)
+                                       .Select(c => c.Value)
+                                       .SingleOrDefault();
+                var authorID = -1;
+                Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
+                                     .Select(c => c.Value)
+                                     .SingleOrDefault(), out authorID);
+                var author = new Author(authorName, authorID);
+                var post = new Post("", author, "");
+                var pmBuilder = new PostModelBuilder(post);
+                return View("AddPost", pmBuilder.build());
+            }
+            catch (Exception e)
+            {
+                var errorMessage = new ErrorPageModel("Eror adding post.", "We couldn't add the post.");
+                ViewBag.History = "/Home";
+                Console.WriteLine(e.ToString());
+                return RedirectToAction("Index", "NullPost", errorMessage);
+            }
         }
 
         [Authorize(Policy = "BlogReader")]
@@ -113,6 +128,12 @@ namespace The_Intern_MVC.Controllers
             try
             {
                 ViewBag.History = "/Home/ViewAll";
+                if (post.AuthorName != HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Name)
+                                                              .Select(c => c.Value)
+                                                              .SingleOrDefault())
+                {
+                    throw new ArgumentException();
+                }
                 var postBuilder = new PostBuilder(post);
                 var postResult = _postDataAccess.EditPost(postBuilder.build());
                 var pmBuilder = new PostModelBuilder(postResult);
