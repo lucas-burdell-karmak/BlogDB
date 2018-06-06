@@ -133,5 +133,10 @@ namespace BlogDB.Core
         {
             return ReadAll();
         }
+
+        public List<Post> GetAllPostsByAuthor(int authorID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

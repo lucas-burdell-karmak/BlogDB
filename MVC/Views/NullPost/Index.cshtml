@@ -1,0 +1,5 @@
+@model ErrorPageModel
+<h1>@Model.Title</h1>
+<h5>@Model.Message</h5>
+
+@await Html.PartialAsync("~/Views/Partials/BackButton.cshtml")

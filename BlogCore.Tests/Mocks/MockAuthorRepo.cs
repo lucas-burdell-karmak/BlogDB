@@ -34,11 +34,11 @@ namespace BlogCore.Tests.Mocks
             return StubedTryValidateAuthorLoginBool;
         }
 
-        public bool TryRegisterAuthor(string name, string passwordHash, out Author author)
+
+        public void TryRegisterAuthor(string name, string passwordHash, out bool isSuccessful)
         {
             CalledTryRegisterAuthor = true;
-            author = StubedTryRegisterAuthor;
-            return StubedTryRegisterAuthorBool;
+            isSuccessful = StubedTryRegisterAuthorBool;
         }
 
         public Author GetAuthor(int id)

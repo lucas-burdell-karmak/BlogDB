@@ -13,8 +13,8 @@
         {
             <a class="btn btn-primary" href="/Home/EditPost?postid=@Model.PostID"><span class="glyphicon glyphicon-pencil"></span> Edit Post</a>
             @Html.HiddenFor(m => m.PostID)
-            @await Html.PartialAsync("DeleteButton", Model)
-            <a class="btn btn-success" href="/Home"><span class="glyphicon glyphicon-ok"></span> Done</a>
+            @await Html.PartialAsync("/Views/Partials/DeleteButton.cshtml", Model)
+            <a class="btn btn-success" href="~/Home"><span class="glyphicon glyphicon-ok"></span> Done</a>
         }
    
     </div>
