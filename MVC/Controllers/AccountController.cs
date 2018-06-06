@@ -14,17 +14,12 @@ using The_Intern_MVC.Models;
 
 namespace The_Intern_MVC.Controllers
 {
-    public class NullPostController : ControllerBase
+    public class AccountController : ControllerBase
     {
 
-        public IActionResult Index(ErrorPageModel message)
+        public IActionResult AccessDenied()
         {
-            if (message == null) 
-            {
-                message = new ErrorPageModel("","");
-            }
-            ViewBag.History = "/Home/Index";
-            return View("Index", message);
+            return View();
         }
     }
 }

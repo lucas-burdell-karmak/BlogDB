@@ -25,12 +25,15 @@ namespace The_Intern_MVC.Controllers
             this._postDataAccess = postdataccess;
         }
 
-        [Authorize(Roles = "BlogReader")]
+        [Authorize(Policy = "BlogReader")]
+        [HttpGet]
         public IActionResult Index()
         {
             return View("Index");
         }
 
+        [Authorize(Policy = "BlogWriter")]
+        [HttpPost]
         public IActionResult AddPostResult(PostModel post)
         {
             try
@@ -56,10 +59,12 @@ namespace The_Intern_MVC.Controllers
             {
                 var errorMessage = new ErrorPageModel("Cannot add post.", "The post had empty properties.");
                 Console.WriteLine(e.ToString());
-                return RedirectToAction("Index", "NullPost", errorMessage);
+                return ShowError(errorMessage);
             }
         }
 
+        [Authorize(Policy = "BlogWriter")]
+        [HttpGet]
         public IActionResult AddPost()
         {
             try
@@ -87,6 +92,8 @@ namespace The_Intern_MVC.Controllers
             }
         }
 
+        [Authorize(Policy = "BlogReader")]
+        [HttpGet]
         public IActionResult Authors()
         {
             ViewBag.History = "/Home";
@@ -94,6 +101,8 @@ namespace The_Intern_MVC.Controllers
             return View(listOfAuthors);
         }
 
+        [Authorize(Policy = "BlogDeleter")]
+        [HttpPost]
         public IActionResult DeletePostResult(PostModel post)
         {
             try
@@ -108,9 +117,12 @@ namespace The_Intern_MVC.Controllers
                 var errorMessage = new ErrorPageModel("Invalid Post.", "We couldn't find the post.");
                 ViewBag.History = "/Home/ViewAll";
                 Console.WriteLine(e.ToString());
-                return RedirectToAction("Index", "NullPost", errorMessage);
+                return ShowError(errorMessage);
             }
         }
+
+        [Authorize(Policy = "BlogEditor")]
+        [HttpPost]
         public IActionResult EditPostResult(PostModel post)
         {
             try
@@ -129,36 +141,40 @@ namespace The_Intern_MVC.Controllers
             }
             catch (ArgumentException e)
             {
-                var errorMessage = new ErrorPageModel("Invalid Post.", "The post contained invalid input.");
+                ErrorPageModel errorMessage = new ErrorPageModel("Invalid Post.", "The post contained invalid input.");
                 Console.WriteLine(e.ToString());
-                return RedirectToAction("Index", "NullPost", errorMessage);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-                return View("Home/");
+                return ShowError(errorMessage);
             }
         }
 
+        [Authorize(Policy = "BlogEditor")]
+        [HttpGet]
         public IActionResult EditPost(String postid)
         {
             var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
-                string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
+                var errorMessage = new ErrorPageModel("Invalid Post.", "We couldn't find the post. :(" );
                 ViewBag.History = "/Home/ViewAll";
-                return RedirectToAction("Index", "NullPost", errorMessage);
+                return ShowError(errorMessage);
             }
             ViewBag.History = "/Home/ViewSinglePost?postid=" + postid;
             var postModelBuilder = new PostModelBuilder(postResult);
-            return View("EditPost", postModelBuilder.build());
+            var postToEdit = postModelBuilder.build();
+            return View("EditPost", postToEdit);
         }
 
+
+        [AllowAnonymous]
+        [HttpGet]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+
+        [Authorize(Policy = "BlogReader")]
+        [HttpPost]
         public IActionResult SearchResult(SearchCriteria searchCriteria)
         {
             ViewBag.History = "/Home/";
@@ -180,13 +196,17 @@ namespace The_Intern_MVC.Controllers
 
             return View("ViewAll", results);
         }
+
+        [Authorize(Policy = "BlogReader")]
+        [HttpGet]
         public IActionResult ViewSinglePost(String postid)
         {
             var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
                 ViewBag.History = "/Home";
-                return RedirectToAction("Index", "NullPost", new ErrorPageModel("Post Does Not Exist", "This post does not exist."));
+                var errorMessage = new ErrorPageModel("Post Does Not Exist", "This post does not exist.");
+                return ShowError(errorMessage);
             }
 
             ViewBag.History = Request.Headers["Referer"].ToString();
@@ -194,6 +214,9 @@ namespace The_Intern_MVC.Controllers
             return View("ViewSinglePost", pmBuilder.build());
         }
 
+
+        [Authorize(Policy = "BlogReader")]
+        [HttpGet]
         public IActionResult ViewAll()
         {
 
@@ -205,11 +228,15 @@ namespace The_Intern_MVC.Controllers
             });
             if (postResult == null)
             {
-                return RedirectToAction("Index", "NullPost", new ErrorPageModel("No Posts", "There are no posts."));
+                var errorMessage = new ErrorPageModel("No Posts", "There are no posts.");
+                return ShowError(errorMessage);
             }
             return View(postResult);
         }
 
+
+        [Authorize(Policy = "BlogReader")]
+        [HttpGet]
         public IActionResult ViewByAuthor(int authorID)
         {
             ViewBag.History = "/Home/Authors";

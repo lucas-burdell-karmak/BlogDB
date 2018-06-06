@@ -226,11 +226,8 @@ namespace BlogDB.Core
 
         public Post UpdatePost(Post post)
         {
-            var commandText = "UPDATE Blog_Post SET author = @author, body = @body, timestamp = @timestamp, title = @title WHERE id = @id";
+            var commandText = "UPDATE Blog_Post SET body = @body, timestamp = @timestamp, title = @title WHERE id = @id";
             var command = new SqlCommand(commandText, _connection);
-            command.Parameters.Add("@author", SqlDbType.NChar);
-            command.Parameters["@author"].Value = post.Author;
-
             command.Parameters.Add("@body", SqlDbType.NChar);
             command.Parameters["@body"].Value = post.Body;
 
@@ -280,13 +277,13 @@ namespace BlogDB.Core
 
         private void WriteAll(List<Post> list)
         {
-            var commandText = "INSERT INTO Blog_Post (author, body, id, timestamp, title) VALUES (@author, @body, @id, @timestamp, @title)";
+            var commandText = "INSERT INTO Blog_Post (authorid, body, id, timestamp, title) VALUES (@author, @body, @id, @timestamp, @title)";
             var command = new SqlCommand(commandText, _connection);
 
             foreach (var post in list)
             {
                 command.Parameters.Add("@author", SqlDbType.NChar);
-                command.Parameters["@author"].Value = post.Author;
+                command.Parameters["@author"].Value = post.Author.ID;
 
                 command.Parameters.Add("@body", SqlDbType.NChar);
                 command.Parameters["@body"].Value = post.Body;

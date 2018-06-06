@@ -48,7 +48,7 @@ namespace The_Intern_MVC.Controllers
             {
                 TempData["message"] = "Username is not available!";
             }
-            return View("~/Views/Register/Index");
+            return View("Index");
         }
     }
 }

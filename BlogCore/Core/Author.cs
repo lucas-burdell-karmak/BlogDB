@@ -7,7 +7,7 @@ namespace BlogDB.Core
 
         public string Name {get; set;}
         public int ID {get; set;}
-        public string Roles { get; set; }
+        public string[] Roles { get; set; }
 
         public Author(string name, int id) 
         {
