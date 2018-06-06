@@ -47,7 +47,7 @@ namespace The_Intern_MVC.Controllers
 
             if (authorExists)
             {
-                _authorRepo.TryValidateAuthor(username, passwordHash, out var isSuccessful);
+                _authorRepo.TryValidateAuthorLogin(username, passwordHash, out var isSuccessful);
 
                 if (isSuccessful)
                 {

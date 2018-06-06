@@ -82,6 +82,8 @@ namespace BlogDB.Core
                 }
             }
             reader.Close();
+
+            return author;
         }
 
         public List<Author> GetListOfAuthors()
@@ -216,25 +218,6 @@ namespace BlogDB.Core
             {
                 isSuccessful = false;
             }
-        }
-
-        public List<Author> GetListOfAuthors()
-        {
-            var authors = new List<Author>();
-            var commandText = "SELECT name, id FROM author";
-            var command = new SqlCommand(commandText, _connection);
-
-            var reader = command.ExecuteReader();
-
-            if(reader.HasRows)
-            {
-                while(reader.Read())
-                {
-                    authors.Add(new Author(reader.GetString(0), reader.GetInt32(1)));
-                }
-            }
-
-            return authors;
         }
     }
 }
