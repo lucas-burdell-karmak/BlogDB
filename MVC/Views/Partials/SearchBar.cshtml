@@ -1,5 +1,5 @@
 @model SearchCriteria;
-@using (Html.BeginForm("SearchResult", "Home", FormMethod.Post, new {@class="navbar-form pull-right form-inline", role="search"}))
+@using (Html.BeginForm("SearchResult", "Home", FormMethod.Post, new {@class="navbar-form pull-right form-inline col-xs-4", role="search"}))
 {
     <div class="input-group">
         @Html.EditorFor(m => m.SearchString, new { htmlAttributes = new {@class="form-control", type="text", placeholder="Search..."} })
