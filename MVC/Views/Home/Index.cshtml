@@ -3,6 +3,11 @@
     <div>
         <a class="btn btn-primary" href="~/Home/ViewAll" role="button"><span class="glyphicon glyphicon-th-list"></span> View All</a>
         <a class="btn btn-primary" href="~/Home/Authors" role="button"><span class="glyphicon glyphicon-user"></span> View Authors</a>
-        <a class="btn btn-primary" href="~/Home/AddPost" role="button"><span class="glyphicon glyphicon-plus"></span> Add New Post</a>
+        @{
+        if (ViewContext.HttpContext.User.IsInRole("BlogWriter")) 
+            {
+                <a class="btn btn-primary" href="~/Home/AddPost" role="button"><span class="glyphicon glyphicon-plus"></span> Add New Post</a>
+            }
+        }
     </div>
 </div>

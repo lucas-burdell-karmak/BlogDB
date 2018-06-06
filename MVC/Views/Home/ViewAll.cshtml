@@ -17,9 +17,9 @@ li{
         @foreach(var post in Model)
         {
             <tr>
-                <td><a class="" href="/Home/ViewSinglePost/?postid=@post.PostID"> @post.Title</a></td>
-                <td><a class="" href="/Home/ViewByAuthor/?authorid=@post.AuthorID"> @post.AuthorName</a></td>
-                <td><a class="" href="/Home/ViewSinglePost/?postid=@post.PostID"> @post.Timestamp.ToLocalTime()</a></td>
+                <td><a asp-controller="Home" asp-action="ViewSinglePost" class="navbar-brand" asp-route-postid="@post.PostID">@post.Title</a></td>
+                <td><a asp-controller="Home" asp-action="ViewByAuthor" class="navbar-brand" asp-route-authorid="@post.AuthorID">@post.AuthorName</a></td>
+                <td><a asp-controller="Home" asp-action="ViewSinglePost" class="navbar-brand" asp-route-postid="@post.PostID">@post.Timestamp.ToLocalTime()</a></td>
             </tr>
         }
     </tbody>
