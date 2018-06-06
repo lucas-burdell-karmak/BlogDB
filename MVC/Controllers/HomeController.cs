@@ -158,7 +158,7 @@ namespace The_Intern_MVC.Controllers
                     var postToAdd = postBuilder.build();
                     var postResult = _postDataAccess.EditPost(postToAdd);
                     var pmBuilder = new PostModelBuilder(postResult);
-                    return View("PostResult", pmBuilder.build());
+                    return View("ViewSinglePost", pmBuilder.build());
                 }
                 catch (ArgumentException e)
                 {
