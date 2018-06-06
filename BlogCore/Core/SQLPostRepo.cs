@@ -77,7 +77,7 @@ namespace BlogDB.Core
                 while (reader.Read())
                 {
                     list.Add(new Post(reader.GetString(1),
-                                      GetAuthor(reader.GetInt32(2)),  // TODO: AUTHOR CREATION MOVED TO IAuthorRepo
+                                      _authorRepo.GetAuthorByID(reader.GetInt32(2)),  // TODO: AUTHOR CREATION MOVED TO IAuthorRepo
                                       reader.GetString(3),
                                       reader.GetDateTime(4),
                                       Guid.Parse(reader.GetString(0))));
@@ -86,27 +86,6 @@ namespace BlogDB.Core
             reader.Close();
 
             return list;
-        }
-
-        private Author GetAuthor(int id)
-        {
-            Author author = null;
-            var commandText = "SELECT name FROM author WHERE id = @id";
-            var command = new SqlCommand(commandText, _connection);
-            command.Parameters.Add("@id", SqlDbType.Int);
-            command.Parameters["@id"].Value = id.ToString();
-
-            var reader = command.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    author = new Author(reader.GetString(0), id);
-                }
-            }
-            reader.Close();
-            return author;
         }
 
         private List<Post> ReadAll()
@@ -123,7 +102,7 @@ namespace BlogDB.Core
                 while (reader.Read())
                 {
                     list.Add(new Post(reader.GetString(1),
-                                      GetAuthor(reader.GetInt32(2)),  // TODO: AUTHOR CREATION MOVED TO IAuthorRepo
+                                      _authorRepo.GetAuthorByID(reader.GetInt32(2)),  // TODO: AUTHOR CREATION MOVED TO IAuthorRepo
                                       reader.GetString(3),
                                       reader.GetDateTime(4),
                                       Guid.Parse(reader.GetString(0))));
@@ -150,7 +129,7 @@ namespace BlogDB.Core
                 while (reader.Read())
                 {
                     post = new Post(reader.GetString(1),
-                                    GetAuthor(reader.GetInt32(2)), // TODO: AUTHOR CREATION MOVED TO IAuthorRepo
+                                    _authorRepo.GetAuthorByID(reader.GetInt32(2)), // TODO: AUTHOR CREATION MOVED TO IAuthorRepo
                                     reader.GetString(3),
                                     reader.GetDateTime(4),
                                     Guid.Parse(reader.GetString(0)));

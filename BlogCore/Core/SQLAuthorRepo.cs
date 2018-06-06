@@ -100,7 +100,7 @@ namespace BlogDB.Core
                 while (reader.Read())
                 {
                     var author = new Author(reader.GetString(0), reader.GetInt32(1));
-                    author.Roles =  JsonConvert.DeserializeObject<string[]>(reader.GetString(2));
+                    author.Roles = JsonConvert.DeserializeObject<string[]>(reader.GetString(2));
                     authors.Add(author);
                 }
             }
@@ -185,6 +185,8 @@ namespace BlogDB.Core
             }
         }
 
+
+
         public void TryRegisterAuthor(string name, string passwordHash, out bool isSuccessful)
         {
             try
@@ -217,6 +219,41 @@ namespace BlogDB.Core
                 isSuccessful = true;
             }
             catch (Exception)
+            {
+                isSuccessful = false;
+            }
+        }
+
+        public void TryUpdateAuthor(Author toUpdate, out bool isSuccessful)
+        {
+            try {
+            var commandText = "UPDATE Author SET Name = @name WHERE id = @id";
+            var command = new SqlCommand(commandText, _connection);
+            command.Parameters.Add("@name", SqlDbType.NVarChar);
+            command.Parameters["@name"].Value = toUpdate.Name;
+
+            command.Parameters.Add("@id", SqlDbType.Int);
+            command.Parameters["@id"].Value = toUpdate.ID;
+
+            command.ExecuteNonQuery();
+            isSuccessful = true;
+            } catch (Exception) 
+            {
+                isSuccessful = false;
+            }
+        }
+
+        public void TryDeleteAuthor(Author toDelete, out bool isSuccessful)
+        {
+            try {
+            var commandText = "DELETE FROM Author WHERE id = @id";
+            var command = new SqlCommand(commandText, _connection);
+            command.Parameters.Add("@id", SqlDbType.Int);
+            command.Parameters["@id"].Value = toDelete.ID;
+
+            command.ExecuteNonQuery();
+            isSuccessful = true;
+            } catch (Exception) 
             {
                 isSuccessful = false;
             }
