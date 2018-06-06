@@ -18,11 +18,10 @@ namespace BlogCore.Tests
         }
 
         [Fact]
-        public void IsValidAuthor_ValidData_Success()
+        public void IsValidAuthor_ValidAuthorInList_Success()
         {
             var listOfAuthors = new List<Author>();
             var authorInRepo = new Author("inRepo", 0);
-            var authorNotInRepo = new Author("notInRepo", 1);
 
             listOfAuthors.Add(authorInRepo);
             _mockAuthorRepo.StubGetListOfAuthors(listOfAuthors);
@@ -32,16 +31,16 @@ namespace BlogCore.Tests
         }
 
         [Fact]
-        public void IsValidAuthor_InvalidData_Failure()
+        public void IsValidAuthor_InvalidAuthorNotInList_Failure()
         {
+            var listOfAuthors = new List<Author>();
+            var authorNotInRepo = new Author("notInRepo", 1);
 
+            _mockAuthorRepo.StubGetListOfAuthors(listOfAuthors);
+
+            Assert.False(_authorValidator.IsValidAuthor(authorNotInRepo));
+            _mockAuthorRepo.AssertGetListOfAuthorCalled();
         }
-
-
-
-
-
-
 
         public void Dispose() { }
     }
