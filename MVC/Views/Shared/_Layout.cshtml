@@ -47,6 +47,20 @@
         <div class="col-sm-3 col-md-3 navbar-right">
             @Html.Partial("~/Views/Partials/SearchBar.cshtml", new SearchCriteria())
         </div>
+        
+        @if (ViewContext.HttpContext.User.IsInRole("BlogReader")) 
+        {
+            <div class="col-sm-1 col-md-1 navbar-left">
+                @Html.Partial("~/Views/Partials/Logout.cshtml")
+            </div>
+        }
+        else 
+        {
+            <div class="col-sm-1 col-md-1 navbar-left">
+                @Html.Partial("~/Views/Partials/Login.cshtml")
+            </div>
+        }
+
     </nav>
     <div class="container body-content">
         @RenderBody()
