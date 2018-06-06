@@ -44,8 +44,16 @@
         <div class="navbar-header">
             <a asp-controller="Home" asp-action="Index" class="navbar-brand">Home</a>
         </div>
-        <div class="col-sm-3 col-md-3 navbar-right">
-            @Html.Partial("~/Views/Partials/SearchBar.cshtml", new SearchCriteria())
+        <div class="navbar-right col-xs-10 col-sm-8 col-md-6 col-lg-5 d-inline">
+            @if(ViewContext.HttpContext.User.IsInRole("BlogReader"))
+            {
+                @using (Html.BeginForm("Logout","Login",FormMethod.Post,new {@class="navbar-form pull-right form-inline", id="logoutForm"})) 
+                {
+                    <button type="submit" class="btn btn-warning" role="button"><span class="glyphicon glyphicon-log-out" /></button>
+                }
+                @Html.Partial("~/Views/Partials/SearchBar.cshtml", new SearchCriteria())
+            }
+            
         </div>
         
         @{
@@ -81,7 +89,9 @@
 
     </nav>
     <div class="container body-content">
-        @RenderBody()
+        <div style="width: 100%; margin-top:50px">
+            @RenderBody()
+        </div>
         <hr />
         <footer>
             <p>&copy; 2018 - The_Interns</p>
