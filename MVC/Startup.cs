@@ -33,8 +33,8 @@ namespace The_Intern_MVC
                 });
             services.AddSingleton<IAuthorRepo, SQLAuthorRepo>();
             services.AddSingleton<IPostRepo, SQLPostRepo>();
-            services.AddSingleton<IAuthorValidator, AuthorValidator>();
             services.AddSingleton<IPostValidator, PostValidator>();
+            services.AddSingleton<IAuthorValidator, AuthorValidator>();
             services.AddSingleton<IPostDataAccess, PostDataAccess>();
         }
 
