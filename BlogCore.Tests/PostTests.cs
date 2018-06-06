@@ -9,8 +9,7 @@ namespace BlogCore.Tests
         [Fact]
         public void TestAuthor()
         {
-            var author = new Author("author", 0);
-            var post = new BlogDB.Core.Post("", author, "");
+            var post = new BlogDB.Core.Post("", new Author("author", 0), "");
 
             Assert.Equal("author", post.Author.Name);
             Assert.Equal(0, post.Author.ID);
