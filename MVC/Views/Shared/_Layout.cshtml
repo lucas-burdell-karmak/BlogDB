@@ -48,17 +48,36 @@
             @Html.Partial("~/Views/Partials/SearchBar.cshtml", new SearchCriteria())
         </div>
         
-        @if (ViewContext.HttpContext.User.IsInRole("BlogReader")) 
-        {
-            <div class="col-sm-1 col-md-1 navbar-left">
-                @Html.Partial("~/Views/Partials/Logout.cshtml")
-            </div>
-        }
-        else 
-        {
-            <div class="col-sm-1 col-md-1 navbar-left">
-                @Html.Partial("~/Views/Partials/Login.cshtml")
-            </div>
+        @{
+
+            var claimsIdentity = User.Identity as System.Security.Claims.ClaimsIdentity;
+            var UserName = "";
+
+            if (claimsIdentity != null)
+            {
+                var c = claimsIdentity.FindFirst(System.Security.Claims.ClaimTypes.Name);
+
+                if (c != null)
+                {
+                    UserName = c.Value.ToString();
+                }
+            }
+
+            if (ViewContext.HttpContext.User.IsInRole("BlogReader")) 
+            {
+                <div class="col-sm-2 col-md-2 navbar-left navbar-username text-center" style="vertical-align: middle">
+                    Welcome, @UserName!
+                </div>
+                <div class="col-sm-1 col-md-1 navbar-left">
+                    @Html.Partial("~/Views/Partials/Logout.cshtml")
+                </div>
+            }
+            else 
+            {
+                <div class="col-sm-1 col-md-1 navbar-left">
+                    @Html.Partial("~/Views/Partials/Login.cshtml")
+                </div>
+            }
         }
 
     </nav>
