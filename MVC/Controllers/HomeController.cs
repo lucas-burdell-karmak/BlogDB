@@ -103,18 +103,35 @@ namespace The_Intern_MVC.Controllers
             return View(listOfAuthors);
         }
 
+        [Authorize(Policy = "BlogReader")]
+        [HttpGet]
+        public IActionResult AuthorProfile()
+        {
+            return View();
+        }
+
+        private int GetUserID()
+        {
+            var claims = HttpContext.User.Claims;
+            var userID = -1;
+            Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
+                                 .Select(c => c.Value)
+                                 .SingleOrDefault(), out userID);
+            return userID;
+        }
+
+        private bool IsUserPostAuthor(int postAuthorID) => postAuthorID == GetUserID();
+
+        private async Task<bool> HasDeletePowers() => (await _authorization.AuthorizeAsync(User, "BlogDeleter")).Succeeded;
+
+        private async Task<bool> HasEditPowers() => (await _authorization.AuthorizeAsync(User, "BlogEditor")).Succeeded;
+
         [Authorize(Policy = "BlogWriter")]
         [HttpPost]
         public async Task<IActionResult> DeletePostResult(PostModel post)
         {
-            var claims = HttpContext.User.Claims;
-            var userAuthorId = -1;
-            Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
-                                 .Select(c => c.Value)
-                                 .SingleOrDefault(), out userAuthorId);
-            var postAuthorId = post.AuthorID;
-            var hasEditPowers = (await _authorization.AuthorizeAsync(User, "BlogDeleter")).Succeeded;
-            if (userAuthorId == postAuthorId || hasEditPowers)
+            var userCanDelete = await HasDeletePowers();
+            if (IsUserPostAuthor(post.AuthorID) || userCanDelete)
             {
                 try
                 {
@@ -140,15 +157,8 @@ namespace The_Intern_MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> EditPostResult(PostModel post)
         {
-
-            var claims = HttpContext.User.Claims;
-            var userAuthorId = -1;
-            Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
-                                 .Select(c => c.Value)
-                                 .SingleOrDefault(), out userAuthorId);
-            var postAuthorId = post.AuthorID;
-            var hasEditPowers = (await _authorization.AuthorizeAsync(User, "BlogEditor")).Succeeded;
-            if (userAuthorId == postAuthorId || hasEditPowers)
+            var userCanEdit = await HasEditPowers();
+            if (IsUserPostAuthor(post.AuthorID) || userCanEdit)
             {
                 try
                 {
@@ -194,11 +204,7 @@ namespace The_Intern_MVC.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
+        public IActionResult Error() => View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 
         [Authorize(Policy = "BlogReader")]
         [HttpPost]
