@@ -103,7 +103,7 @@ namespace The_Intern_MVC.Controllers
                 var errorMessage = new ErrorPageModel("Invalid Post.", "We couldn't find the post.");
                 ViewBag.History = "/Home/ViewAll";
                 Console.WriteLine(e.ToString());
-                return View("NullPost/Index", errorMessage);
+                return RedirectToAction("Index", "NullPost", errorMessage);
             }
         }
 
@@ -121,9 +121,9 @@ namespace The_Intern_MVC.Controllers
             }
             catch (ArgumentException e)
             {
-                var errorMessage = new ErrorPageModel("Invalid Post.", "The post contained invalid input.");
+                ErrorPageModel errorMessage = new ErrorPageModel("Invalid Post.", "The post contained invalid input.");
                 Console.WriteLine(e.ToString());
-                return View("NullPost/Index", errorMessage);
+                return View("/NullPost/Index.cshtml", errorMessage);
             }
         }
 

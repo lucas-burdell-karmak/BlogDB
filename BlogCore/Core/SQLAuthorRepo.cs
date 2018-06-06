@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace BlogDB.Core
 {
@@ -67,7 +68,7 @@ namespace BlogDB.Core
         public Author GetAuthorByName(string name)
         {
             Author author = null;
-            var commandText = "SELECT id FROM author WHERE name = @name";
+            var commandText = "SELECT id, roles FROM author WHERE name = @name";
             var command = new SqlCommand(commandText, _connection);
             command.Parameters.Add("@name", SqlDbType.NVarChar);
             command.Parameters["@name"].Value = name;
@@ -79,6 +80,7 @@ namespace BlogDB.Core
                 while (reader.Read())
                 {
                     author = new Author(name, reader.GetInt32(0));
+                    author.Roles = JsonConvert.DeserializeObject<string[]>(reader.GetString(1));
                 }
             }
             reader.Close();
@@ -89,7 +91,7 @@ namespace BlogDB.Core
         public List<Author> GetListOfAuthors()
         {
             var authors = new List<Author>();
-            var commandText = "SELECT name, id FROM author";
+            var commandText = "SELECT name, id, roles FROM author";
             var command = new SqlCommand(commandText, _connection);
 
             var reader = command.ExecuteReader();
@@ -97,7 +99,9 @@ namespace BlogDB.Core
             {
                 while (reader.Read())
                 {
-                    authors.Add(new Author(reader.GetString(0), reader.GetInt32(1)));
+                    var author = new Author(reader.GetString(0), reader.GetInt32(1));
+                    author.Roles =  JsonConvert.DeserializeObject<string[]>(reader.GetString(2));
+                    authors.Add(author);
                 }
             }
 
@@ -207,9 +211,7 @@ namespace BlogDB.Core
 
                 command.Parameters.Add("@Roles", SqlDbType.NVarChar);
 
-                command.Parameters["@Roles"].Value = JsonConvert.SerializeObject(new List<string>(){
-                "BlogWriter"
-            });
+                command.Parameters["@Roles"].Value = _defaultRoles;
 
                 command.ExecuteNonQuery();
                 isSuccessful = true;
