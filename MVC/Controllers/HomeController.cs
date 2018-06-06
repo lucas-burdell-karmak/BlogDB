@@ -19,10 +19,12 @@ namespace The_Intern_MVC.Controllers
     public class HomeController : ControllerBase
     {
         private readonly IPostDataAccess _postDataAccess;
+        private readonly IAuthorizationService _authorization;
 
-        public HomeController(IPostDataAccess postdataccess)
+        public HomeController(IPostDataAccess postdataccess, IAuthorizationService authorization)
         {
             this._postDataAccess = postdataccess;
+            this._authorization = authorization;
         }
 
         [Authorize(Policy = "BlogReader")]
@@ -101,60 +103,85 @@ namespace The_Intern_MVC.Controllers
             return View(listOfAuthors);
         }
 
-        [Authorize(Policy = "BlogDeleter")]
+        [Authorize(Policy = "BlogWriter")]
         [HttpPost]
-        public IActionResult DeletePostResult(PostModel post)
+        public async Task<IActionResult> DeletePostResult(PostModel post)
         {
-            try
+            var claims = HttpContext.User.Claims;
+            var userAuthorId = -1;
+            Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
+                                 .Select(c => c.Value)
+                                 .SingleOrDefault(), out userAuthorId);
+            var postAuthorId = post.AuthorID;
+            var hasEditPowers = (await _authorization.AuthorizeAsync(User, "BlogDeleter")).Succeeded;
+            if (userAuthorId == postAuthorId || hasEditPowers)
             {
-                var postBuilder = new PostBuilder(post);
-                var postResult = _postDataAccess.DeletePost(postBuilder.build());
-                ViewBag.History = "/Home";
-                return RedirectToAction("ViewAll");
-            }
-            catch (ArgumentException e)
-            {
-                var errorMessage = new ErrorPageModel("Invalid Post.", "We couldn't find the post.");
-                ViewBag.History = "/Home/ViewAll";
-                Console.WriteLine(e.ToString());
-                return ShowError(errorMessage);
-            }
-        }
-
-        [Authorize(Policy = "BlogEditor")]
-        [HttpPost]
-        public IActionResult EditPostResult(PostModel post)
-        {
-            try
-            {
-                ViewBag.History = "/Home/ViewAll";
-                if (post.AuthorName != HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Name)
-                                                              .Select(c => c.Value)
-                                                              .SingleOrDefault())
+                try
                 {
-                    throw new ArgumentException();
+                    var postBuilder = new PostBuilder(post);
+                    var postResult = _postDataAccess.DeletePost(postBuilder.build());
+                    ViewBag.History = "/Home";
+                    return RedirectToAction("ViewAll");
                 }
-                var postBuilder = new PostBuilder(post);
-                var postResult = _postDataAccess.EditPost(postBuilder.build());
-                var pmBuilder = new PostModelBuilder(postResult);
-                return View("Home/PostResult", pmBuilder.build());
-            }
-            catch (ArgumentException e)
-            {
-                ErrorPageModel errorMessage = new ErrorPageModel("Invalid Post.", "The post contained invalid input.");
-                Console.WriteLine(e.ToString());
+                catch (ArgumentException e)
+                {
+                    var errorMessage = new ErrorPageModel("Invalid Post.", "We couldn't find the post.");
+                    ViewBag.History = "/Home/ViewAll";
+                    Console.WriteLine(e.ToString());
+                    return ShowError(errorMessage);
+                }
+            } else {
+                var errorMessage = new ErrorPageModel("Permission Denied.", "You do not have permission to do that.");
                 return ShowError(errorMessage);
             }
         }
 
-        [Authorize(Policy = "BlogEditor")]
+        [Authorize(Policy = "BlogWriter")]
+        [HttpPost]
+        public async Task<IActionResult> EditPostResult(PostModel post)
+        {
+
+            var claims = HttpContext.User.Claims;
+            var userAuthorId = -1;
+            Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
+                                 .Select(c => c.Value)
+                                 .SingleOrDefault(), out userAuthorId);
+            var postAuthorId = post.AuthorID;
+            var hasEditPowers = (await _authorization.AuthorizeAsync(User, "BlogEditor")).Succeeded;
+            if (userAuthorId == postAuthorId || hasEditPowers)
+            {
+                try
+                {
+                    ViewBag.History = "/Home/ViewAll";
+                
+                    var postBuilder = new PostBuilder(post);
+                    var postToAdd = postBuilder.build();
+                    var postResult = _postDataAccess.EditPost(postToAdd);
+                    var pmBuilder = new PostModelBuilder(postResult);
+                    return View("PostResult", pmBuilder.build());
+                }
+                catch (ArgumentException e)
+                {
+                    ErrorPageModel errorMessage = new ErrorPageModel("Invalid Post.", "The post contained invalid input.");
+                    Console.WriteLine(e.ToString());
+                    return ShowError(errorMessage);
+                }
+            }
+            else
+            {
+                var errorMessage = new ErrorPageModel("Permission Denied", "You do not have permission to edit this post.");
+                return ShowError(errorMessage);
+            }
+        }
+
+        [Authorize(Policy = "BlogWriter")]
         [HttpGet]
         public IActionResult EditPost(String postid)
         {
             var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
             {
-                var errorMessage = new ErrorPageModel("Invalid Post.", "We couldn't find the post. :(" );
+                var errorMessage = new ErrorPageModel("Invalid Post.", "We couldn't find the post. :(");
                 ViewBag.History = "/Home/ViewAll";
                 return ShowError(errorMessage);
             }

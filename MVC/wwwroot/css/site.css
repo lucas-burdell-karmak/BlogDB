@@ -34,6 +34,10 @@
     }
 }
 
+.navbar-username {
+    color: #9d9d9d;
+}
+
 .input-validation-error {
     border-color: red;
 }
