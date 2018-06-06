@@ -15,8 +15,6 @@
             @Html.HiddenFor(m => m.AuthorID)
             @Html.HiddenFor(m => m.AuthorName)
             @await Html.PartialAsync("/Views/Partials/BackButton.cshtml")
-            <a class="btn btn-primary" href="/Home/EditPost?postid=@Model.PostID">Edit Post</a>
-            @await Html.PartialAsync("/Views/Partials/DeleteButton.cshtml", Model)
         }
     </div>
 </div>

@@ -226,7 +226,7 @@ namespace The_Intern_MVC.Controllers
 
         [Authorize(Policy = "BlogReader")]
         [HttpGet]
-        public IActionResult ViewSinglePost(String postid)
+        public async Task<IActionResult> ViewSinglePost(String postid)
         {
             var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
             if (postResult == null)
@@ -238,7 +238,20 @@ namespace The_Intern_MVC.Controllers
 
             ViewBag.History = Request.Headers["Referer"].ToString();
             var pmBuilder = new PostModelBuilder(postResult);
-            return View("ViewSinglePost", pmBuilder.build());
+            
+            
+            var claims = HttpContext.User.Claims;
+            var userAuthorId = -1;
+            Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
+                                 .Select(c => c.Value)
+                                 .SingleOrDefault(), out userAuthorId);
+            var postAuthorId = postResult.Author.ID;
+            var hasEditPowers = (await _authorization.AuthorizeAsync(User, "BlogEditor")).Succeeded;
+            if (userAuthorId == postAuthorId || hasEditPowers)
+            {
+                return View("ViewSinglePost", pmBuilder.build());
+            }
+            return View("ViewOnlySinglePost", pmBuilder.build());
         }
 
 

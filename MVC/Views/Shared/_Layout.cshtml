@@ -72,17 +72,8 @@
 
             if (ViewContext.HttpContext.User.IsInRole("BlogReader")) 
             {
-                <div class="col-sm-1 col-md-1 navbar-left">
-                    @Html.Partial("~/Views/Partials/Logout.cshtml")
-                </div>
                 <div class="col-sm-2 col-md-2 navbar-left navbar-username text-center align-bottom" style="margin-top:15px; margin-bottom:15px;">
                     Welcome, @UserName!
-                </div>
-            }
-            else 
-            {
-                <div class="col-sm-1 col-md-1 navbar-left">
-                    @Html.Partial("~/Views/Partials/Login.cshtml")
                 </div>
             }
         }
