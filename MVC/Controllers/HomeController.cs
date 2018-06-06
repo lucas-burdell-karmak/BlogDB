@@ -23,12 +23,6 @@ namespace The_Intern_MVC.Controllers
         public HomeController(IPostDataAccess postdataccess)
         {
             this._postDataAccess = postdataccess;
-            /*
-            string roleJson = GetCookie("BlogAuth");
-            string[] roles = (string[]) JsonConvert.DeserializeObject(roleJson);
-            */
-
-            //add roles from cookie to context.user.request.roles 
         }
 
         [Authorize(Roles = "BlogReader")]
@@ -43,11 +37,13 @@ namespace The_Intern_MVC.Controllers
             {
                 var claims = HttpContext.User.Claims;
                 post.AuthorName = claims.Where(c => c.Type == ClaimTypes.Name)
-                        .Select(c => c.Value).SingleOrDefault();
-                var authorId = -1;
+                                        .Select(c => c.Value)
+                                        .SingleOrDefault();
+                var authorID = -1;
                 Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
-                        .Select(c => c.Value).SingleOrDefault(), out authorId);
-                post.AuthorID = authorId;
+                                     .Select(c => c.Value)
+                                     .SingleOrDefault(), out authorID);
+                post.AuthorID = authorID;
                 var postBuilder = new PostBuilder(post);
                 var postToAdd = postBuilder.build();
                 var postResult = _postDataAccess.AddPost(postToAdd);
@@ -58,19 +54,37 @@ namespace The_Intern_MVC.Controllers
             }
             catch (ArgumentException e)
             {
-                // TODO exception logging
-
                 var errorMessage = new ErrorPageModel("Cannot add post.", "The post had empty properties.");
                 Console.WriteLine(e.ToString());
                 return RedirectToAction("Index", "NullPost", errorMessage);
-                //return View("~/Views/NullPost/Index", errorMessage);
             }
         }
 
         public IActionResult AddPost()
         {
-            ViewBag.History = "/Home";
-            return View();
+            try
+            {
+                ViewBag.History = "/Home";
+                var claims = HttpContext.User.Claims;
+                var authorName = claims.Where(c => c.Type == ClaimTypes.Name)
+                                       .Select(c => c.Value)
+                                       .SingleOrDefault();
+                var authorID = -1;
+                Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
+                                     .Select(c => c.Value)
+                                     .SingleOrDefault(), out authorID);
+                var author = new Author(authorName, authorID);
+                var post = new Post("", author, "");
+                var pmBuilder = new PostModelBuilder(post);
+                return View("AddPost", pmBuilder.build());
+            }
+            catch (Exception e)
+            {
+                var errorMessage = new ErrorPageModel("Eror adding post.", "We couldn't add the post.");
+                ViewBag.History = "/Home";
+                Console.WriteLine(e.ToString());
+                return RedirectToAction("Index", "NullPost", errorMessage);
+            }
         }
 
         public IActionResult Authors()
@@ -94,7 +108,7 @@ namespace The_Intern_MVC.Controllers
                 var errorMessage = new ErrorPageModel("Invalid Post.", "We couldn't find the post.");
                 ViewBag.History = "/Home/ViewAll";
                 Console.WriteLine(e.ToString());
-                return View("NullPost/Index", errorMessage);
+                return RedirectToAction("Index", "NullPost", errorMessage);
             }
         }
         public IActionResult EditPostResult(PostModel post)
@@ -102,6 +116,12 @@ namespace The_Intern_MVC.Controllers
             try
             {
                 ViewBag.History = "/Home/ViewAll";
+                if (post.AuthorName != HttpContext.User.Claims.Where(c => c.Type == ClaimTypes.Name)
+                                                              .Select(c => c.Value)
+                                                              .SingleOrDefault())
+                {
+                    throw new ArgumentException();
+                }
                 var postBuilder = new PostBuilder(post);
                 var postResult = _postDataAccess.EditPost(postBuilder.build());
                 var pmBuilder = new PostModelBuilder(postResult);
@@ -111,7 +131,12 @@ namespace The_Intern_MVC.Controllers
             {
                 var errorMessage = new ErrorPageModel("Invalid Post.", "The post contained invalid input.");
                 Console.WriteLine(e.ToString());
-                return View("NullPost/Index", errorMessage);
+                return RedirectToAction("Index", "NullPost", errorMessage);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                return View("Home/");
             }
         }
 
@@ -123,7 +148,6 @@ namespace The_Intern_MVC.Controllers
                 string[] errorMessage = { "Invalid Post.", "We couldn't find the post. :(" };
                 ViewBag.History = "/Home/ViewAll";
                 return RedirectToAction("Index", "NullPost", errorMessage);
-                //return View("~/Views/NullPost/Index", errorMessage);
             }
             ViewBag.History = "/Home/ViewSinglePost?postid=" + postid;
             var postModelBuilder = new PostModelBuilder(postResult);
@@ -163,8 +187,6 @@ namespace The_Intern_MVC.Controllers
             {
                 ViewBag.History = "/Home";
                 return RedirectToAction("Index", "NullPost", new ErrorPageModel("Post Does Not Exist", "This post does not exist."));
-                //return RedirectToAction("Index", "NullPost", "Post does not exist");;
-                //return View("~/Views/NullPost/Index", "Post does not exist.");
             }
 
             ViewBag.History = Request.Headers["Referer"].ToString();
@@ -184,7 +206,6 @@ namespace The_Intern_MVC.Controllers
             if (postResult == null)
             {
                 return RedirectToAction("Index", "NullPost", new ErrorPageModel("No Posts", "There are no posts."));
-                //return View("~/Views/NullPost/Index", "There are no posts.");
             }
             return View(postResult);
         }
