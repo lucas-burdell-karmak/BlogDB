@@ -73,9 +73,9 @@ namespace The_Intern_MVC.Controllers
             claims.Add(new Claim(ClaimTypes.Name, user.Name));
             claims.Add(new Claim("AuthorID", user.ID.ToString()));
 
-            string[] roles = { "BlogWriter", "BlogReader" }; //look this up in the DB by UserID later
+            //string[] roles = { "BlogWriter", "BlogReader" }; //look this up in the DB by UserID later
 
-            foreach (string role in roles)
+            foreach (string role in user.Roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
