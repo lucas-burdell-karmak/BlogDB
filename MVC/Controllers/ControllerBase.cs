@@ -2,35 +2,21 @@ using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-
+using The_Intern_MVC.Models;
 
 namespace The_Intern_MVC.Controllers
 {
     public class ControllerBase : Controller
     {
-        public string GetCookie(string cookieID)
-        {
-            return Request.Cookies[cookieID];
-        }
 
-        public void RemoveCookie(string cookieID)
+        public IActionResult ShowError(ErrorPageModel message)
         {
-            Response.Cookies.Delete(cookieID);
-        }
-
-        public void SetCookie(string cookieID, string value, int expireTimeInMinutes)
-        {
-            CookieOptions cookieOption = new CookieOptions();
-            if (expireTimeInMinutes > 0)
+            if (message == null)
             {
-                cookieOption.Expires = DateTime.Now.AddMinutes(expireTimeInMinutes);
+                message = new ErrorPageModel();
             }
-            else
-            {
-                cookieOption.Expires = DateTime.Now.AddMinutes(10);
-            }
-            Response.Cookies.Append(cookieID, value, cookieOption);
+            ViewBag.History = "/Home/Index";
+            return View("~/Views/Error/Index.cshtml", message);
         }
-
     }
 }

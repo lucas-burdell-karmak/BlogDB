@@ -95,9 +95,6 @@ namespace The_Intern_MVC
                     name: "Login",
                     template: "{controller=Login}/{action=Index}/{id?}");
                 routes.MapRoute(
-                    name: "NullPost",
-                    template: "{controller=NullPost}/{action=Index}/{id?}");
-                routes.MapRoute(
                     name: "Register",
                     template: "{controller=Register}/{action=Index}/{id?}");
                 routes.MapRoute(

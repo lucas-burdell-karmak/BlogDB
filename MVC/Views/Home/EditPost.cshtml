@@ -5,6 +5,7 @@
     <div class="row">
         <div class="input-group col-md-12">
             @Html.HiddenFor(m => m.PostID)
+            @Html.HiddenFor(m => m.AuthorID)
             <div class="form-group">
                 <label for="titletext" class="control-label">Title:</label>
                 @Html.TextBoxFor(m => m.Title, new {@class="form-control", id="titletext"})
