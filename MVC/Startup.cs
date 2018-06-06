@@ -25,12 +25,44 @@ namespace The_Intern_MVC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.LoginPath = new PathString("/Login/Index");
-                    options.AccessDeniedPath = new PathString("/NullPost/Index");
+                    options.AccessDeniedPath = new PathString("/Account/AccessDenied");
                 });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("BlogDeleter", policy =>
+                {
+                    policy.AddAuthenticationSchemes(CookieAuthenticationDefaults.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("AuthorID");
+                    policy.RequireRole("BlogAdmin");
+                });
+                options.AddPolicy("BlogEditor", policy =>
+                {
+                    policy.AddAuthenticationSchemes(CookieAuthenticationDefaults.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("AuthorID");
+                    policy.RequireRole("BlogAdmin");
+                });
+                options.AddPolicy("BlogReader", policy =>
+                {
+                    policy.AddAuthenticationSchemes(CookieAuthenticationDefaults.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("AuthorID");
+                    policy.RequireRole("BlogReader");
+                });
+                options.AddPolicy("BlogWriter", policy =>
+                {
+                    policy.AddAuthenticationSchemes(CookieAuthenticationDefaults.AuthenticationScheme);
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("AuthorID");
+                    policy.RequireRole("BlogWriter");
+                });
+            });
             services.AddSingleton<IAuthorRepo, SQLAuthorRepo>();
             services.AddSingleton<IPostRepo, SQLPostRepo>();
             services.AddSingleton<IPostValidator, PostValidator>();
@@ -60,17 +92,18 @@ namespace The_Intern_MVC
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
                 routes.MapRoute(
-                    name: "Home Default",
-                    template: "{controller=Home}/{action=Index}");
-                routes.MapRoute(
                     name: "Login",
                     template: "{controller=Login}/{action=Index}/{id?}");
                 routes.MapRoute(
-                    name: "NullPost Default",
+                    name: "NullPost",
                     template: "{controller=NullPost}/{action=Index}/{id?}");
                 routes.MapRoute(
-                    name: "Register Default",
+                    name: "Register",
                     template: "{controller=Register}/{action=Index}/{id?}");
+                routes.MapRoute(
+                    name: "Account",
+                    template: "{controller=Account}/{action=Index}/{id?}");
+
             });
         }
     }

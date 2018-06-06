@@ -31,12 +31,15 @@ namespace The_Intern_MVC.Controllers
             //add roles from cookie to context.user.request.roles 
         }
 
-        [Authorize(Roles = "BlogReader")]
+        [Authorize(Policy = "BlogReader")]
+        [HttpGet]
         public IActionResult Index()
         {
             return View("Index");
         }
 
+        [Authorize(Policy = "BlogWriter")]
+        [HttpPost]
         public IActionResult AddPostResult(PostModel post)
         {
             try
@@ -67,12 +70,16 @@ namespace The_Intern_MVC.Controllers
             }
         }
 
+        [Authorize(Policy = "BlogWriter")]
+        [HttpGet]
         public IActionResult AddPost()
         {
             ViewBag.History = "/Home";
             return View();
         }
 
+        [Authorize(Policy = "BlogReader")]
+        [HttpGet]
         public IActionResult Authors()
         {
             ViewBag.History = "/Home";
@@ -80,6 +87,8 @@ namespace The_Intern_MVC.Controllers
             return View(listOfAuthors);
         }
 
+        [Authorize(Policy = "BlogDeleter")]
+        [HttpPost]
         public IActionResult DeletePostResult(PostModel post)
         {
             try
@@ -97,6 +106,9 @@ namespace The_Intern_MVC.Controllers
                 return View("NullPost/Index", errorMessage);
             }
         }
+
+        [Authorize(Policy = "BlogEditor")]
+        [HttpPost]
         public IActionResult EditPostResult(PostModel post)
         {
             try
@@ -115,6 +127,8 @@ namespace The_Intern_MVC.Controllers
             }
         }
 
+        [Authorize(Policy = "BlogEditor")]
+        [HttpGet]
         public IActionResult EditPost(String postid)
         {
             var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
@@ -130,11 +144,17 @@ namespace The_Intern_MVC.Controllers
             return View("EditPost", postModelBuilder.build());
         }
 
+
+        [AllowAnonymous]
+        [HttpGet]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+
+        [Authorize(Policy = "BlogReader")]
+        [HttpPost]
         public IActionResult SearchResult(SearchCriteria searchCriteria)
         {
             ViewBag.History = "/Home/";
@@ -156,6 +176,9 @@ namespace The_Intern_MVC.Controllers
 
             return View("ViewAll", results);
         }
+
+        [Authorize(Policy = "BlogReader")]
+        [HttpGet]
         public IActionResult ViewSinglePost(String postid)
         {
             var postResult = _postDataAccess.GetPostById(Guid.Parse(postid));
@@ -172,6 +195,9 @@ namespace The_Intern_MVC.Controllers
             return View("ViewSinglePost", pmBuilder.build());
         }
 
+
+        [Authorize(Policy = "BlogReader")]
+        [HttpGet]
         public IActionResult ViewAll()
         {
 
@@ -189,6 +215,9 @@ namespace The_Intern_MVC.Controllers
             return View(postResult);
         }
 
+
+        [Authorize(Policy = "BlogReader")]
+        [HttpGet]
         public IActionResult ViewByAuthor(int authorID)
         {
             ViewBag.History = "/Home/Authors";
