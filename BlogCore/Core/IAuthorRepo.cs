@@ -10,5 +10,7 @@ namespace BlogDB.Core
         List<Author> GetListOfAuthors();
         void TryRegisterAuthor(string name, string passwordHash, out bool isSuccessful);
         void TryValidateAuthorLogin(string name, string passwordHash, out bool isSuccessful);
+        void TryUpdateAuthor(Author toUpdate, out bool isSuccessful);
+        void TryDeleteAuthor(Author toDelete, out bool isSuccessful);
     }
 }
