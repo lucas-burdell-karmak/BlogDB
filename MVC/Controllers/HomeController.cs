@@ -109,17 +109,7 @@ namespace The_Intern_MVC.Controllers
         {
             return View();
         }
-
-        private int GetUserID()
-        {
-            var claims = HttpContext.User.Claims;
-            var userID = -1;
-            Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
-                                 .Select(c => c.Value)
-                                 .SingleOrDefault(), out userID);
-            return userID;
-        }
-
+        
         private bool IsUserPostAuthor(int postAuthorID) => postAuthorID == GetUserID();
 
         private async Task<bool> HasDeletePowers() => (await _authorization.AuthorizeAsync(User, "BlogDeleter")).Succeeded;
