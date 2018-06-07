@@ -47,10 +47,8 @@
         <div class="navbar-right col-xs-10 col-sm-8 col-md-6 col-lg-5 d-inline">
             @if(ViewContext.HttpContext.User.IsInRole("BlogReader"))
             {
-                @using (Html.BeginForm("Logout","Login",FormMethod.Post,new {@class="navbar-form pull-right form-inline", id="logoutForm"})) 
-                {
-                    <button type="submit" class="btn btn-warning" role="button"><span class="glyphicon glyphicon-log-out" /></button>
-                }
+                @Html.Partial("~/Views/Partials/Logout.cshtml")
+                @Html.Partial("~/Views/Partials/UserProfileButton.cshtml")
                 @Html.Partial("~/Views/Partials/SearchBar.cshtml", new SearchCriteria())
             }
             
