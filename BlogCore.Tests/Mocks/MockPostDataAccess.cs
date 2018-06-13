@@ -10,8 +10,10 @@ namespace BlogCore.Tests.Mocks
         private bool CalledAddPost = false;
         private bool CalledDeletePost = false;
         private bool CalledEditPost = false;
+        private bool CalledGetAllAuthors = false;
         private bool CalledGetAllPosts = false;
-        private bool CalledGetListOfAuthors = false;
+        private bool CalledGetListOfAuthorNames = false;
+        private bool CalledGetListOfAuthorIDs = false;
         private bool CalledGetListOfPostsByAuthor = false;
         private bool CalledGetPostById = false;
         private bool CalledGetPostCount = false;
@@ -22,8 +24,10 @@ namespace BlogCore.Tests.Mocks
         private Post StubedAddPost;
         private Post StubedDeletePost;
         private Post StubedEditPost;
+        private List<Author> StubedGetAllAuthors;
         private List<Post> StubedGetAllPosts;
-        private List<string> StubedGetListOfAuthors;
+        private List<string> StubedGetListOfAuthorNames;
+        private List<int> StubedGetListOfAuthorIDs;
         private List<Post> StubedGetListOfPostsByAuthor;
         private Post StubedGetPostById;
         private int StubedGetPostCount;
@@ -56,16 +60,26 @@ namespace BlogCore.Tests.Mocks
             return StubedGetAllPosts;
         }
 
-        public List<string> GetListOfAuthors()
+        public List<string> GetListOfAuthorNames()
         {
-            CalledGetListOfAuthors = true;
-            return StubedGetListOfAuthors;
+            CalledGetListOfAuthorNames = true;
+            return StubedGetListOfAuthorNames;
+        }
+        public List<int> GetListOfAuthorIDs()
+        {
+            CalledGetListOfAuthorIDs = true;
+            return StubedGetListOfAuthorIDs;
         }
 
-        public List<Post> GetListOfPostsByAuthor(string authorName)
+        public List<Author> GetAllAuthors()
         {
-            CalledGetListOfPostsByAuthor = true;
-            return StubedGetListOfPostsByAuthor;
+            CalledGetAllAuthors = true;
+            return StubedGetAllAuthors;
+        }
+
+        public List<Post> GetListOfPostsByAuthorID(int authorID)
+        {
+            throw new NotImplementedException();
         }
 
         public Post GetPostById(Guid id)
@@ -101,8 +115,10 @@ namespace BlogCore.Tests.Mocks
         public void AssertAddPostCalled() => Assert.True(CalledAddPost);
         public void AssertDeletePostCalled() => Assert.True(CalledDeletePost);
         public void AssertEditPostCalled() => Assert.True(CalledEditPost);
+        public void AssertGetAllAuthorsCalled() => Assert.True(CalledGetAllAuthors);
         public void AssertGetAllPostsCalled() => Assert.True(CalledGetAllPosts);
-        public void AssertGetListOfAuthorsCalled() => Assert.True(CalledGetListOfAuthors);
+        public void AssertGetListOfAuthorNamesCalled() => Assert.True(CalledGetListOfAuthorNames);
+        public void AssertGetListOfAuthorIDsCalled() => Assert.True(CalledGetListOfAuthorIDs);
         public void AssertGetListOfPostsByAuthorCalled() => Assert.True(CalledGetListOfPostsByAuthor);
         public void AssertGetPostByIdCalled() => Assert.True(CalledGetPostById);
         public void AssertGetPostCountCalled() => Assert.True(CalledGetPostCount);
@@ -127,6 +143,11 @@ namespace BlogCore.Tests.Mocks
             StubedEditPost = post;
             return this;
         }
+        public MockPostDataAccess StubGetAllAuthors(List<Author> list)
+        {
+            StubedGetAllAuthors = list;
+            return this;
+        }
 
         public MockPostDataAccess StubGetAllPosts(List<Post> list)
         {
@@ -134,9 +155,14 @@ namespace BlogCore.Tests.Mocks
             return this;
         }
 
-        public MockPostDataAccess StubGetListOfAuthors(List<string> list)
+        public MockPostDataAccess StubGetListOfAuthorNames(List<string> list)
         {
-            StubedGetListOfAuthors = list;
+            StubedGetListOfAuthorNames = list;
+            return this;
+        }
+        public MockPostDataAccess StubGetListOfAuthorIDs(List<int> list)
+        {
+            StubedGetListOfAuthorIDs = list;
             return this;
         }
 
@@ -192,42 +218,52 @@ namespace BlogCore.Tests.Mocks
             CalledEditPost = false;
             return this;
         }
-        public MockPostDataAccess SetCalledCalledGetAllPostsToFalse()
+        public MockPostDataAccess SetCalledGetAllAuthorsToFalse()
+        {
+            CalledGetAllAuthors = false;
+            return this;
+        }
+        public MockPostDataAccess SetCalledGetAllPostsToFalse()
         {
             CalledGetAllPosts = false;
             return this;
         }
-        public MockPostDataAccess SetCalledCalledGetListOfAuthorsToFalse()
+        public MockPostDataAccess SetCalledGetListOfAuthorNamesToFalse()
         {
-            CalledGetListOfAuthors = false;
+            CalledGetListOfAuthorNames = false;
             return this;
         }
-        public MockPostDataAccess SetCalledCalledGetListOfPostsByAuthorToFalse()
+        public MockPostDataAccess SetCalledGetListOfAuthorIDsToFalse()
+        {
+            CalledGetListOfAuthorIDs = false;
+            return this;
+        }
+        public MockPostDataAccess SetCalledGetListOfPostsByAuthorToFalse()
         {
             CalledGetListOfPostsByAuthor = false;
             return this;
         }
-        public MockPostDataAccess SetCalledCalledGetPostByIdToFalse()
+        public MockPostDataAccess SetCalledGetPostByIdToFalse()
         {
             CalledGetPostById = false;
             return this;
         }
-        public MockPostDataAccess SetCalledCalledGetPostCountToFalse()
+        public MockPostDataAccess SetCalledGetPostCountToFalse()
         {
             CalledGetPostCount = false;
             return this;
         }
-        public MockPostDataAccess SetCalledCalledGetPostFromListToFalse()
+        public MockPostDataAccess SetCalledGetPostFromListToFalse()
         {
             CalledGetPostFromList = false;
             return this;
         }
-        public MockPostDataAccess SetCalledCalledGetSortedListOfPostsToFalse()
+        public MockPostDataAccess SetCalledGetSortedListOfPostsToFalse()
         {
             CalledGetSortedListOfPosts = false;
             return this;
         }
-        public MockPostDataAccess SetCalledCalledSearchByToFalse()
+        public MockPostDataAccess SetCalledSearchByToFalse()
         {
             CalledSearchBy = false;
             return this;

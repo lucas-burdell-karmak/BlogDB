@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace BlogDB.Core
 {
@@ -7,12 +8,13 @@ namespace BlogDB.Core
 
         public string Name {get; set;}
         public int ID {get; set;}
-        public string[] Roles { get; set; }
+        public List<string> Roles { get; set; }
 
         public Author(string name, int id) 
         {
             Name = name;
             ID = id;
+            Roles = new List<string>();
         }
     }
 }

@@ -80,7 +80,7 @@ namespace BlogDB.Core
                 while (reader.Read())
                 {
                     author = new Author(name, reader.GetInt32(0));
-                    author.Roles = JsonConvert.DeserializeObject<string[]>(reader.GetString(1));
+                    author.Roles = JsonConvert.DeserializeObject<List<string>>(reader.GetString(1));
                 }
             }
             reader.Close();
@@ -100,7 +100,7 @@ namespace BlogDB.Core
                 while (reader.Read())
                 {
                     var author = new Author(reader.GetString(0), reader.GetInt32(1));
-                    author.Roles = JsonConvert.DeserializeObject<string[]>(reader.GetString(2));
+                    author.Roles = JsonConvert.DeserializeObject<List<string>>(reader.GetString(2));
                     authors.Add(author);
                 }
             }

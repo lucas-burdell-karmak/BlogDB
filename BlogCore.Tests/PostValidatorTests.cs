@@ -82,21 +82,18 @@ namespace BlogCore.Tests
         }
 
         [Theory]
-        [InlineData("", "", "")]
-        [InlineData("title", "author", "")]
-        [InlineData("title", "", "body")]
-        [InlineData("", "author", "body")]
-        [InlineData(null, null, null)]
-        [InlineData("title", "author", null)]
-        [InlineData("title", null, "body")]
-        [InlineData(null, "author", "body")]
-        [InlineData(" ", " ", " ")]
-        [InlineData("title", "author", " ")]
-        [InlineData("title", " ", "body")]
-        [InlineData(" ", "author", "body")]
-        public void IsValidPost_CatchInvalid_Success(string title, string authorName, string body)
+        [InlineData("", "")]
+        [InlineData("title", "")]
+        [InlineData("", "body")]
+        [InlineData(null, null)]
+        [InlineData("title", null)]
+        [InlineData(null, "body")]
+        [InlineData(" ", " ")]
+        [InlineData("title", " ")]
+        [InlineData(" ", "body")]
+        public void IsValidPost_CatchInvalid_Success(string title, string body)
         {
-            var invalidPost = new Post(title, new Author(authorName, 0), body);
+            var invalidPost = new Post(title, new Author("authorName", 0), body);
 
             Assert.False(_postValidator.IsValidPost(invalidPost));
         }

@@ -111,7 +111,7 @@ namespace BlogCore.Tests
             var returnedPost = postDataAccess.DeletePost(post);
 
             mockPostValidator.AssertPostExistsCalled();
-            mockPostRepo.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostsCalled();
             mockPostRepo.AssertTryDeletePostCalled();
             Assert.NotNull(returnedPost);
             AssertPostsEqual(post, returnedPost);
@@ -155,7 +155,7 @@ namespace BlogCore.Tests
             var returnedPost = postDataAccess.EditPost(post);
 
             mockPostValidator.AssertPostExistsCalled();
-            mockPostRepo.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostsCalled();
             mockPostValidator.AssertIsValidPostCalled();
             mockPostRepo.AssertTryEditPostCalled();
             mockAuthorValidator.AssertIsValidAuthorCalled();
@@ -234,31 +234,30 @@ namespace BlogCore.Tests
 
             var returnedListOfPosts = postDataAccess.GetAllPosts();
 
-            mockPostRepo.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostsCalled();
             Assert.Equal(listOfPosts.Count, returnedListOfPosts.Count);
             AssertPostsEqual(listOfPosts[0], returnedListOfPosts[0]);
         }
 
         [Fact]
-        public void TestGetListOfPostsByAuthors()
+        public void TestGetListOfPostsByAuthorID()
         {
             var mockPostRepo = new MockPostRepo();
             var mockPostValidator = new MockPostValidator();
             var mockAuthorRepo = new MockAuthorRepo();
             var mockAuthorValidator = new MockAuthorValidator();
             var postDataAccess = new PostDataAccess(mockPostRepo, mockPostValidator, mockAuthorRepo, mockAuthorValidator);
-            var postNotByAuthor = new Post("", new Author("NotAuthor", 0), "");
+            var postNotByAuthor = new Post("", new Author("NotAuthor", 1), "");
             var postByAuthor = new Post("", new Author("Author", 0), "");
             var listOfPosts = new List<Post>();
 
-            listOfPosts.Add(postNotByAuthor);
             listOfPosts.Add(postByAuthor);
 
-            mockPostRepo.StubGetAllPosts(listOfPosts);
+            mockPostRepo.StubGetAllPostsByAuthor(listOfPosts);
 
-            var returnedListOfPosts = postDataAccess.GetListOfPostsByAuthor("Author");
+            var returnedListOfPosts = postDataAccess.GetListOfPostsByAuthorID(0);
 
-            mockPostRepo.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostsByAuthorCalled();
             AssertPostsEqual(postByAuthor, returnedListOfPosts[0]);
         }
 
@@ -277,7 +276,7 @@ namespace BlogCore.Tests
             mockPostRepo.StubGetAllPosts(listOfPosts);
             var returnedPost = postDataAccess.GetPostById(post.PostID);
 
-            mockPostRepo.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostsCalled();
             Assert.NotNull(returnedPost);
             AssertPostsEqual(post, returnedPost);
         }
@@ -298,7 +297,7 @@ namespace BlogCore.Tests
             mockPostRepo.StubGetAllPosts(listOfPosts);
             var returnedPost = postDataAccess.GetPostById(Guid.Parse(nonExistentPostID));
 
-            mockPostRepo.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostsCalled();
             Assert.Null(returnedPost);
         }
 
@@ -317,7 +316,7 @@ namespace BlogCore.Tests
             mockPostRepo.StubGetAllPosts(listOfPosts);
             var returnedCount = postDataAccess.GetPostCount();
 
-            mockPostRepo.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostsCalled();
             Assert.Equal(listOfPosts.Count, returnedCount);
         }
 
@@ -394,7 +393,7 @@ namespace BlogCore.Tests
             mockPostRepo.StubGetAllPosts(listOfPosts);
             var returnedListOfPosts = postDataAccess.GetSortedListOfPosts(postComp);
 
-            mockPostRepo.AssertGetAllPostCalled();
+            mockPostRepo.AssertGetAllPostsCalled();
             Assert.Equal(listOfPosts.Count, returnedListOfPosts.Count);
             AssertPostsEqual(aPost, returnedListOfPosts[0]);
             AssertPostsEqual(bPost, returnedListOfPosts[1]);
