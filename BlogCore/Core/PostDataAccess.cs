@@ -9,7 +9,6 @@ namespace BlogDB.Core
         private readonly IPostRepo _postRepo;
         private readonly IPostValidator _postValidator;
         private readonly IAuthorRepo _authorRepo;
-
         private readonly IAuthorValidator _authorValidator;
 
         public PostDataAccess(IPostRepo postRepo, IPostValidator postValidator, IAuthorRepo authorRepo, IAuthorValidator authorValidator)
@@ -29,10 +28,7 @@ namespace BlogDB.Core
                 var isSuccessful = _postRepo.TryAddPost(post, out var result);
                 return (isSuccessful) ? result : throw new ArgumentException("Something went horribly wrong in PostDataAccess.AddPost.");
             }
-            else
-            {
-                throw new ArgumentException("This post has invaild properties.");
-            }
+            throw new ArgumentException("This post has invaild properties.");
         }
 
         public Post DeletePost(Post post)
@@ -42,10 +38,7 @@ namespace BlogDB.Core
                 var isSuccessful = _postRepo.TryDeletePost(post.PostID, out var result);
                 return (isSuccessful) ? result : throw new ArgumentException("Something went horribly wrong in PostDataAccess.DeletePost.");
             }
-            else
-            {
-                throw new ArgumentException("The post does not exist.");
-            }
+            throw new ArgumentException("The post does not exist.");
         }
 
         public Post EditPost(Post post)
@@ -56,10 +49,7 @@ namespace BlogDB.Core
                 var isSuccessful = _postRepo.TryEditPost(post, out var result);
                 return (isSuccessful) ? result : throw new ArgumentException("Something went horribly wrong in PostDataAccess.EditPost.");
             }
-            else
-            {
-                throw new ArgumentException("This post does not exist or has invaild properties.");
-            }
+            throw new ArgumentException("This post does not exist or has invaild properties.");
         }
 
         public List<Author> GetAllAuthors() => _authorRepo.GetListOfAuthors();
@@ -67,31 +57,27 @@ namespace BlogDB.Core
 
         public List<int> GetListOfAuthorIDs()
         {
-            List<Author> authors = _authorRepo.GetListOfAuthors();
-            List<int> authorIDs = new List<int>();
+            var authors = _authorRepo.GetListOfAuthors();
+            var authorIDs = new List<int>();
             foreach (Author a in authors)
-            {
                 authorIDs.Add(a.ID);
-            }
             return authorIDs;
         }
 
         public List<string> GetListOfAuthorNames()
         {
-            List<Author> authors = _authorRepo.GetListOfAuthors();
-            List<string> authorNames = new List<string>();
+            var authors = _authorRepo.GetListOfAuthors();
+            var authorNames = new List<string>();
             foreach (Author a in authors)
-            {
                 authorNames.Add(a.Name);
-            }
             return authorNames;
         }
 
         public List<Post> GetListOfPostsByAuthorID(int authorID)
         {
             var listOfPostsByAuthor = _postRepo.GetAllPostsByAuthor(authorID);
-            if (listOfPostsByAuthor == null) return new List<Post>();
-
+            if (listOfPostsByAuthor == null)
+                return new List<Post>();
             return listOfPostsByAuthor;
         }
 
@@ -99,29 +85,18 @@ namespace BlogDB.Core
         {
             var listOfPosts = _postRepo.GetAllPosts();
             foreach (var post in listOfPosts)
-            {
                 if (post.PostID == id)
                     return post;
-            }
             return null;
         }
 
-        public int GetPostCount()
-        {
-            var posts = _postRepo.GetAllPosts();
-            return posts.Count;
-        }
+        public int GetPostCount() => _postRepo.GetAllPosts().Count;
 
         public Post GetPostFromList(List<Post> listOfPosts, Guid id)
         {
             foreach (var post in listOfPosts)
-            {
                 if (post.PostID == id)
-                {
                     return post;
-                }
-            }
-
             return null;
         }
 
@@ -148,9 +123,7 @@ namespace BlogDB.Core
             posts.ForEach((post) =>
             {
                 if (filter(post))
-                {
                     results.Add(post);
-                }
             });
             return results;
         }
