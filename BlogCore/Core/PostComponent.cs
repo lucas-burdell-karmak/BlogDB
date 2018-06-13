@@ -8,5 +8,4 @@ namespace BlogDB.Core
         body = 3,
         timestamp = 4
     }
-
 }

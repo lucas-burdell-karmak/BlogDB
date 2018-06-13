@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using BlogDB.Core;
-
-namespace BlogDB
+﻿namespace BlogDB
 {
     class Program
     {

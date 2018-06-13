@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
 namespace BlogDB.Core
@@ -30,10 +27,7 @@ namespace BlogDB.Core
             _connection.Open();
         }
 
-        public void Dispose()
-        {
-            _connection.Close();
-        }
+        public void Dispose() => _connection.Close();
 
         ~SQLPostRepo()
         {
@@ -48,19 +42,13 @@ namespace BlogDB.Core
 
             command.Parameters.Add("@id", SqlDbType.NChar);
             command.Parameters["@id"].Value = postID.ToString();
-
-            //command.Connection.Open();
-            var result = command.ExecuteNonQuery();
-
-            if (result < 0) Console.WriteLine("Error deleting post from database!");
+            if (command.ExecuteNonQuery() < 0) 
+                Console.WriteLine("Error deleting post from database!");
 
             return post;
         }
 
-        public List<Post> GetAllPosts()
-        {
-            return ReadAll();
-        }
+        public List<Post> GetAllPosts() => ReadAll();
 
         public List<Post> GetAllPostsByAuthor(int authorID)
         {
@@ -73,7 +61,6 @@ namespace BlogDB.Core
 
             var reader = command.ExecuteReader();
             if (reader.HasRows)
-            {
                 while (reader.Read())
                 {
                     list.Add(new Post(reader.GetString(1),
@@ -82,9 +69,7 @@ namespace BlogDB.Core
                                       reader.GetDateTime(4),
                                       Guid.Parse(reader.GetString(0))));
                 }
-            }
             reader.Close();
-
             return list;
         }
 
@@ -93,23 +78,16 @@ namespace BlogDB.Core
             var list = new List<Post>();
             var commandText = "SELECT id, title, authorID, body, timestamp FROM Blog_Post";
             var command = new SqlCommand(commandText, _connection);
-
-            //command.Connection.Open();
             var reader = command.ExecuteReader();
 
             if (reader.HasRows)
-            {
                 while (reader.Read())
-                {
                     list.Add(new Post(reader.GetString(1),
                                       _authorRepo.GetAuthorByID(reader.GetInt32(2)),  // TODO: AUTHOR CREATION MOVED TO IAuthorRepo
                                       reader.GetString(3),
                                       reader.GetDateTime(4),
                                       Guid.Parse(reader.GetString(0))));
-                }
-            }
             reader.Close();
-
             return list;
         }
 
@@ -120,21 +98,15 @@ namespace BlogDB.Core
             var command = new SqlCommand(commandText, _connection);
             command.Parameters.Add("@id", SqlDbType.NChar);
             command.Parameters["@id"].Value = id.ToString();
-
-            //command.Connection.Open();
             var reader = command.ExecuteReader();
 
             if (reader.HasRows)
-            {
                 while (reader.Read())
-                {
                     post = new Post(reader.GetString(1),
                                     _authorRepo.GetAuthorByID(reader.GetInt32(2)), // TODO: AUTHOR CREATION MOVED TO IAuthorRepo
                                     reader.GetString(3),
                                     reader.GetDateTime(4),
                                     Guid.Parse(reader.GetString(0)));
-                }
-            }
             reader.Close();
             return post;
         }
@@ -174,11 +146,7 @@ namespace BlogDB.Core
                 result = null;
             }
 
-            if (result == null)
-            {
-                return false;
-            }
-            return true;
+            return (result == null) ? false : true;
         }
 
         public bool TryEditPost(Post post, out Post result)
@@ -219,10 +187,8 @@ namespace BlogDB.Core
             command.Parameters.Add("@title", SqlDbType.NChar);
             command.Parameters["@title"].Value = post.Title;
 
-            //command.Connection.Open();
-            var result = command.ExecuteNonQuery();
-
-            if (result < 0) return null;
+            if (command.ExecuteNonQuery() < 0)
+                return null;
 
             return post;
         }
@@ -247,10 +213,8 @@ namespace BlogDB.Core
             command.Parameters.Add("@title", SqlDbType.NChar);
             command.Parameters["@title"].Value = post.Title;
 
-            //command.Connection.Open();
-            var result = command.ExecuteNonQuery();
-
-            if (result < 0) return null;
+            if (command.ExecuteNonQuery() < 0) 
+                return null;
             return post;
         }
 
@@ -277,10 +241,8 @@ namespace BlogDB.Core
                 command.Parameters["@title"].Value = post.Title;
             }
 
-            //command.Connection.Open();
-            var result = command.ExecuteNonQuery();
-
-            if (result < 0) Console.WriteLine("Error inserting data into database!");
+            if (command.ExecuteNonQuery() < 0) 
+                Console.WriteLine("Error inserting data into database!");
         }
     }
 }

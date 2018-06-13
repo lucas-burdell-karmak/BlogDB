@@ -1,12 +1,5 @@
-using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Web;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using BlogDB.Core;
-using The_Intern_MVC.Models;
 
 namespace The_Intern_MVC.Controllers
 {

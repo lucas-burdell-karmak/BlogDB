@@ -5,10 +5,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace BlogDB.Core
 {
@@ -72,13 +70,11 @@ namespace BlogDB.Core
             var reader = command.ExecuteReader();
 
             if (reader.HasRows)
-            {
                 while (reader.Read())
                 {
                     author = new Author(name, reader.GetInt32(0));
                     author.Roles = JsonConvert.DeserializeObject<List<string>>(reader.GetString(1));
                 }
-            }
             reader.Close();
 
             return author;
@@ -92,14 +88,12 @@ namespace BlogDB.Core
 
             var reader = command.ExecuteReader();
             if (reader.HasRows)
-            {
                 while (reader.Read())
                 {
                     var author = new Author(reader.GetString(0), reader.GetInt32(1));
                     author.Roles = JsonConvert.DeserializeObject<List<string>>(reader.GetString(2));
                     authors.Add(author);
                 }
-            }
 
             return authors;
         }
