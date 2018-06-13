@@ -26,9 +26,9 @@ namespace BlogCore.Tests
         public void TestAuthorRoles()
         {
             var author = new Author("", 0);
-            author.Roles = "role";
+            author.Roles.Add("role");
 
-            Assert.Equal("role", author.Roles);
+            Assert.Equal("role", author.Roles[0]);
         }
 
         public void Dispose() { }
