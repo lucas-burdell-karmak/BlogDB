@@ -1,5 +1,3 @@
-using System;
-
 namespace BlogDB.Core
 {
     public interface IAuthorValidator
