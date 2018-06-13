@@ -9,12 +9,8 @@ namespace BlogDB.Core
         public bool PostExists(List<Post> listOfPosts, Post post)
         {
             foreach (Post p in listOfPosts)
-            {
                 if (p.PostID == post.PostID)
-                {
                     return true;
-                }
-            }
             return false;
         }
 
@@ -30,9 +26,7 @@ namespace BlogDB.Core
         public bool IsValidPost(Post post)
         {
             if (post == null)
-            {
                 return false;
-            }
             return IsValidBody(post.Body) && IsValidTitle(post.Title);
         }
     }

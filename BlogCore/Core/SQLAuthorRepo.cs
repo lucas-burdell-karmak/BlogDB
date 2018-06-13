@@ -54,12 +54,8 @@ namespace BlogDB.Core
 
             var reader = command.ExecuteReader();
             if (reader.HasRows)
-            {
                 while (reader.Read())
-                {
                     author = new Author(reader.GetString(0), id);
-                }
-            }
             reader.Close();
 
             return author;
@@ -118,12 +114,8 @@ namespace BlogDB.Core
 
             var reader = command.ExecuteReader();
             if (reader.HasRows)
-            {
                 while (reader.Read())
-                {
                     passwordHash = reader.GetString(0);
-                }
-            }
             reader.Close();
             return HexStringToByteArray(passwordHash);
         }
@@ -147,12 +139,8 @@ namespace BlogDB.Core
 
             var reader = command.ExecuteReader();
             if (reader.HasRows)
-            {
                 while (reader.Read())
-                {
                     salt = reader.GetString(0);
-                }
-            }
             reader.Close();
             return HexStringToByteArray(salt);
         }
@@ -163,9 +151,7 @@ namespace BlogDB.Core
             {
                 var authorInDB = GetAuthorByName(name);
                 if (authorInDB == null)
-                {
                     isSuccessful = false;
-                }
                 else
                 {
                     byte[] salt = GetSaltByAuthorID(authorInDB.ID);
@@ -226,18 +212,20 @@ namespace BlogDB.Core
 
         public void TryUpdateAuthor(Author toUpdate, out bool isSuccessful)
         {
-            try {
-            var commandText = "UPDATE Author SET Name = @name WHERE id = @id";
-            var command = new SqlCommand(commandText, _connection);
-            command.Parameters.Add("@name", SqlDbType.NVarChar);
-            command.Parameters["@name"].Value = toUpdate.Name;
+            try
+            {
+                var commandText = "UPDATE Author SET Name = @name WHERE id = @id";
+                var command = new SqlCommand(commandText, _connection);
+                command.Parameters.Add("@name", SqlDbType.NVarChar);
+                command.Parameters["@name"].Value = toUpdate.Name;
 
-            command.Parameters.Add("@id", SqlDbType.Int);
-            command.Parameters["@id"].Value = toUpdate.ID;
+                command.Parameters.Add("@id", SqlDbType.Int);
+                command.Parameters["@id"].Value = toUpdate.ID;
 
-            command.ExecuteNonQuery();
-            isSuccessful = true;
-            } catch (Exception) 
+                command.ExecuteNonQuery();
+                isSuccessful = true;
+            }
+            catch (Exception)
             {
                 isSuccessful = false;
             }
@@ -245,15 +233,17 @@ namespace BlogDB.Core
 
         public void TryDeleteAuthor(Author toDelete, out bool isSuccessful)
         {
-            try {
-            var commandText = "DELETE FROM Author WHERE id = @id";
-            var command = new SqlCommand(commandText, _connection);
-            command.Parameters.Add("@id", SqlDbType.Int);
-            command.Parameters["@id"].Value = toDelete.ID;
+            try
+            {
+                var commandText = "DELETE FROM Author WHERE id = @id";
+                var command = new SqlCommand(commandText, _connection);
+                command.Parameters.Add("@id", SqlDbType.Int);
+                command.Parameters["@id"].Value = toDelete.ID;
 
-            command.ExecuteNonQuery();
-            isSuccessful = true;
-            } catch (Exception) 
+                command.ExecuteNonQuery();
+                isSuccessful = true;
+            }
+            catch (Exception)
             {
                 isSuccessful = false;
             }
