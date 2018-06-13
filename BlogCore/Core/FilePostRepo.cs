@@ -119,24 +119,14 @@ namespace BlogDB.Core
         public bool TryEditPost(Post post, out Post result)
         {
             if (post == null || post.Title == null || post.Author.Name == null || post.Body == null)
-            {
                 result = null;
-            }
             else
-            {
                 result = EditPost(post);
-            }
             return (result == null) ? false : true;
         }
 
-        public List<Post> GetAllPosts()
-        {
-            return ReadAll();
-        }
+        public List<Post> GetAllPosts() => ReadAll();
 
-        public List<Post> GetAllPostsByAuthor(int authorID)
-        {
-            throw new NotImplementedException();
-        }
+        public List<Post> GetAllPostsByAuthor(int authorID) => throw new NotImplementedException();
     }
 }
