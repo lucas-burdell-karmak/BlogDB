@@ -5,27 +5,27 @@ namespace BlogCore.Tests.Mocks
 {
     public class MockAuthorValidator : IAuthorValidator
     {
-        private bool CalledIsValidAuthor = false;
+        private bool _calledIsValidAuthor = false;
 
-        private bool StubedIsValidAuthor;
+        private bool _stubedIsValidAuthor;
 
-        public void AssertIsValidAuthorCalled() => Assert.True(CalledIsValidAuthor);
+        public void AssertIsValidAuthorCalled() => Assert.True(_calledIsValidAuthor);
 
         public bool IsValidAuthor(Author author)
         {
-            CalledIsValidAuthor = true;
-            return StubedIsValidAuthor;
+            _calledIsValidAuthor = true;
+            return _stubedIsValidAuthor;
         }
 
         public MockAuthorValidator SetCalledIsValidAuthorToFalse()
         {
-            CalledIsValidAuthor = false;
+            _calledIsValidAuthor = false;
             return this;
         }
 
         public MockAuthorValidator StubIsValidAuthor(bool b)
         {
-            StubedIsValidAuthor = b;
+            _stubedIsValidAuthor = b;
             return this;
         }
     }

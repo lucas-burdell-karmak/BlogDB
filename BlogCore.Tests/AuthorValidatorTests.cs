@@ -20,13 +20,10 @@ namespace BlogCore.Tests
         [Fact]
         public void IsValidAuthor_ValidAuthorInList_Success()
         {
-            var listOfAuthors = new List<Author>();
-            var authorInRepo = new Author("inRepo", 0);
-
-            listOfAuthors.Add(authorInRepo);
+            var listOfAuthors = new List<Author>(){ new Author("inRepo", 0) };
             _mockAuthorRepo.StubGetListOfAuthors(listOfAuthors);
 
-            Assert.True(_authorValidator.IsValidAuthor(authorInRepo));
+            Assert.True(_authorValidator.IsValidAuthor(listOfAuthors[0]));
             _mockAuthorRepo.AssertGetListOfAuthorCalled();
         }
 

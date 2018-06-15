@@ -7,120 +7,120 @@ namespace BlogCore.Tests.Mocks
 {
     public class MockPostRepo : IPostRepo
     {
-        private bool CalledGetAllPosts = false;
-        private bool CalledGetAllPostsByAuthor = false;
-        private bool CalledTryAddPost = false;
-        private bool CalledTryDeletePost = false;
-        private bool CalledTryEditPost = false;
+        private bool _calledGetAllPosts = false;
+        private bool _calledGetAllPostsByAuthor = false;
+        private bool _calledTryAddPost = false;
+        private bool _calledTryDeletePost = false;
+        private bool _calledTryEditPost = false;
 
-        private List<Post> StubedGetAllPosts;
-        private List<Post> StubedGetAllPostsByAuthor;
-        private bool StubedTryAddPostBool;
-        private Post StubedTryAddPostResult;
-        private bool StubedTryDeletePostBool;
-        private Post StubedTryDeletePostResult;
-        private bool StubedTryEditPostBool;
-        private Post StubedTryEditPostResult;
+        private List<Post> _stubedGetAllPosts;
+        private List<Post> _stubedGetAllPostsByAuthor;
+        private bool _stubedTryAddPostBool;
+        private Post _stubedTryAddPostResult;
+        private bool _stubedTryDeletePostBool;
+        private Post _stubedTryDeletePostResult;
+        private bool _stubedTryEditPostBool;
+        private Post _stubedTryEditPostResult;
 
-        public void AssertTryAddPostCalled() => Assert.True(CalledTryAddPost);
-        public void AssertTryDeletePostCalled() => Assert.True(CalledTryDeletePost);
-        public void AssertTryEditPostCalled() => Assert.True(CalledTryEditPost);
-        public void AssertGetAllPostsCalled() => Assert.True(CalledGetAllPosts);
-        public void AssertGetAllPostsByAuthorCalled() => Assert.True(CalledGetAllPostsByAuthor);
+        public void AssertTryAddPostCalled() => Assert.True(_calledTryAddPost);
+        public void AssertTryDeletePostCalled() => Assert.True(_calledTryDeletePost);
+        public void AssertTryEditPostCalled() => Assert.True(_calledTryEditPost);
+        public void AssertGetAllPostsCalled() => Assert.True(_calledGetAllPosts);
+        public void AssertGetAllPostsByAuthorCalled() => Assert.True(_calledGetAllPostsByAuthor);
 
         public bool TryAddPost(Post post, out Post result)
         {
-            CalledTryAddPost = true;
-            result = StubedTryAddPostResult;
-            return StubedTryAddPostBool;
+            _calledTryAddPost = true;
+            result = _stubedTryAddPostResult;
+            return _stubedTryAddPostBool;
         }
         public bool TryDeletePost(Guid id, out Post result)
         {
-            CalledTryDeletePost = true;
-            result = StubedTryDeletePostResult;
-            return StubedTryDeletePostBool;
+            _calledTryDeletePost = true;
+            result = _stubedTryDeletePostResult;
+            return _stubedTryDeletePostBool;
         }
         public bool TryEditPost(Post post, out Post result)
         {
-            CalledTryEditPost = true;
-            result = StubedTryEditPostResult;
-            return StubedTryEditPostBool;
+            _calledTryEditPost = true;
+            result = _stubedTryEditPostResult;
+            return _stubedTryEditPostBool;
         }
         public List<Post> GetAllPosts()
         {
-            CalledGetAllPosts = true;
-            return StubedGetAllPosts;
+            _calledGetAllPosts = true;
+            return _stubedGetAllPosts;
         }
         public List<Post> GetAllPostsByAuthor(int authorID)
         {
-            CalledGetAllPostsByAuthor = true;
-            return StubedGetAllPostsByAuthor;
+            _calledGetAllPostsByAuthor = true;
+            return _stubedGetAllPostsByAuthor;
         }
 
         public MockPostRepo StubTryAddPostResult(Post post)
         {
-            StubedTryAddPostResult = post;
+            _stubedTryAddPostResult = post;
             return this;
         }
         public MockPostRepo StubTryDeletePostResult(Post post)
         {
-            StubedTryDeletePostResult = post;
+            _stubedTryDeletePostResult = post;
             return this;
         }
         public MockPostRepo StubTryEditPostResult(Post post)
         {
-            StubedTryEditPostResult = post;
+            _stubedTryEditPostResult = post;
             return this;
         }
         public MockPostRepo StubTryAddPostBool(bool b)
         {
-            StubedTryAddPostBool = b;
+            _stubedTryAddPostBool = b;
             return this;
         }
         public MockPostRepo StubTryDeletePostBool(bool b)
         {
-            StubedTryDeletePostBool = b;
+            _stubedTryDeletePostBool = b;
             return this;
         }
         public MockPostRepo StubTryEditPostBool(bool b)
         {
-            StubedTryEditPostBool = b;
+            _stubedTryEditPostBool = b;
             return this;
         }
         public MockPostRepo StubGetAllPosts(List<Post> list)
         {
-            StubedGetAllPosts = list;
+            _stubedGetAllPosts = list;
             return this;
         }
         public MockPostRepo StubGetAllPostsByAuthor(List<Post> list)
         {
-            StubedGetAllPostsByAuthor = list;
+            _stubedGetAllPostsByAuthor = list;
             return this;
         }
 
         public MockPostRepo SetCalledTryAddPostToFalse()
         {
-            CalledTryAddPost = false;
+            _calledTryAddPost = false;
             return this;
         }
         public MockPostRepo SetCalledTryDeletePostToFalse()
         {
-            CalledTryDeletePost = false;
+            _calledTryDeletePost = false;
             return this;
         }
         public MockPostRepo SetCalledTryEditPostToFalse()
         {
-            CalledTryEditPost = false;
+            _calledTryEditPost = false;
             return this;
         }
         public MockPostRepo SetCalledGetAllPostsToFalse()
         {
-            CalledGetAllPosts = false;
+            _calledGetAllPosts = false;
             return this;
         }
         public MockPostRepo SetCalledGetAllPostsByAuthorToFalse()
         {
-            CalledGetAllPostsByAuthor = false;
+            _calledGetAllPostsByAuthor = false;
             return this;
         }
     }
