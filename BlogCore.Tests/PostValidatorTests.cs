@@ -14,9 +14,8 @@ namespace BlogCore.Tests
         [Fact]
         public void PostExists_True_Success()
         {
-            var listOfPosts = new List<Post>();
             var postInList = new Post("title", new Author("author", 0), "body");
-            listOfPosts.Add(postInList);
+            var listOfPosts = new List<Post>(){ postInList };
 
             Assert.True(_postValidator.PostExists(listOfPosts, postInList));
         }
@@ -24,8 +23,8 @@ namespace BlogCore.Tests
         [Fact]
         public void PostExists_False_Success()
         {
-            var listOfPosts = new List<Post>();
             var postNotInList = new Post("title", new Author("author", 0), "body");
+            var listOfPosts = new List<Post>();
 
             Assert.False(_postValidator.PostExists(listOfPosts, postNotInList));
         }
@@ -42,9 +41,9 @@ namespace BlogCore.Tests
         [Fact]
         public void IsValidBody_Valid_Success()
         {
-            var notEmptyNullOrWhitespace = "body";
+            var body = "body";
 
-            Assert.True(_postValidator.IsValidBody(notEmptyNullOrWhitespace));
+            Assert.True(_postValidator.IsValidBody(body));
         }
 
         [Theory]
@@ -59,9 +58,9 @@ namespace BlogCore.Tests
         [Fact]
         public void IsValidTitle_Valid_Success()
         {
-            var notEmptyNullOrWhitespace = "title";
+            var title = "title";
 
-            Assert.True(_postValidator.IsValidTitle(notEmptyNullOrWhitespace));
+            Assert.True(_postValidator.IsValidTitle(title));
         }
 
         [Theory]
@@ -76,19 +75,16 @@ namespace BlogCore.Tests
         [Fact]
         public void IsValidString_Valid_Success()
         {
-            var notEmptyNullOrWhitespace = "I'm a string";
+            var str = "string";
 
-            Assert.True(_postValidator.IsValidString(notEmptyNullOrWhitespace));
+            Assert.True(_postValidator.IsValidString(str));
         }
 
         [Theory]
-        [InlineData("", "")]
         [InlineData("title", "")]
         [InlineData("", "body")]
-        [InlineData(null, null)]
         [InlineData("title", null)]
         [InlineData(null, "body")]
-        [InlineData(" ", " ")]
         [InlineData("title", " ")]
         [InlineData(" ", "body")]
         public void IsValidPost_CatchInvalid_Success(string title, string body)
@@ -109,9 +105,9 @@ namespace BlogCore.Tests
         [Fact]
         public void IsValidPost_Valid_Success()
         {
-            var validPostValues = new Post("title", new Author("author", 0), "body");
+            var validPost = new Post("title", new Author("author", 0), "body");
 
-            Assert.True(_postValidator.IsValidPost(validPostValues));
+            Assert.True(_postValidator.IsValidPost(validPost));
         }
 
         public void Dispose() { }

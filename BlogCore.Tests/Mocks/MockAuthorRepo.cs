@@ -6,147 +6,147 @@ namespace BlogCore.Tests.Mocks
 {
     public class MockAuthorRepo : IAuthorRepo
     {
-        private bool CalledTryValidateAuthorLogin = false;
-        private bool CalledTryRegisterAuthor = false;
-        private bool CalledGetAuthorByID = false;
-        private bool CalledGetAuthorByName = false;
-        private bool CalledGetListOfAuthors = false;
-        private bool CalledTryUpdateAuthor = false;
-        private bool CalledTryDeleteAuthor = false;
+        private bool _calledTryValidateAuthorLogin = false;
+        private bool _calledTryRegisterAuthor = false;
+        private bool _calledGetAuthorByID = false;
+        private bool _calledGetAuthorByName = false;
+        private bool _calledGetListOfAuthors = false;
+        private bool _calledTryUpdateAuthor = false;
+        private bool _calledTryDeleteAuthor = false;
 
-        private bool StubedTryValidateAuthorLoginBool;
-        private bool StubedTryRegisterAuthorBool;
-        private Author StubedTryValidateAuthorLogin;
-        private Author StubedTryRegisterAuthor;
-        private Author StubedGetAuthor;
-        private Author StubedGetAuthorByName;
-        private List<Author> StubedGetListOfAuthors;
-        private bool StubedTryUpdateAuthorBool;
-        private bool StubedTryDeleteAuthorBool;
+        private bool _stubedTryValidateAuthorLoginBool;
+        private bool _stubedTryRegisterAuthorBool;
+        private Author _stubedTryValidateAuthorLogin;
+        private Author _stubedTryRegisterAuthor;
+        private Author _stubedGetAuthor;
+        private Author _stubedGetAuthorByName;
+        private List<Author> _stubedGetListOfAuthors;
+        private bool _stubedTryUpdateAuthorBool;
+        private bool _stubedTryDeleteAuthorBool;
 
-        public void AssertTryValidateAuthorLoginCalled() => Assert.True(CalledTryValidateAuthorLogin);
-        public void AssertTryRegisterAuthorCalled() => Assert.True(CalledTryRegisterAuthor);
-        public void AssertGetAuthorByIDCalled() => Assert.True(CalledGetAuthorByID);
-        public void AssertGetAuthorByNameCalled() => Assert.True(CalledGetAuthorByName);
-        public void AssertGetListOfAuthorCalled() => Assert.True(CalledGetListOfAuthors);
-        public void AssertTryUodateAuthorCalled() => Assert.True(CalledTryUpdateAuthor);
-        public void AssertTryDeleteAuthorCalled() => Assert.True(CalledTryDeleteAuthor);
+        public void AssertTryValidateAuthorLoginCalled() => Assert.True(_calledTryValidateAuthorLogin);
+        public void AssertTryRegisterAuthorCalled() => Assert.True(_calledTryRegisterAuthor);
+        public void AssertGetAuthorByIDCalled() => Assert.True(_calledGetAuthorByID);
+        public void AssertGetAuthorByNameCalled() => Assert.True(_calledGetAuthorByName);
+        public void AssertGetListOfAuthorCalled() => Assert.True(_calledGetListOfAuthors);
+        public void AssertTryUodateAuthorCalled() => Assert.True(_calledTryUpdateAuthor);
+        public void AssertTryDeleteAuthorCalled() => Assert.True(_calledTryDeleteAuthor);
 
         public void TryValidateAuthorLogin(string name, string passwordHash, out bool isSuccessful)
         {
-            CalledTryValidateAuthorLogin = true;
-            isSuccessful = StubedTryValidateAuthorLoginBool;
+            _calledTryValidateAuthorLogin = true;
+            isSuccessful = _stubedTryValidateAuthorLoginBool;
         }
         public void TryRegisterAuthor(string name, string passwordHash, out bool isSuccessful)
         {
-            CalledTryRegisterAuthor = true;
-            isSuccessful = StubedTryRegisterAuthorBool;
+            _calledTryRegisterAuthor = true;
+            isSuccessful = _stubedTryRegisterAuthorBool;
         }
         public Author GetAuthorByID(int id)
         {
-            CalledGetAuthorByID = true;
-            return StubedGetAuthor;
+            _calledGetAuthorByID = true;
+            return _stubedGetAuthor;
         }
         public Author GetAuthorByName(string name)
         {
-            CalledGetAuthorByName = true;
-            return StubedGetAuthorByName;
+            _calledGetAuthorByName = true;
+            return _stubedGetAuthorByName;
         }
         public List<Author> GetListOfAuthors()
         {
-            CalledGetListOfAuthors = true;
-            return StubedGetListOfAuthors;
+            _calledGetListOfAuthors = true;
+            return _stubedGetListOfAuthors;
         }
         public void TryUpdateAuthor(Author author, out bool isSuccessful)
         {
-            CalledTryUpdateAuthor = true;
-            isSuccessful = StubedTryUpdateAuthorBool;
+            _calledTryUpdateAuthor = true;
+            isSuccessful = _stubedTryUpdateAuthorBool;
         }
         public void TryDeleteAuthor(Author author, out bool isSuccessful)
         {
-            CalledTryDeleteAuthor = true;
-            isSuccessful = StubedTryDeleteAuthorBool;
+            _calledTryDeleteAuthor = true;
+            isSuccessful = _stubedTryDeleteAuthorBool;
         }
 
         public MockAuthorRepo SetCalledTryValidateAuthorLoginToFalse()
         {
-            CalledTryValidateAuthorLogin = false;
+            _calledTryValidateAuthorLogin = false;
             return this;
         }
         public MockAuthorRepo SetCalledTryRegisterAuthorToFalse()
         {
-            CalledTryRegisterAuthor = false;
+            _calledTryRegisterAuthor = false;
             return this;
         }
         public MockAuthorRepo SetCalledGetAuthorByIDToFalse()
         {
-            CalledGetAuthorByID = false;
+            _calledGetAuthorByID = false;
             return this;
         }
         public MockAuthorRepo SetCalledGetAuthorByNameToFalse()
         {
-            CalledGetAuthorByName = false;
+            _calledGetAuthorByName = false;
             return this;
         }
         public MockAuthorRepo SetCalledGetListOfAuthorsToFalse()
         {
-            CalledGetListOfAuthors = false;
+            _calledGetListOfAuthors = false;
             return this;
         }
         public MockAuthorRepo SetCalledTryUpdateAuthorToFalse()
         {
-            CalledTryUpdateAuthor = false;
+            _calledTryUpdateAuthor = false;
             return this;
         }
         public MockAuthorRepo SetCalledTryDeleteAuthorToFalse()
         {
-            CalledTryDeleteAuthor = false;
+            _calledTryDeleteAuthor = false;
             return this;
         }
 
         public MockAuthorRepo StubTryValidateAuthorLoginBool(bool b)
         {
-            StubedTryValidateAuthorLoginBool = b;
+            _stubedTryValidateAuthorLoginBool = b;
             return this;
         }
         public MockAuthorRepo StubTryRegisterAuthorBool(bool b)
         {
-            StubedTryRegisterAuthorBool = b;
+            _stubedTryRegisterAuthorBool = b;
             return this;
         }
         public MockAuthorRepo StubTryValidateAuthorLogin(Author author)
         {
-            StubedTryValidateAuthorLogin = author;
+            _stubedTryValidateAuthorLogin = author;
             return this;
         }
         public MockAuthorRepo StubTryRegisterAuthor(Author author)
         {
-            StubedTryRegisterAuthor = author;
+            _stubedTryRegisterAuthor = author;
             return this;
         }
         public MockAuthorRepo StubGetAuthorByID(Author author)
         {
-            StubedGetAuthor = author;
+            _stubedGetAuthor = author;
             return this;
         }
         public MockAuthorRepo StubGetAuthorByName(Author author)
         {
-            StubedGetAuthorByName = author;
+            _stubedGetAuthorByName = author;
             return this;
         }
         public MockAuthorRepo StubGetListOfAuthors(List<Author> authors)
         {
-            StubedGetListOfAuthors = authors;
+            _stubedGetListOfAuthors = authors;
             return this;
         }
         public MockAuthorRepo StubTryUpdateAuthorBool(bool b)
         {
-            StubedTryUpdateAuthorBool = b;
+            _stubedTryUpdateAuthorBool = b;
             return this;
         }
         public MockAuthorRepo StubTryDeleteAuthorBool(bool b)
         {
-            StubedTryDeleteAuthorBool = b;
+            _stubedTryDeleteAuthorBool = b;
             return this;
         }
     }
