@@ -17,16 +17,11 @@ namespace BlogDB.Core
 
         public bool IsValidTitle(string title) => IsValidString(title);
 
-        public bool IsValidString(string str)
-        {
-            return !(string.IsNullOrEmpty(str) || string.IsNullOrWhiteSpace(str));
-        }
+        public bool IsValidString(string str) => !(string.IsNullOrEmpty(str) || string.IsNullOrWhiteSpace(str));
 
         public bool IsValidPost(Post post)
         {
-            if (post == null)
-                return false;
-            return IsValidBody(post.Body) && IsValidTitle(post.Title);
+            return (post == null) ? false : IsValidBody(post.Body) && IsValidTitle(post.Title); 
         }
     }
 }

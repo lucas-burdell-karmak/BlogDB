@@ -58,46 +58,32 @@ namespace BlogDB.Core
         public List<int> GetListOfAuthorIDs()
         {
             var authors = _authorRepo.GetListOfAuthors();
-            var authorIDs = new List<int>();
-            foreach (Author a in authors)
-                authorIDs.Add(a.ID);
-            return authorIDs;
+            return authors.Select(x => x.ID).ToList();
         }
 
         public List<string> GetListOfAuthorNames()
         {
             var authors = _authorRepo.GetListOfAuthors();
-            var authorNames = new List<string>();
-            foreach (Author a in authors)
-                authorNames.Add(a.Name);
-            return authorNames;
+            return authors.Select(x => x.Name).ToList();
         }
 
         public List<Post> GetListOfPostsByAuthorID(int authorID)
         {
             var listOfPostsByAuthor = _postRepo.GetAllPostsByAuthor(authorID);
-            if (listOfPostsByAuthor == null)
-                return new List<Post>();
-            return listOfPostsByAuthor;
+            return (listOfPostsByAuthor == null) ? new List<Post>() : listOfPostsByAuthor;
         }
 
         public Post GetPostById(Guid id)
         {
             var listOfPosts = _postRepo.GetAllPosts();
-            foreach (var post in listOfPosts)
-                if (post.PostID == id)
-                    return post;
-            return null;
+            return listOfPosts.FirstOrDefault(x => x.PostID == id);
         }
 
         public int GetPostCount() => _postRepo.GetAllPosts().Count;
 
         public Post GetPostFromList(List<Post> listOfPosts, Guid id)
         {
-            foreach (var post in listOfPosts)
-                if (post.PostID == id)
-                    return post;
-            return null;
+            return listOfPosts.FirstOrDefault(x => x.PostID == id);
         }
 
         public List<Post> GetSortedListOfPosts(PostComponent sortType)
