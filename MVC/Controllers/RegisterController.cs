@@ -20,22 +20,15 @@ namespace The_Intern_MVC.Controllers
         [HttpPost]
         public IActionResult Index(string username, string passwordHash)
         {
-            Author author = _authorRepo.GetAuthorByName(username);
-            bool authorDoesNotAlreadyExist = (author == null);
-
-            if (authorDoesNotAlreadyExist)
+            if (_authorRepo.GetAuthorByName(username) == null)
             {
-                // register a new user in the database
                 _authorRepo.TryRegisterAuthor(username, passwordHash, out bool isSuccessful);
 
                 if (isSuccessful)
                 {
                     return RedirectToAction("Index", "Login");
                 }
-                else 
-                {
-                    TempData["message"] = "Something went horribly wrong when you tried to register... :(";
-                }
+                TempData["message"] = "Something went horribly wrong when you tried to register... :(";
             }
             else
             {
