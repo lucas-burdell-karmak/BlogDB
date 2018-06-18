@@ -11,11 +11,10 @@ namespace The_Intern_MVC.Controllers
 
         protected int GetUserID()
         {
-            var claims = HttpContext.User.Claims;
             var userID = -1;
-            Int32.TryParse(claims.Where(c => c.Type == "AuthorID")
-                                 .Select(c => c.Value)
-                                 .SingleOrDefault(), out userID);
+            Int32.TryParse(HttpContext.User.Claims.Where(c => c.Type == "AuthorID")
+                                                  .Select(c => c.Value)
+                                                  .SingleOrDefault(), out userID);
             return userID;
         }
 
