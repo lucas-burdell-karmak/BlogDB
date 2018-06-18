@@ -5,13 +5,7 @@ namespace BlogDB.Core
         private IAuthorRepo _authorRepo;
 
         public AuthorValidator(IAuthorRepo authorRepo) => _authorRepo = authorRepo;
-        
-        public bool IsValidAuthor(Author author)
-        {
-            foreach(var a in _authorRepo.GetListOfAuthors())
-                if(author.Name == a.Name && author.ID == a.ID)
-                    return true;
-            return false;
-        }
+
+        public bool IsValidAuthor(Author author) => _authorRepo.GetListOfAuthors().Exists(x => x.Name == author.Name && x.ID == author.ID);
     }
 }
