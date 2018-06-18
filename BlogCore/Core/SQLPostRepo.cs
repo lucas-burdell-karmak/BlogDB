@@ -29,10 +29,7 @@ namespace BlogDB.Core
 
         public void Dispose() => _connection.Close();
 
-        ~SQLPostRepo()
-        {
-            Dispose();
-        }
+        ~SQLPostRepo() { Dispose(); }
 
         private Post DeletePostByID(Guid postID)
         {
@@ -42,7 +39,7 @@ namespace BlogDB.Core
 
             command.Parameters.Add("@id", SqlDbType.NChar);
             command.Parameters["@id"].Value = postID.ToString();
-            if (command.ExecuteNonQuery() < 0) 
+            if (command.ExecuteNonQuery() < 0)
                 Console.WriteLine("Error deleting post from database!");
 
             return post;
@@ -118,20 +115,17 @@ namespace BlogDB.Core
                 result = null;
                 return false;
             }
-            else
+            try
             {
-                try
-                {
-                    result = WritePost(post);
-                }
-                catch (SqlException e)
-                {
-                    result = null;
-                    Console.WriteLine(e);
-                    return false;
-                }
-                return true;
+                result = WritePost(post);
             }
+            catch (SqlException e)
+            {
+                result = null;
+                Console.WriteLine(e);
+                return false;
+            }
+            return true;
         }
 
         public bool TryDeletePost(Guid id, out Post result)
@@ -155,18 +149,14 @@ namespace BlogDB.Core
             {
                 result = null;
             }
-            else
+            try
             {
-                try
-                {
-                    result = UpdatePost(post);
-                }
-                catch (SqlException e)
-                {
-                    result = null;
-                    Console.WriteLine(e);
-                }
-
+                result = UpdatePost(post);
+            }
+            catch (SqlException e)
+            {
+                result = null;
+                Console.WriteLine(e);
             }
             return (result == null) ? false : true;
         }
@@ -189,7 +179,6 @@ namespace BlogDB.Core
 
             if (command.ExecuteNonQuery() < 0)
                 return null;
-
             return post;
         }
 
@@ -213,7 +202,7 @@ namespace BlogDB.Core
             command.Parameters.Add("@title", SqlDbType.NChar);
             command.Parameters["@title"].Value = post.Title;
 
-            if (command.ExecuteNonQuery() < 0) 
+            if (command.ExecuteNonQuery() < 0)
                 return null;
             return post;
         }
@@ -241,7 +230,7 @@ namespace BlogDB.Core
                 command.Parameters["@title"].Value = post.Title;
             }
 
-            if (command.ExecuteNonQuery() < 0) 
+            if (command.ExecuteNonQuery() < 0)
                 Console.WriteLine("Error inserting data into database!");
         }
     }
