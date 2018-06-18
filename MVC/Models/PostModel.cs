@@ -26,4 +26,3 @@ namespace The_Intern_MVC.Models
         public static PostModel Empty { get => new PostModel(); }
     }
 }
-
