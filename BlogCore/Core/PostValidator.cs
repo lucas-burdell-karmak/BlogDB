@@ -1,17 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BlogDB.Core
 {
     public class PostValidator : IPostValidator
     {
 
-        public bool PostExists(List<Post> listOfPosts, Post post)
-        {
-            foreach (Post p in listOfPosts)
-                if (p.PostID == post.PostID)
-                    return true;
-            return false;
-        }
+        public bool PostExists(List<Post> listOfPosts, Post post) => listOfPosts.Exists(x => x.PostID == post.PostID);
 
         public bool IsValidBody(string body) => IsValidString(body);
 

@@ -55,23 +55,9 @@ namespace BlogDB.Core
         public List<Author> GetAllAuthors() => _authorRepo.GetListOfAuthors();
         public List<Post> GetAllPosts() => _postRepo.GetAllPosts();
 
-        public List<int> GetListOfAuthorIDs()
-        {
-            var authors = _authorRepo.GetListOfAuthors();
-            var authorIDs = new List<int>();
-            foreach (Author a in authors)
-                authorIDs.Add(a.ID);
-            return authorIDs;
-        }
+        public List<int> GetListOfAuthorIDs() => _authorRepo.GetListOfAuthors().Select(x => x.ID).ToList();
 
-        public List<string> GetListOfAuthorNames()
-        {
-            var authors = _authorRepo.GetListOfAuthors();
-            var authorNames = new List<string>();
-            foreach (Author a in authors)
-                authorNames.Add(a.Name);
-            return authorNames;
-        }
+        public List<string> GetListOfAuthorNames() => _authorRepo.GetListOfAuthors().Select(x => x.Name).ToList();
 
         public List<Post> GetListOfPostsByAuthorID(int authorID)
         {
@@ -81,24 +67,11 @@ namespace BlogDB.Core
             return listOfPostsByAuthor;
         }
 
-        public Post GetPostById(Guid id)
-        {
-            var listOfPosts = _postRepo.GetAllPosts();
-            foreach (var post in listOfPosts)
-                if (post.PostID == id)
-                    return post;
-            return null;
-        }
+        public Post GetPostById(Guid id) => _postRepo.GetAllPosts().FirstOrDefault(x => x.PostID == id);
 
         public int GetPostCount() => _postRepo.GetAllPosts().Count;
 
-        public Post GetPostFromList(List<Post> listOfPosts, Guid id)
-        {
-            foreach (var post in listOfPosts)
-                if (post.PostID == id)
-                    return post;
-            return null;
-        }
+        public Post GetPostFromList(List<Post> listOfPosts, Guid id) => listOfPosts.FirstOrDefault(x => x.PostID == id);
 
         public List<Post> GetSortedListOfPosts(PostComponent sortType)
         {
@@ -116,16 +89,6 @@ namespace BlogDB.Core
             }
         }
 
-        public List<Post> SearchBy(Func<Post, bool> filter)
-        {
-            var posts = _postRepo.GetAllPosts();
-            var results = new List<Post>();
-            posts.ForEach((post) =>
-            {
-                if (filter(post))
-                    results.Add(post);
-            });
-            return results;
-        }
+        public List<Post> SearchBy(Func<Post, bool> filter) => _postRepo.GetAllPosts().Where(x => filter(x)).ToList();
     }
 }

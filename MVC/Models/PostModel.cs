@@ -1,5 +1,4 @@
 using System;
-using BlogDB.Core;
 using System.ComponentModel.DataAnnotations;
 
 namespace The_Intern_MVC.Models
