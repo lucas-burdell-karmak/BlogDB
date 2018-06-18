@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using BlogDB.Core;
+using System.Linq;
 
 namespace The_Intern_MVC.Controllers
 {
@@ -14,15 +15,9 @@ namespace The_Intern_MVC.Controllers
 
         private readonly IAuthorRepo _authorRepo;
 
-        public LoginController(IAuthorRepo authorRepo)
-        {
-            _authorRepo = authorRepo;
-        }
+        public LoginController(IAuthorRepo authorRepo) => _authorRepo = authorRepo;
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public IActionResult Index() => View();
 
 
         [HttpPost]
@@ -37,9 +32,7 @@ namespace The_Intern_MVC.Controllers
         public IActionResult Index(string username, string passwordHash)
         {
             Author author = _authorRepo.GetAuthorByName(username);
-            bool authorExists = (author != null);
-
-            if (authorExists)
+            if (author != null)
             {
                 _authorRepo.TryValidateAuthorLogin(username, passwordHash, out var isSuccessful);
 
@@ -48,36 +41,30 @@ namespace The_Intern_MVC.Controllers
                     AddClaims(author);
                     return RedirectToAction("Index", "Home");
                 }
-                else
-                {
-                    TempData["message"] = "Login failed! Did you type the right password?";
-                    return View("Index");
-                }
-            }
-            else
-            {
-                TempData["message"] = "Username does not exist. Click the Register button to claim it as your own!";
+                TempData["message"] = "Login failed! Did you type the right password?";
                 return View("Index");
             }
+            TempData["message"] = "Username does not exist. Click the Register button to claim it as your own!";
+            return View("Index");
         }
 
         private void AddClaims(Author user)
         {
-            var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.Name, user.Name));
-            claims.Add(new Claim("AuthorID", user.ID.ToString()));
-
-            //string[] roles = { "BlogWriter", "BlogReader" }; //look this up in the DB by UserID later
-
-            foreach (string role in user.Roles)
+            var claims = new List<Claim>()
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim("AuthorID", user.ID.ToString())
+            };
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            claims.AddRange(
+                user.Roles.Select(
+                    x => new Claim(ClaimTypes.Role, x)
+                )
+            );
+
             HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
+                new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)),
                 new AuthenticationProperties()
             );
         }

@@ -9,7 +9,7 @@ namespace BlogCore.Tests
     {
         private readonly IPostValidator _postValidator;
 
-        public PostValidatorTests() { _postValidator = new PostValidator(); }
+        public PostValidatorTests() => _postValidator = new PostValidator();
 
         [Fact]
         public void PostExists_True_Success()
@@ -33,52 +33,28 @@ namespace BlogCore.Tests
         [InlineData("")]
         [InlineData(" ")]
         [InlineData(null)]
-        public void IsValidBody_CaughtInvalid_Success(string invalidInput)
-        {
-            Assert.False(_postValidator.IsValidBody(invalidInput));
-        }
+        public void IsValidBody_CaughtInvalid_Success(string invalidInput) => Assert.False(_postValidator.IsValidBody(invalidInput));
 
         [Fact]
-        public void IsValidBody_Valid_Success()
-        {
-            var body = "body";
-
-            Assert.True(_postValidator.IsValidBody(body));
-        }
+        public void IsValidBody_Valid_Success() => Assert.True(_postValidator.IsValidBody("body"));
 
         [Theory]
         [InlineData("")]
         [InlineData(" ")]
         [InlineData(null)]
-        public void IsValidTitle_CatchInvalid_Success(string invalidInput)
-        {
-            Assert.False(_postValidator.IsValidTitle(invalidInput));
-        }
+        public void IsValidTitle_CatchInvalid_Success(string invalidInput) => Assert.False(_postValidator.IsValidTitle(invalidInput));
 
         [Fact]
-        public void IsValidTitle_Valid_Success()
-        {
-            var title = "title";
-
-            Assert.True(_postValidator.IsValidTitle(title));
-        }
+        public void IsValidTitle_Valid_Success() => Assert.True(_postValidator.IsValidTitle("title"));
 
         [Theory]
         [InlineData("")]
         [InlineData(" ")]
         [InlineData(null)]
-        public void IsValidString_CatchInvalid_Success(string invalidInput)
-        {
-            Assert.False(_postValidator.IsValidString(invalidInput));
-        }
+        public void IsValidString_CatchInvalid_Success(string invalidInput) => Assert.False(_postValidator.IsValidString(invalidInput));
 
         [Fact]
-        public void IsValidString_Valid_Success()
-        {
-            var str = "string";
-
-            Assert.True(_postValidator.IsValidString(str));
-        }
+        public void IsValidString_Valid_Success() => Assert.True(_postValidator.IsValidString("string"));
 
         [Theory]
         [InlineData("title", "")]
@@ -95,20 +71,10 @@ namespace BlogCore.Tests
         }
 
         [Fact]
-        public void IsValidPost_CatchNullPost_Success()
-        {
-            Post nullPost = null;
-
-            Assert.False(_postValidator.IsValidPost(nullPost));
-        }
+        public void IsValidPost_CatchNullPost_Success() => Assert.False(_postValidator.IsValidPost(null));
 
         [Fact]
-        public void IsValidPost_Valid_Success()
-        {
-            var validPost = new Post("title", new Author("author", 0), "body");
-
-            Assert.True(_postValidator.IsValidPost(validPost));
-        }
+        public void IsValidPost_Valid_Success() => Assert.True(_postValidator.IsValidPost(new Post("title", new Author("author", 0), "body")));
 
         public void Dispose() { }
     }

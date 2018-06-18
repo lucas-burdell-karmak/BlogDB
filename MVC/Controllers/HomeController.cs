@@ -26,10 +26,7 @@ namespace The_Intern_MVC.Controllers
 
         [Authorize(Policy = "BlogReader")]
         [HttpGet]
-        public IActionResult Index()
-        {
-            return View("Index");
-        }
+        public IActionResult Index() => View("Index");
 
         [Authorize(Policy = "BlogWriter")]
         [HttpPost]
