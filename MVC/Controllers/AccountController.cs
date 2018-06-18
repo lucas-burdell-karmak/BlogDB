@@ -8,23 +8,14 @@ namespace The_Intern_MVC.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
+        public IActionResult AccessDenied() => View();
 
         [Authorize]
         [HttpGet]
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public IActionResult Index() => View();
 
         [Authorize]
         [HttpPost]
-        public IActionResult DeleteProfile()
-        {
-            return View();
-        }
+        public IActionResult DeleteProfile() => View();
     }
 }
