@@ -1,3 +1,5 @@
+test
+
 # BlogDB
 BlogDB is a dotnet core MVC application backed by a local Microsoft SQL Server.
 
